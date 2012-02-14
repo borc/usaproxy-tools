@@ -1,16 +1,14 @@
-UsaProxy README file:
+UsaProxyFork README file:
 
-
-UsaProxy is enclosed in a jar file.
-
+UsaProxyFork is an enhanced version of UsaProxy 2.0.
 
 ##### start UsaProxy proxy #####
 
 
 To start the UsaProxy proxy do the following:
 
-Being in the UsaProxy folder open a terminal and type in:
-java UsaProxy
+Being in the main folder open a terminal and type in:
+java -jar usaproxyFork.jar
 
 Command line switches:
 -port <port> 		is the port UsaProxy is listening for incoming connections
@@ -28,6 +26,9 @@ Command line switches:
 -id <string>		optional UsaProxy instance ID: automatically used within the 
 			JavaScript reference string which is inserted in the delivered web
 			pages in order to provide more security (old/unknown requests will be rejected).
+-nodeTypes		the node types whose appearances and
+				disappearances are to be logged, separated by a 
+				semi-colon (;) default: img;h1;h2;h3;h4;h5;h6 		
 
 with <port> best between 1024 and 65535.				
 
