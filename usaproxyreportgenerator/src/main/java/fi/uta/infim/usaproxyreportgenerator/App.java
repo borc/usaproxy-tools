@@ -12,9 +12,7 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.xpath.XPathAPI;
 import org.w3c.dom.DOMException;
-import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 import net.sf.json.JSONArray;

@@ -4,13 +4,11 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.xpath.XPathAPI;
 import org.w3c.dom.Node;
-import org.xml.sax.SAXException;
 
 import fi.uta.infim.usaproxylogparser.UsaProxyAppearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;

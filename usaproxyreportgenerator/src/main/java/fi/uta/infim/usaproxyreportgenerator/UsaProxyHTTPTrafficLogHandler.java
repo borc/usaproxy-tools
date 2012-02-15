@@ -9,9 +9,7 @@ import java.io.Reader;
 import java.io.StringReader;
 
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.ccil.cowan.tagsoup.Parser;
