@@ -2,8 +2,10 @@ package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.Comparator;
 import java.util.Date;
-import java.util.HashSet;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -60,10 +62,24 @@ public class UsaProxySession implements Serializable {
 
 	/**
 	 * The HTTP traffics contained in this session. Each HTTP traffic
-	 * describes a single page load.
+	 * describes a single page load. Ordered by timestamp.
 	 */
-	private HashSet< UsaProxyHTTPTraffic > httpTrafficSessions =
-			new HashSet<UsaProxyHTTPTraffic>();
+	private TreeSet< UsaProxyHTTPTraffic > httpTrafficSessions =
+			new TreeSet<UsaProxyHTTPTraffic>( new Comparator< UsaProxyHTTPTraffic >() {
+
+				@Override
+				public int compare(UsaProxyHTTPTraffic o1,
+						UsaProxyHTTPTraffic o2) {
+					int tsCompare = o1.getEntry().getTimestamp().compareTo(
+							o2.getEntry().getTimestamp() );
+					if ( tsCompare == 0 )
+					{
+						tsCompare = o1.getSessionID().compareTo( o2.getSessionID() );
+					}
+					return tsCompare;
+				}
+			
+			});
 	
 	private Date start;
 	
@@ -119,11 +135,11 @@ public class UsaProxySession implements Serializable {
 	}
 
 	@XmlElement( name="httpTraffic" )
-	public HashSet< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
+	public Set< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
 		return httpTrafficSessions;
 	}
 
-	public void setHttpTrafficSessions(HashSet< UsaProxyHTTPTraffic > httpTrafficSessions) {
+	public void setHttpTrafficSessions(TreeSet< UsaProxyHTTPTraffic > httpTrafficSessions) {
 		this.httpTrafficSessions = httpTrafficSessions;
 	}
 
