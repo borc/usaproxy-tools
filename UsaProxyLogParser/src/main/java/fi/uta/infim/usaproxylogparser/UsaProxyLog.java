@@ -56,13 +56,18 @@ public class UsaProxyLog implements Serializable {
 		this.entries = entries;
 	}
 	
+	private static byte ipFragmentToByte( String fragment )
+	{
+		return (byte) Integer.parseInt(fragment);
+	}
+	
 	public static InetAddress ipAddressStringToInetAddress( String ip )
 	{
 		String[] addressParts = ip.split( "\\." );
-		byte[] ipAddressArray = new byte[]{ Byte.parseByte( addressParts[ 0 ] ),
-				Byte.parseByte( addressParts[ 1 ] ), 
-				Byte.parseByte( addressParts[ 2 ] ),
-				Byte.parseByte( addressParts[ 3 ] ) };
+		byte[] ipAddressArray = new byte[]{ ipFragmentToByte( addressParts[ 0 ] ),
+				ipFragmentToByte( addressParts[ 1 ] ), 
+				ipFragmentToByte( addressParts[ 2 ] ),
+				ipFragmentToByte( addressParts[ 3 ] ) };
 		try {
 			return InetAddress.getByAddress( ipAddressArray );
 		} catch (UnknownHostException e) {
