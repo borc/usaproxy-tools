@@ -1,6 +1,7 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -31,6 +32,10 @@ import freemarker.template.TemplateException;
 public class App 
 {
 	public static File logFile;
+	
+	private static final String TEMPLATEDIR = "templates";
+	
+	private static final String REPORTTEMPLATE = "session-report.ftl";
 	
     public static void main( String[] args ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
     {
@@ -103,12 +108,14 @@ public class App
     	sessionRoot.put( "id", session.getSessionID() );
     	sessionRoot.put( "ip", session.getAddress().getHostAddress() );
     	
+    	
+    	
     	Configuration cfg = new Configuration();
     	// Specify the data source where the template files come from.
-    	cfg.setClassForTemplateLoading( App.class, "/templates" );
+    	cfg.setClassForTemplateLoading( App.class, "/" + TEMPLATEDIR );
     	cfg.setObjectWrapper(new DefaultObjectWrapper());
     	
-    	Template temp = cfg.getTemplate("session-report.ftl");  
+    	Template temp = cfg.getTemplate(REPORTTEMPLATE);
 
     	Map<String, Object> root = new HashMap<String, Object>();
     	root.put( "session", sessionRoot );

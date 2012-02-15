@@ -45,8 +45,16 @@
   </dependencies>
   
   <build>
+  	<resources>
+  		<resource>
+  			<directory>src/main/resources</directory>
+  			<includes>
+  				<include>**/*.ftl</include>
+  			</includes>
+  		</resource>
+  	</resources>
 
-        <defaultGoal>install</defaultGoal>
+        <defaultGoal>package</defaultGoal>
 
         <plugins>
             <plugin>
@@ -58,7 +66,33 @@
                     <sourceDirectory>src</sourceDirectory>
                 </configuration>
             </plugin>
-            
+
+			<!-- Copy js files to target dir separately (other resources go in to jar) -->                  
+            <plugin>
+        		<artifactId>maven-resources-plugin</artifactId>
+        		<version>2.5</version>
+        		<executions>
+          			<execution>
+            			<id>copy-resources</id>
+            			<phase>validate</phase>
+            			<goals>
+              				<goal>copy-resources</goal>
+            			</goals>
+            			<configuration>
+              				<outputDirectory>${basedir}/target</outputDirectory>
+              				<resources>
+  								<resource>
+  									<directory>src/main/resources</directory>
+  									<includes>
+  										<include>**/*.js</include>
+  									</includes>
+  								</resource>
+  							</resources>        
+            			</configuration>            
+          			</execution>
+        		</executions>
+      		</plugin>
+                        
             <plugin>
          		<groupId>org.apache.maven.plugins</groupId>
          		<artifactId>maven-jar-plugin</artifactId>
