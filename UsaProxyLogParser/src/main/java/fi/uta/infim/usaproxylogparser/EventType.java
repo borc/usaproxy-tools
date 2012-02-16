@@ -73,6 +73,12 @@ public enum EventType {
 	 */
 	@XmlEnumValue( "change" )
 	CHANGE( "change" ),
+	
+	/**
+	 * select DOM event
+	 */
+	@XmlEnumValue( "select" )
+	SELECT( "select" ),
 
 	/**
 	 * The appear event is triggered when any part of an element is scrolled
