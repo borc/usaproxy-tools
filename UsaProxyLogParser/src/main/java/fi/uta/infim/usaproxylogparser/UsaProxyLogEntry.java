@@ -28,7 +28,7 @@ public abstract class UsaProxyLogEntry implements Serializable {
 	 * The date time format used in UsaProxy logs.
 	 */
 	private static final SimpleDateFormat usaProxyTSFormat = 
-			new SimpleDateFormat( "yyyy-MM-dd,HH:mm:ss" );
+			new SimpleDateFormat( "yyyy-MM-dd,HH:mm:ss.SSS" );
 
 	@Override
 	public int hashCode() {

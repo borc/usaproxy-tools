@@ -37,11 +37,11 @@ DATE
 	:	YEAR '-' MONTH '-' DAY
 	;
 
-// Time, in format '(H)H:(m)m:(s)s'
+// Time, in format '(H)H:(m)m:(s)s.nnn'
 //
 fragment
 TIME
-	:	HOURS ':' MINUTES ':' SECONDS
+	:	HOURS ':' MINUTES ':' SECONDS '.' DIGIT DIGIT DIGIT
 	;
 
 // Timestamp. Date and time separated by a comma (,).
