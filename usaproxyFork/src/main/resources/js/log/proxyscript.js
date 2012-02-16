@@ -428,11 +428,13 @@ function date_UsaProxy(datestamp /*string*/) {
 	datestampTail 		= datestampTail.substring(datestampTail.indexOf(":")+1);
 	var mins 			= Number(datestampTail.substring(0,datestampTail.indexOf(":")));
 	datestampTail 		= datestampTail.substring(datestampTail.indexOf(":")+1);
-	var secs 			= Number(datestampTail);
-	return			    new Date(year,month,day,hours,mins,secs);
+	var secs 			= Number(datestampTail.substring(0, datestampTail.indexOf(".")));
+	datestampTail 		= datestampTail.substring(datestampTail.indexOf(".")+1);
+	var millis			= Number(datestampTail);
+	return			    new Date(year,month,day,hours,mins,secs,millis);
 }
 
-/* Returns a timestamp string of the form "2004-12-31,23:59:59".
+/* Returns a timestamp string of the form "2004-12-31,23:59:59.999".
  * Takes UsaProxy's httptraffic log entry time as start time and adds
  * the difference between load time and current time */
 function datestamp_UsaProxy() {
@@ -446,7 +448,15 @@ function datestamp_UsaProxy() {
 	return currentUPDate.getFullYear() + "-" + completeDateVals(currentUPDate.getMonth() + 1) + "-"
 	  + completeDateVals(currentUPDate.getDate()) + "," + completeDateVals(currentUPDate.getHours())
 	  + ":" + completeDateVals(currentUPDate.getMinutes())
-	  + ":" + completeDateVals(currentUPDate.getSeconds());
+	  + ":" + completeDateVals(currentUPDate.getSeconds())
+	  + '.' + padWithZeroes( currentUPDate.getMilliseconds(), 3 );
+}
+
+function padWithZeroes( string, howmany ) {
+	var strArg = new String( string );
+	var zeroString = new String();
+	for ( var i = 0; i < howmany - strArg.length; ++i ) zeroString = zeroString.concat( '0' );
+	return new String( '' + zeroString + strArg );
 }
 
 /** Completes single-digit numbers by a "0"-prefix */
@@ -687,7 +697,7 @@ function processMouseover_UsaProxy(e) {
 		 	// IE
 		 	if(target.attachEvent) { 
 				/* first, remove existent event listener
-				 * detachEvent doesn’t give any errors if the listener 
+				 * detachEvent doesnï¿½t give any errors if the listener 
 				 * to be removed has not been added to target */
 				// change listener
 				target.detachEvent('onchange', processChange_UsaProxy);

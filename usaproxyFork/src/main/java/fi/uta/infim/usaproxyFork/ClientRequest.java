@@ -1482,7 +1482,8 @@ public class ClientRequest extends Thread {
 		  + completeDateVals(now.get(Calendar.DAY_OF_MONTH))
 		  + "," + completeDateVals(now.get(Calendar.HOUR_OF_DAY))
 		  + ":" + completeDateVals(now.get(Calendar.MINUTE))
-		  + ":" + completeDateVals(now.get(Calendar.SECOND));
+		  + ":" + completeDateVals(now.get(Calendar.SECOND))
+		  + "." + String.format( "%03d", now.get( Calendar.MILLISECOND ) );
 	}
 	
 	/** Converts single-digit numbers into two-digit numbers ("0" prefix).
