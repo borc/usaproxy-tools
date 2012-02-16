@@ -6,9 +6,10 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
-import java.util.TreeSet;
+import java.util.LinkedList;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -168,8 +169,8 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Each screen object represents a single browser viewport state on
 	 * the document represented by the {@link #url}.
 	 */
-	private TreeSet< UsaProxyScreen > screens =
-			new TreeSet<UsaProxyScreen>( new UsaProxyScreenComparator() );
+	private LinkedList< UsaProxyScreen > screens =
+			new LinkedList<UsaProxyScreen>();
 	
 	/**
 	 * The UsaProxy session during which this http traffic occurred
@@ -257,14 +258,19 @@ public class UsaProxyHTTPTraffic implements Serializable {
 
 	@XmlElementWrapper
 	@XmlElement( name="screen", type=UsaProxyScreen.class )
-	public TreeSet< UsaProxyScreen > getScreens() {
+	public LinkedList< UsaProxyScreen > getScreens() {
 		return screens;
 	}
 
-	public void setScreens(TreeSet< UsaProxyScreen > screens) {
+	public void setScreens(LinkedList< UsaProxyScreen > screens) {
 		this.screens = screens;
 	}
 
+	public void sortScreens()
+	{
+		Collections.sort( this.screens, new UsaProxyScreenComparator() );
+	}
+	
 	@XmlTransient
 	public UsaProxySession getSession() {
 		return session;
