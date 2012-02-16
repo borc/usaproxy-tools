@@ -26,8 +26,16 @@ public class UsaProxySession implements Serializable {
 		@Override
 		public int compare(UsaProxyHTTPTraffic o1,
 				UsaProxyHTTPTraffic o2) {
-			int tsCompare = o1.getEntry().getTimestamp().compareTo(
+			int tsCompare = 0;
+			try
+			{
+				tsCompare = o1.getEntry().getTimestamp().compareTo(
 					o2.getEntry().getTimestamp() );
+			}
+			catch ( NullPointerException e )
+			{
+				tsCompare = 0; // set to 0 to force session id comparison
+			}
 			if ( tsCompare == 0 )
 			{
 				tsCompare = o1.getSessionID().compareTo( o2.getSessionID() );
