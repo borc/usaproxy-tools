@@ -204,6 +204,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 	
 	private JSONObject getViewportLines( UsaProxyHTTPTraffic traffic )
 	{
+		traffic.sortScreens(); // make sure screens are sorted by timestamp
 		JSONObject viewport = new JSONObject();
 		Vector< JSONArray > topPoints = new Vector<JSONArray>();
 		Vector< JSONArray > bottomPoints = new Vector<JSONArray>();

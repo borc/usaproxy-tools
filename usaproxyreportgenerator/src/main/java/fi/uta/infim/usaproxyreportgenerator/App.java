@@ -1,7 +1,6 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -92,7 +91,7 @@ public class App
     	
     	
     	JSONArray httptraffic = new JSONArray();
-    	for ( UsaProxyHTTPTraffic t : session.getHttpTrafficSessions() )
+    	for ( UsaProxyHTTPTraffic t : session.getSortedHttpTrafficSessions() )
 		{
     		System.out.print( "processing traffic id " + t.getSessionID() + "... " );
 			httptraffic.add( JSONObject.fromObject(t, conf) );
