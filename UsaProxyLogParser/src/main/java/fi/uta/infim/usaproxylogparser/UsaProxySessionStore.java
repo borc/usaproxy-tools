@@ -48,13 +48,13 @@ public final class UsaProxySessionStore {
 				screens.get( httpTrafficId ).get( Integer.parseInt(id) );
 	}
 	
-	public static void putScreen( UsaProxyScreen screen )
+	public static void putScreen( UsaProxyScreen screen, UsaProxyHTTPTraffic httpTraffic )
 	{
-		HashMap<Integer,UsaProxyScreen> theMap = screens.get( screen.getHttpTrafficSession().getSessionID() );
+		HashMap<Integer,UsaProxyScreen> theMap = screens.get( httpTraffic.getSessionID() );
 		if ( theMap == null )
 		{
 			theMap = new HashMap<Integer,UsaProxyScreen>();
-			screens.put( screen.getHttpTrafficSession().getSessionID(),	theMap );
+			screens.put( httpTraffic.getSessionID(), theMap );
 		}
 		theMap.put( screen.getID(), screen );
 	}

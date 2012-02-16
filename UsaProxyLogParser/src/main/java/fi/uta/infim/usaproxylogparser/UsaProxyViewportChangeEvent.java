@@ -36,6 +36,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		attributes.remove( "viewportWidth" );
 		
 		getScreen().setInitialViewportEvent(this);
+		getScreen().setHttpTrafficSession(getHttpTrafficSession());
 	}
 
 	/**

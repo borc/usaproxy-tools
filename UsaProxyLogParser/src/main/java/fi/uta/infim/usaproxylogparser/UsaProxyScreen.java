@@ -19,16 +19,15 @@ public class UsaProxyScreen implements Serializable {
 		super();
 	}
 
-	private UsaProxyScreen(Integer iD, UsaProxyHTTPTraffic httpTrafficSession) {
+	private UsaProxyScreen(Integer iD ) {
 		super();
 		ID = iD;
-		setHttpTrafficSession( httpTrafficSession );
 	}
 
 	public static UsaProxyScreen newScreen( Integer id, UsaProxyHTTPTraffic httpTrafficSession )
 	{
-		UsaProxyScreen screen = new UsaProxyScreen(id, httpTrafficSession);
-		UsaProxySessionStore.putScreen(screen);
+		UsaProxyScreen screen = new UsaProxyScreen(id );
+		UsaProxySessionStore.putScreen(screen, httpTrafficSession);
 		return screen;
 	}
 	

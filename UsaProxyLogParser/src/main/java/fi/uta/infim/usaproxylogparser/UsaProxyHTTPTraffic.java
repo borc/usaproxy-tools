@@ -6,8 +6,9 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.Comparator;
 import java.util.HashSet;
-import java.util.Vector;
+import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -27,6 +28,30 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxyHTTPTraffic implements Serializable {
+
+	private final class UsaProxyScreenComparator implements
+			Comparator<UsaProxyScreen>, Serializable {
+		
+		private static final long serialVersionUID = 7274057511229626088L;
+
+		@Override
+		public int compare(UsaProxyScreen o1, UsaProxyScreen o2) {
+			
+			if ( o1.getInitialViewportEvent() == null && o2.getInitialViewportEvent() == null ) return 0;
+			if ( o2.getInitialViewportEvent() == null ) return 1;
+			if ( o1.getInitialViewportEvent() == null ) return -1;
+			
+			int tsCompare = o1.getInitialViewportEvent().getEntry().getTimestamp().compareTo(
+					o2.getInitialViewportEvent().getEntry().getTimestamp() );
+			if ( tsCompare == 0 )
+			{
+				// if two screens have the exact same timestamps, something is terribly wrong,
+				// but we cant really figure out what, so we let the dupe screen pass for now 
+				return o1.getID().compareTo(o2.getID());
+			}
+			return tsCompare;
+		}
+	}
 
 	@Override
 	public int hashCode() {
@@ -143,8 +168,8 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Each screen object represents a single browser viewport state on
 	 * the document represented by the {@link #url}.
 	 */
-	private Vector< UsaProxyScreen > screens =
-			new Vector<UsaProxyScreen>();
+	private TreeSet< UsaProxyScreen > screens =
+			new TreeSet<UsaProxyScreen>( new UsaProxyScreenComparator() );
 	
 	/**
 	 * The UsaProxy session during which this http traffic occurred
@@ -232,11 +257,11 @@ public class UsaProxyHTTPTraffic implements Serializable {
 
 	@XmlElementWrapper
 	@XmlElement( name="screen", type=UsaProxyScreen.class )
-	public Vector< UsaProxyScreen > getScreens() {
+	public TreeSet< UsaProxyScreen > getScreens() {
 		return screens;
 	}
 
-	public void setScreens(Vector< UsaProxyScreen > screens) {
+	public void setScreens(TreeSet< UsaProxyScreen > screens) {
 		this.screens = screens;
 	}
 
