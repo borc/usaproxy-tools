@@ -2,10 +2,11 @@ package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
 import java.net.InetAddress;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
-import java.util.LinkedList;
+import java.util.HashSet;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -80,8 +81,8 @@ public class UsaProxySession implements Serializable {
 	 * describes a single page load. Orderable by timestamp with 
 	 * {@link HTTPTrafficComparator}.
 	 */
-	private LinkedList< UsaProxyHTTPTraffic > httpTrafficSessions =
-			new LinkedList<UsaProxyHTTPTraffic>();
+	private HashSet< UsaProxyHTTPTraffic > httpTrafficSessions =
+			new HashSet<UsaProxyHTTPTraffic>();
 	
 	private Date start;
 	
@@ -137,17 +138,20 @@ public class UsaProxySession implements Serializable {
 	}
 
 	@XmlElement( name="httpTraffic" )
-	public LinkedList< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
+	public HashSet< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
 		return httpTrafficSessions;
 	}
 
-	public void setHttpTrafficSessions(LinkedList< UsaProxyHTTPTraffic > httpTrafficSessions) {
+	public void setHttpTrafficSessions(HashSet< UsaProxyHTTPTraffic > httpTrafficSessions) {
 		this.httpTrafficSessions = httpTrafficSessions;
 	}
 
-	public void sortHttpTrafficSessions()
+	public ArrayList< UsaProxyHTTPTraffic > getSortedHttpTrafficSessions()
 	{
-		Collections.sort( this.httpTrafficSessions, new HTTPTrafficComparator() );
+		ArrayList< UsaProxyHTTPTraffic > list = 
+				new ArrayList< UsaProxyHTTPTraffic >( this.httpTrafficSessions );
+		Collections.sort( list, new HTTPTrafficComparator() );
+		return list;
 	}
 	
 	public Date getStart() {
