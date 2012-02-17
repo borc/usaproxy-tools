@@ -11,6 +11,7 @@
         <script src="js/flot-0.7/jquery.mousewheel.min.js" type="text/javascript"></script>
         <script src="js/flot-0.7/jquery.flot.navigate.js" type="text/javascript"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+        <script src="js/utils.js" type="text/javascript"></script>
     </head>
     <body>
     	<h1>UsaProxy session report</h1>
@@ -62,8 +63,12 @@
 
                     var nvbar = $('<div class="ui-widget-header">' +
                         '<span style="display:inline; float:left;" class="ui-icon ui-icon-circlesmall-plus"></span><span>' +
-                        timestamp.getDate() + '.' + (timestamp.getMonth()+1) + '.' + timestamp.getFullYear() + " " +
-                        timestamp.getHours() + ':' + timestamp.getMinutes() + ':' + timestamp.getSeconds() + ' -> ' +
+                        new String( timestamp.getDate() ).padLeft( '0', 2 ) + '.' + 
+                        new String( (timestamp.getMonth()+1) ).padLeft( '0', 2 ) + '.' + 
+                        timestamp.getFullYear() + " " +
+                        new String( timestamp.getHours() ).padLeft( '0', 2 ) + ':' + 
+                        new String( timestamp.getMinutes() ).padLeft( '0', 2 ) + ':' + 
+                        new String( timestamp.getSeconds() ).padLeft( '0', 2 ) + ' -> ' +
                         session.httptraffics[x].url + '</span></div>').appendTo(toplevel).click( function(e) {
                             $(this).next().toggle();
                             $(this).children( ':first-child' )
