@@ -19,6 +19,7 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 import fi.uta.infim.usaproxylogparser.UsaProxyLog;
 import fi.uta.infim.usaproxylogparser.UsaProxyLogParser;
@@ -30,11 +31,25 @@ import freemarker.template.TemplateException;
 
 public class App 
 {
-	public static File logFile;
+	private static File logFile;
+	
+	private static UsaProxyHTTPTrafficLogHandler logFileHandler;
+	
+	private static JsonConfig config;
 	
 	private static final String TEMPLATEDIR = "templates";
 	
 	private static final String REPORTTEMPLATE = "session-report.ftl";
+	
+	public static UsaProxyHTTPTrafficLogHandler getLogFileHandler()
+	{
+		return logFileHandler;
+	}
+	
+	public static JsonConfig getConfig()
+	{
+		return config;
+	}
 	
     public static void main( String[] args ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
     {
@@ -48,6 +63,8 @@ public class App
     		log = parser.parseLog( logfile );
     		System.out.println( "done." );
     		logFile = logfile;
+    		logFileHandler = new UsaProxyHTTPTrafficLogHandler(logFile);
+    		
     	}
     	catch( IOException ioe )
     	{
@@ -64,6 +81,11 @@ public class App
     		System.err.println( "Please supply a file name." );
     		return;
     	}
+    	
+    	config = new JsonConfig();
+    	config.registerJsonBeanProcessor( UsaProxyHTTPTraffic.class, 
+    			new UsaProxyHTTPTrafficJSONProcessor() );
+    	config.registerJsonBeanProcessor( UsaProxyDOMElement.class, new UsaProxyDOMElementJSONProcessor() );
     	
     	for ( UsaProxySession s : log.getSessions() )
     	{
@@ -85,16 +107,11 @@ public class App
     
     private static void generateHTMLReport( UsaProxySession session, File outputDir ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
     {
-    	JsonConfig conf = new JsonConfig();
-    	conf.registerJsonBeanProcessor( UsaProxyHTTPTraffic.class, 
-    			new UsaProxyHTTPTrafficJSONProcessor( new UsaProxyHTTPTrafficLogHandler(logFile) ) );
-    	
-    	
     	JSONArray httptraffic = new JSONArray();
     	for ( UsaProxyHTTPTraffic t : session.getSortedHttpTrafficSessions() )
 		{
     		System.out.print( "processing traffic id " + t.getSessionID() + "... " );
-			httptraffic.add( JSONObject.fromObject(t, conf) );
+			httptraffic.add( JSONObject.fromObject(t, config) );
 		}
     	
     	JSONObject tf = new JSONObject();

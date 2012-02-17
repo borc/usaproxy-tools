@@ -7,9 +7,6 @@ import java.util.Vector;
 import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Node;
-
 import fi.uta.infim.usaproxylogparser.UsaProxyAppearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
@@ -22,22 +19,10 @@ import net.sf.json.processors.JsonBeanProcessor;
 
 public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 
-	private UsaProxyHTTPTrafficLogHandler handler;
-	
-	private Node trafficLogRoot = null;
-	
-	public UsaProxyHTTPTrafficJSONProcessor(
-			UsaProxyHTTPTrafficLogHandler handler) {
-		super();
-		this.handler = handler;
-	}
-
 	@Override
 	public JSONObject processBean(Object arg0, JsonConfig arg1) {
 		UsaProxyHTTPTraffic traffic = (UsaProxyHTTPTraffic) arg0;
 		try {
-			trafficLogRoot = handler.parseLog(traffic);
-		
 			JSONObject jsonHTTPTraffic = new JSONObject();
 			jsonHTTPTraffic.accumulate( "viewportMovement", getViewportMovement(traffic));
 			jsonHTTPTraffic.accumulate( "domElements", getDOMElements(traffic));
@@ -65,23 +50,12 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			sightings.add( getTopDataset(e.getPath(), thisSightings, e.getPath()) );
 			sightings.add( getBottomDataset(e.getPath(), thisSightings, "rgb(50,50,255)", e.getPath() ) );
 			
-			details.accumulate( e.getPath(), getElementDetails(e) );
+			details.accumulate( e.getPath(), JSONObject.fromObject(e, App.getConfig()) );
 		}
 		
 		elements.accumulate( "details", details );
 		elements.accumulate( "sightings", sightings );
 		return elements;
-	}
-	
-	private JSONObject getElementDetails( UsaProxyDOMElement element ) throws XPathExpressionException, IOException, TransformerException
-	{
-		JSONObject details = new JSONObject();
-		details.accumulate( "path", element.getPath() );
-		details.accumulate( "nodeName", element.getNodeName() );
-		details.accumulate( "content", XPathAPI.eval( 
-				trafficLogRoot, 
-				UsaProxyHTTPTrafficLogHandler.usaProxyDOMPathToXPath( element.getPath() ) ).toString() );
-		return details;
 	}
 	
 	private JSONArray getViewportMovement( UsaProxyHTTPTraffic traffic )
