@@ -24,9 +24,14 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 			HashMap< String, String > attributes ) {
 		super( timestamp );
 		EventType eventtype = EventType.fromValue(event);
-		if ( eventtype.equals( EventType.APPEAR ) || eventtype.equals( EventType.DISAPPEAR ) )
+		if ( eventtype.equals( EventType.APPEAR ) )
 		{
 			this.event = new UsaProxyAppearanceEvent( event, attributes, 
+					sessionId, index, ip, this );
+		}
+		else if ( eventtype.equals( EventType.DISAPPEAR ) )
+		{
+			this.event = new UsaProxyDisappearanceEvent( event, attributes, 
 					sessionId, index, ip, this );
 		}
 		else if ( eventtype.equals( EventType.VIEWPORTCHANGE ) )

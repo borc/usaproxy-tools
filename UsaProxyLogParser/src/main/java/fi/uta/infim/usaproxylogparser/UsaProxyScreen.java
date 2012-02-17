@@ -70,6 +70,7 @@ public class UsaProxyScreen implements Serializable {
 	@XmlElements({ 
 		@XmlElement( name="event", type=UsaProxyPageEvent.class ),
 		@XmlElement( name="appearance", type=UsaProxyAppearanceEvent.class ),
+		@XmlElement( name="disappearance", type=UsaProxyDisappearanceEvent.class ),
 		@XmlElement( name="initialViewport", type=UsaProxyViewportChangeEvent.class ),
 		@XmlElement( name="scrollstart", type=UsaProxyScrollStartEvent.class )})
 	public Vector< UsaProxyPageEvent > getEvents() {

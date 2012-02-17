@@ -92,8 +92,8 @@ public class UsaProxyDOMElement implements Serializable {
 	/**
 	 * All the disappearance events of this element
 	 */
-	private Vector< UsaProxyAppearanceEvent > disappears =
-			new Vector<UsaProxyAppearanceEvent>();
+	private Vector< UsaProxyDisappearanceEvent > disappears =
+			new Vector<UsaProxyDisappearanceEvent>();
 	
 	/**
 	 * The node name of the element, eg. "h1"
@@ -138,11 +138,11 @@ public class UsaProxyDOMElement implements Serializable {
 	}
 
 	@XmlTransient
-	public Vector< UsaProxyAppearanceEvent > getDisappears() {
+	public Vector< UsaProxyDisappearanceEvent > getDisappears() {
 		return disappears;
 	}
 
-	public void setDisappears(Vector< UsaProxyAppearanceEvent > disappears) {
+	public void setDisappears(Vector< UsaProxyDisappearanceEvent > disappears) {
 		this.disappears = disappears;
 	}
 

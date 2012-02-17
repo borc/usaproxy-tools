@@ -9,9 +9,11 @@ import javax.xml.xpath.XPathExpressionException;
 
 import fi.uta.infim.usaproxylogparser.UsaProxyAppearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
+import fi.uta.infim.usaproxylogparser.UsaProxyDisappearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 import fi.uta.infim.usaproxylogparser.UsaProxyPageEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyScreen;
+import fi.uta.infim.usaproxylogparser.UsaProxyVisibilityEvent;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -116,42 +118,40 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		
 		for ( UsaProxyPageEvent e : element.getEvents() )
 		{
-			if ( UsaProxyAppearanceEvent.class.isInstance(e) )
+			if ( UsaProxyVisibilityEvent.class.isInstance(e) )
 			{
 				JSONArray topPoint = new JSONArray();
 				topPoint.add( e.getEntry().getTimestamp().getTime() );
-				topPoint.add( ((UsaProxyAppearanceEvent)e).getTopPosition() );
+				topPoint.add( ((UsaProxyVisibilityEvent)e).getTopPosition() );
 				top.add(topPoint);
 				
 				JSONArray bottomPoint = new JSONArray();
 				bottomPoint.add( e.getEntry().getTimestamp().getTime() );
-				bottomPoint.add( ((UsaProxyAppearanceEvent)e).getBottomPosition() );
+				bottomPoint.add( ((UsaProxyVisibilityEvent)e).getBottomPosition() );
 				bottom.add(bottomPoint);
 				
-				if ( ((UsaProxyAppearanceEvent)e).isDisappearance() )
+				if ( UsaProxyAppearanceEvent.class.isInstance( e ) && (
+						lastAppear == null || lastAppear.before( e.getEntry().getTimestamp() ) ) )
 				{
-					JSONArray topDisappearPoint = new JSONArray();
-					topDisappearPoint.add( e.getEntry().getTimestamp().getTime() + 1 );
-					topDisappearPoint.add( null );
-					top.add(topDisappearPoint);
-					
-					JSONArray bottomDisappearPoint = new JSONArray();
-					bottomDisappearPoint.add( e.getEntry().getTimestamp().getTime() + 1 );
-					bottomDisappearPoint.add( null );
-					bottom.add(bottomDisappearPoint);
+					lastAppear = e.getEntry().getTimestamp();
+					lastTop = ((UsaProxyVisibilityEvent)e).getTopPosition();
+					lastBottom = ((UsaProxyVisibilityEvent)e).getBottomPosition();
 				}
-				else
-				{
-					if ( lastAppear == null || lastAppear.before( e.getEntry().getTimestamp() ) )
-					{
-						lastAppear = e.getEntry().getTimestamp();
-						lastTop = ((UsaProxyAppearanceEvent)e).getTopPosition();
-						lastBottom = ((UsaProxyAppearanceEvent)e).getBottomPosition();
-					}
-				}
-				
-				
 			}
+			
+			if ( UsaProxyDisappearanceEvent.class.isInstance( e ) )
+			{
+				JSONArray topDisappearPoint = new JSONArray();
+				topDisappearPoint.add( e.getEntry().getTimestamp().getTime() + 1 );
+				topDisappearPoint.add( null );
+				top.add(topDisappearPoint);
+					
+				JSONArray bottomDisappearPoint = new JSONArray();
+				bottomDisappearPoint.add( e.getEntry().getTimestamp().getTime() + 1 );
+				bottomDisappearPoint.add( null );
+				bottom.add(bottomDisappearPoint);
+			}
+				
 		}
 		
 		// Add an artificial end point if disappearances are missing
