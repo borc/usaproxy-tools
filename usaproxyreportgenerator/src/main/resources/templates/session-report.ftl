@@ -2,7 +2,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
-        <title>Flot test</title>
+        <title>UsaProxy session report - ${session.timestamp?datetime} - ${session.id}</title>
         <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/base/jquery-ui.css" rel="Stylesheet" />
         <link type="text/css" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.17/themes/smoothness/jquery-ui.css" rel="Stylesheet" />
         <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
@@ -41,7 +41,7 @@
 
                 var session = ${session.data};
 
-                function showTooltip(x, y, contents) {
+                var showTooltip = function(x, y, contents) {
                     $('<div id="tooltip">' + contents + '</div>').css({
                         position : 'absolute',
                         display : 'none',
@@ -54,12 +54,60 @@
                     }).appendTo("body").show();
                 }
 
+				var showElementDetails = function( httpTrafficId, domPath )
+				{
+					var details = session.httptraffics[ httpTrafficId ].domElements.details[ domPath ];
+					
+					var detailsTable = {
+						'Node name': details.nodeName,
+						'DOM path': details.path,
+						'Appearances': details.appearances,
+						'Disappearances': details.disappearances
+					};
+					
+					var createHTMLTableFromObject = function( object )
+					{
+						var tableHTML = '<table>';
+						for ( var detail in object )
+						{
+							tableHTML += '<tr><td>' + detail + '</td><td>';
+							if ( object[ detail ].constructor === Date )
+							{
+								tableHTML += object[ detail ].toLocaleString();
+							} 
+							else if ( typeof( object[ detail ] ) === 'object' )
+							{
+								tableHTML += createHTMLTableFromObject( object[ detail ] );
+							}
+							else
+							{
+								tableHTML += object[ detail ];
+							}
+							tableHTML += '</td></tr>';
+						}
+						tableHTML += '</table>';
+						return tableHTML;
+					};
+					
+					var tableHTML = createHTMLTableFromObject( detailsTable );
+					
+					$( '<div title="Element details">' + tableHTML + '<h3 class="title">Contents</h3><p>' + details.content + '</p></div>' ).dialog({
+						buttons: {
+							"OK": function() { $(this).dialog("close"); } 
+						},
+						width: Math.floor( 0.8 * $( window ).width() )
+					});
+				}
+
                 for ( var x in session.httptraffics )
                 {
 
                     var toplevel = $('<div class="ui-widget" style="font-size: 80%;" />').appendTo("body");
 
                     var timestamp = new Date(session.httptraffics[x].timestamp);
+                    
+                    var url = session.httptraffics[x].url;
+                    url = url.length > 100 ? url.substr(0,100) + '...' : url;
 
                     var nvbar = $('<div class="ui-widget-header">' +
                         '<span style="display:inline; float:left;" class="ui-icon ui-icon-circlesmall-plus"></span><span>' +
@@ -69,7 +117,7 @@
                         new String( timestamp.getHours() ).padLeft( '0', 2 ) + ':' + 
                         new String( timestamp.getMinutes() ).padLeft( '0', 2 ) + ':' + 
                         new String( timestamp.getSeconds() ).padLeft( '0', 2 ) + ' -> ' +
-                        session.httptraffics[x].url + '</span></div>').appendTo(toplevel).click( function(e) {
+                        url + '</span></div>').appendTo(toplevel).click( function(e) {
                             $(this).next().toggle();
                             $(this).children( ':first-child' )
                                 .toggleClass( 'ui-icon-circlesmall-plus' )
@@ -121,19 +169,28 @@
 			            } );
 			        })( x, placeholder );
                 
-                placeholder.bind("plothover", function(event, pos, item) {
-                    $("#x").text(pos.x.toFixed(2));
-                    $("#y").text(pos.y.toFixed(2));
-
-                    if(item) {
-                        $("#tooltip").remove();
-                        var x = item.datapoint[0].toFixed(2), y = item.datapoint[1].toFixed(2);
-
-                        showTooltip(item.pageX, item.pageY, item.series.invisibleLabel + ": " + new Date(parseInt(x)) + ", " + y + " %");
-                    } else {
-                        $("#tooltip").remove();
-                    }
-                });
+	                placeholder.bind("plothover", function(event, pos, item) {
+	                    $("#x").text(pos.x.toFixed(2));
+	                    $("#y").text(pos.y.toFixed(2));
+	
+	                    if(item) {
+	                        $("#tooltip").remove();
+	                        var x = item.datapoint[0].toFixed(2), y = item.datapoint[1].toFixed(2);
+	
+	                        showTooltip(item.pageX, item.pageY, item.series.elementDomId + ": " + new Date(parseInt(x)) + ", " + y + " %");
+	                    } else {
+	                        $("#tooltip").remove();
+	                    }
+	                }).bind( 'plotclick', (function( x )
+	                {
+	                	return function( event, pos, item )
+	                	{
+	                		if ( item )
+	                		{
+	                			showElementDetails( x, item.series.elementDomId );
+	                		}
+	                	};
+	                })( x ) );
                 
                 }
 

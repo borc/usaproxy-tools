@@ -1,8 +1,5 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
-import java.io.IOException;
-
-import javax.xml.transform.TransformerException;
 import javax.xml.xpath.XPathExpressionException;
 
 import org.apache.xpath.XPathAPI;
@@ -30,6 +27,8 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		
 		JSONObject details = new JSONObject();
 		details.accumulate( "path", element.getPath() );
+		details.accumulate( "appearances", element.getAppears(), App.getConfig() );
+		details.accumulate( "disappearances", element.getDisappears(), App.getConfig() );
 		details.accumulate( "nodeName", element.getNodeName() );
 		try {
 			details.accumulate( "content", XPathAPI.eval( 
@@ -37,9 +36,7 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 					UsaProxyHTTPTrafficLogHandler.usaProxyDOMPathToXPath( element.getPath() ) ).toString() );
 		} catch (XPathExpressionException e) {
 			throw new RuntimeException( "Error with XPath expression generated from path " + element.getPath() );
-		} catch (TransformerException e) {
-			throw new RuntimeException(e);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
 		return details;

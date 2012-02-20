@@ -65,8 +65,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		JSONArray movement = new JSONArray();
 		JSONObject movements = getViewportLines(traffic);
 		String vpMovementDatasetName = "_viewport";
-		movement.add( getTopDataset( vpMovementDatasetName, movements, "Viewport top") );
-		movement.add( getBottomDataset( vpMovementDatasetName, movements, "rgb(255,50,50)", "Viewport bottom") );
+		movement.add( getTopDataset( vpMovementDatasetName, movements, "_vpTop") );
+		movement.add( getBottomDataset( vpMovementDatasetName, movements, "rgb(255,50,50)", "_vpBottom") );
 		
 		return movement;
 	}
@@ -76,7 +76,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return elementTopName + "Top";
 	}
 	
-	private JSONObject getTopDataset( String elementTopName, JSONObject sightings, String label )
+	private JSONObject getTopDataset( String elementTopName, JSONObject sightings, String elementDomId )
 	{
 		JSONObject dataset = new JSONObject();
 		dataset.accumulate( "data", sightings.getJSONArray( "top" ) );
@@ -85,12 +85,12 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		lines.accumulate( "show", true );
 		lines.accumulate( "lineWidth", 0 );
 		dataset.accumulate( "lines", lines );
-		dataset.accumulate( "invisibleLabel", label );
+		dataset.accumulate( "elementDomId", elementDomId );
 		dataset.accumulate( "hoverable", true );
 		return dataset;
 	}
 	
-	private JSONObject getBottomDataset( String elementTopName, JSONObject sightings, String color, String label )
+	private JSONObject getBottomDataset( String elementTopName, JSONObject sightings, String color, String elementDomId )
 	{
 		JSONObject dataset = new JSONObject();
 		dataset.accumulate( "data", sightings.getJSONArray( "bottom" ) );
@@ -102,7 +102,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		dataset.accumulate( "color", color );
 		dataset.accumulate( "fillBetween", generateDatasetTopId( elementTopName ) );
 		dataset.accumulate( "hoverable", true );
-		dataset.accumulate( "invisibleLabel", label );
+		dataset.accumulate( "elementDomId", elementDomId );
 		return dataset;
 	}
 	

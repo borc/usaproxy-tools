@@ -19,7 +19,9 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
+import fi.uta.infim.usaproxylogparser.UsaProxyAppearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
+import fi.uta.infim.usaproxylogparser.UsaProxyDisappearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 import fi.uta.infim.usaproxylogparser.UsaProxyLog;
 import fi.uta.infim.usaproxylogparser.UsaProxyLogParser;
@@ -85,7 +87,12 @@ public class App
     	config = new JsonConfig();
     	config.registerJsonBeanProcessor( UsaProxyHTTPTraffic.class, 
     			new UsaProxyHTTPTrafficJSONProcessor() );
-    	config.registerJsonBeanProcessor( UsaProxyDOMElement.class, new UsaProxyDOMElementJSONProcessor() );
+    	config.registerJsonBeanProcessor( UsaProxyDOMElement.class, 
+    			new UsaProxyDOMElementJSONProcessor() );
+    	config.registerJsonBeanProcessor( UsaProxyAppearanceEvent.class, 
+    			new UsaProxyPageEventJSONProcessor<UsaProxyAppearanceEvent>() );
+    	config.registerJsonBeanProcessor( UsaProxyDisappearanceEvent.class, 
+    			new UsaProxyPageEventJSONProcessor<UsaProxyDisappearanceEvent>() );
     	
     	for ( UsaProxySession s : log.getSessions() )
     	{

@@ -13,7 +13,7 @@ public class UsaProxyPageEventJSONProcessor< T extends UsaProxyPageEvent > imple
 		T event = (T)arg0;
 		JSONObject jsonEvent = new JSONObject();
 		jsonEvent.accumulate("attributes", event.getAttributes() );
-		jsonEvent.accumulate( "timestamp", event.getEntry().getTimestamp() );
+		jsonEvent.accumulate( "timestamp", event.getEntry().getTimestamp().getTime() );
 		return jsonEvent;
 	}
 
