@@ -3,7 +3,8 @@
 	without any collaboration functionality */
 
 // avoid conflicts by placing jQuery in a different global variable
-var jQuery_UsaProxy = jQuery.noConflict( true );
+
+var jQuery_UsaProxy = jQuery.noConflict( true ); // Instance of jQuery. No-conflict mode.
 	
 var logVal_UsaProxy;			// String: Initialised when page loads. Contains current event log entries
 var FLG_writingLogVal_UsaProxy;	// Boolean: if flag set, writing log entry to logVal_UsaProxy not possible
@@ -1322,9 +1323,13 @@ function processSelectionNS_UsaProxy(e) {
 /* Returns the DOM path of the specified DOM node beginning with the first
  * corresponding child node of the document node (i.e. HTML) */
 function getDOMPath(node /*DOM element*/) {
-	/* if nodeType==9 same as nodetype==Node.DOCUMENT_NODE, IE doesn't speak constants */
-	if(node.parentNode.nodeType==9) return getDOMIndex(node);
-	else return getDOMPath(node.parentNode) + getDOMIndex(node);
+	/* Mozilla developer documentation: "parentNode returns null for the 
+	 * following node types: Attr, Document, DocumentFragment, Entity, and 
+	 * Notation." Basically we want to stop the recursion always when a 
+	 * parent node cannot be found. */
+	if( node.parentNode.parentNode === null ) return getDOMIndex(node);
+	
+	return getDOMPath(node.parentNode) + getDOMIndex(node);
 }
 
 /** Returns the position of the specified node 
@@ -1366,8 +1371,8 @@ function mapToAlph(position /*number*/) {
 	var amountAlphs = 0;
 	var alphRemain = "";
 	if(position>alphArray.length) { // if position > available indexes
-		amountAlphs = Math.floor(position/alphArray.length);
-		alphRemain = alphArray[(position % alphArray.length)-1];
+		amountAlphs = Math.floor( (position - 1) / alphArray.length );
+		alphRemain = alphArray[ (position - 1) % alphArray.length ];
 	} 
 	if(amountAlphs>0) return (amountAlphs + alphRemain);
 	return (alphArray[position-1]);
