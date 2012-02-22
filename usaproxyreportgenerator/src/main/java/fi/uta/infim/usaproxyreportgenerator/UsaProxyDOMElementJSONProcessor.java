@@ -30,15 +30,24 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		details.accumulate( "appearances", element.getAppears(), App.getConfig() );
 		details.accumulate( "disappearances", element.getDisappears(), App.getConfig() );
 		details.accumulate( "nodeName", element.getNodeName() );
-		try {
-			details.accumulate( "content", XPathAPI.eval( 
-					trafficLogRoot, 
-					UsaProxyHTTPTrafficLogHandler.usaProxyDOMPathToXPath( element.getPath() ) ).toString() );
-		} catch (XPathExpressionException e) {
-			throw new RuntimeException( "Error with XPath expression generated from path " + element.getPath() );
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		
+		// Contents can either be read from the log if contents logging was enabled,
+		// or parsed from the http traffic log files (inaccurate). Reading from
+		// the log is the default.
+		String contents = element.getContents();
+		if ( contents == null )
+		{
+			try {
+				contents = XPathAPI.eval( trafficLogRoot,
+						UsaProxyHTTPTrafficLogHandler.usaProxyDOMPathToXPath( element.getPath() ) ).toString();
+			} catch (XPathExpressionException e) {
+				throw new RuntimeException( "Error with XPath expression generated from path " + element.getPath() );
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
 		}
+		details.accumulate( "content", contents );
+		
 		return details;
 	}
 
