@@ -1349,7 +1349,9 @@ public class ClientRequest extends Thread {
         proxyString = "proxyscript.js";
         insertPos = scriptString.indexOf(proxyString) + proxyString.length();
         scriptStringID.insert(insertPos, "?sd=" + httpTrafficIndex
-        		+ "&amp;ts=" + timeStamp + "&amp;id=" + usaProxy.getId());
+        		+ "&amp;ts=" + timeStamp + "&amp;id=" + usaProxy.getId() 
+        		+ "&amp;logC=" + (usaProxy.isLoggingContents() ? "1" : "0")
+        		+ "&amp;limC=" + usaProxy.getContentsLoggingLimit() );
         scriptString = scriptStringID.toString();
 		return scriptString;
 	}

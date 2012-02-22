@@ -23,6 +23,10 @@ var loadDate_UsaProxy;			// Date: Initialised on load. All further timestamps ar
 								// by adding the ms passed since page load completion to this
 								//  relative timestamp.
 
+var logContents_UsaProxy;		// Log element contents?
+
+var contentsLimit_UsaProxy;		// Limit contents logging to contentsLimit characters. -1 for no limit.
+
 var FLG_LogMousemove_UsaProxy;	// Boolean: while flag set, mousemove logging is interrupted 
 								// for all following log attempts
 var lastMousePosX_UsaProxy;		// Integer: last x position of the mouse pointer
@@ -74,22 +78,30 @@ function init_UsaProxy() {
 	combMembers_UsaProxy 		= 0;
 	
 	/* retrieve reference string URL parameters */
-	var par_start			= document.getElementById("proxyScript_UsaProxy").src.indexOf("?");
-	var pars_UsaProxy   	= document.getElementById("proxyScript_UsaProxy").src.substring(par_start);
+	var pars_UsaProxy   	= document.getElementById("proxyScript_UsaProxy").src.substring(
+			document.getElementById("proxyScript_UsaProxy").src.indexOf("?") );
+	// Function for retrieving url parameters
+	var getURLParameter = function( pName /* String */ )
+	{
+		var par_start			= pars_UsaProxy.indexOf("&" + pName + "=");
+		if ( par_start === -1 ) par_start = pars_UsaProxy.indexOf("?" + pName + "=");
+		if ( par_start === -1 ) return null; // not found
+		par_start += pName.length + 2; // scroll to beginning of value
+		var par_end				= pars_UsaProxy.indexOf("&", par_start);
+		if ( par_end === -1 )	return pars_UsaProxy.substring(par_start);
+		return 					pars_UsaProxy.substring(par_start, par_end);
+	}
+	
 	/* retrieve current httptrafficindex which is specified by the parameter sd */
-	par_start				= 4;
-	var par_end				= pars_UsaProxy.indexOf("&");
-	serverdataId_UsaProxy	= pars_UsaProxy.substring(par_start, par_end);
+	serverdataId_UsaProxy	= getURLParameter( 'sd' );
+	
 	/* initialize start date specified by parameter ts */
-	par_start				= pars_UsaProxy.indexOf("&ts=") + 4;
-	var par_end				= pars_UsaProxy.indexOf("&", par_start);
-	if (par_end==-1) par_end = pars_UsaProxy.length;
-	startDate_UsaProxy		= date_UsaProxy(pars_UsaProxy.substring(par_start, par_end));
+	startDate_UsaProxy		= date_UsaProxy(getURLParameter( 'ts' ));
 	/* initialize UsaProxy instance ID specified by parameter id */
-	par_start				= pars_UsaProxy.indexOf("&id=") + 4;
-	var par_end				= pars_UsaProxy.indexOf("&", par_start);
-	if (par_end==-1) par_end = pars_UsaProxy.length;
-	id_UsaProxy				= pars_UsaProxy.substring(par_start, par_end);		
+	id_UsaProxy				= getURLParameter( 'id' );
+	// Enable/limit contents logging?
+	logContents_UsaProxy	= getURLParameter( 'logC' ) === '1';
+	contentsLimit_UsaProxy	= parseInt( getURLParameter( 'limC' ) );
 	
 	/* log load event */
 	processLoad_UsaProxy();
@@ -273,7 +285,8 @@ function init_UsaProxy() {
 			pEdgeName + "&relativeTop=" + 
 			new String( getRelativeEdgePosition.top( pElement ) ).substr(0, 5) + 
 			"&relativeBottom=" + 
-			new String( getRelativeEdgePosition.bottom( pElement ) ).substr(0, 5) + 
+			new String( getRelativeEdgePosition.bottom( pElement ) ).substr(0, 5) +
+			(logContents_UsaProxy && !pDisappear ? "&contents=" + getContents_UsaProxy(pElement) : "") +
 			generateEventString_UsaProxy( pElement ) );
 	};
 	
@@ -484,6 +497,14 @@ function writeLog_UsaProxy(text) {
 	logVal_UsaProxy = logVal_UsaProxy + logLine + "&xX"; // Add logLine to interaction log
 	// reset synchronization flag (release function)
 	FLG_writingLogVal_UsaProxy = false;
+}
+
+function getContents_UsaProxy( node )
+{
+	var amount = contentsLimit_UsaProxy;
+	if ( amount === -1 ) return jQuery_UsaProxy( node ).text();
+	if ( amount > 0 ) return jQuery_UsaProxy( node ).text().substr(0, amount);
+	return '';
 }
 
 /* Returns all available node information such as the DOM path, an image name, href, etc. */

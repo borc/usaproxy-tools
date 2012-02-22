@@ -11,24 +11,37 @@ Being in the main folder open a terminal and type in:
 java -jar usaproxyFork.jar
 
 Command line switches:
--port <port> 		is the port UsaProxy is listening for incoming connections
--remoteIP <IP address> 	is the address of the gateway proxy
-			resp. web server UsaProxy always forwards requests to
--remotePort <port>	is the gateway's resp. web server's port (in combination
-			with switch -remoteIP!)
--server			starts UsaProxy in server mode (in combination
-			with switches -remoteIP and -remotePort!)
--rm			starts UsaProxy in remote monitoring mode (exclusive)
--sb			starts UsaProxy in shared browsing mode (exclusive)
--log			enables logging of events to log.txt
--logMode		optional parameter; if assigned the value "pagereq" only page requests
-			(incl. usaproxyload requests) are recorded, else all events are logged
--id <string>		optional UsaProxy instance ID: automatically used within the 
-			JavaScript reference string which is inserted in the delivered web
-			pages in order to provide more security (old/unknown requests will be rejected).
--nodeTypes		the node types whose appearances and
-				disappearances are to be logged, separated by a 
-				semi-colon (;) default: img;h1;h2;h3;h4;h5;h6 		
+-port <port> 			is the port UsaProxy is listening for incoming connections
+
+-remoteIP <IP address>	is the address of the gateway proxy
+						resp. web server UsaProxy always forwards requests to
+
+-remotePort <port>		is the gateway's resp. web server's port (in combination
+						with switch -remoteIP!)
+
+-server					starts UsaProxy in server mode (in combination
+						with switches -remoteIP and -remotePort!)
+
+-rm						starts UsaProxy in remote monitoring mode (exclusive)
+
+-sb						starts UsaProxy in shared browsing mode (exclusive)
+
+-log					enables logging of events to log.txt
+
+-logMode				optional parameter; if assigned the value "pagereq" only page requests
+						(incl. usaproxyload requests) are recorded, else all events are logged
+
+-id <string>			optional UsaProxy instance ID: automatically used within the 
+						JavaScript reference string which is inserted in the delivered web
+						pages in order to provide more security (old/unknown requests will be rejected).
+						
+-nodeTypes				the node types whose appearances and
+						disappearances are to be logged, separated by a 
+						semi-colon (;) default: img;h1;h2;h3;h4;h5;h6
+						 		
+-logContents			Log also element contents on appear events?
+
+-logContentsLimit <n>	Limit contents logging to n characters.				
 
 with <port> best between 1024 and 65535.				
 

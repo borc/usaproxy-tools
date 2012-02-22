@@ -59,6 +59,17 @@ public class UsaProxy {
     
     /** The node types whose appearances and disappearances are to be logged */
     private String[]			nodeTypes;
+
+    /**
+     * Log the contents of all elements? Can be slow. Defaults to false.
+     */
+    private boolean				isLoggingContents;
+    
+    /**
+     * Limit the logging of contents to this amount of characters. Set to -1
+     * for no limit. Default: -1.
+     */
+    private int					contentsLoggingLimit;
     
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
@@ -84,17 +95,21 @@ public class UsaProxy {
 			boolean isLogging, 
 			String logMode, 
 			String id,
-			String[] nodeTypes
+			String[] nodeTypes,
+			boolean isLoggingContents,
+			int contentsLimit
 			) {
 		
-		this.port 				= port;
-		this.mode 				= mode;
-		this.isRM 				= rm;
-		this.isSB 				= sb;
-		this.isLogging			= isLogging;
-		this.logMode			= logMode;
-		this.id 				= id;
-		this.nodeTypes			= nodeTypes;
+		this.port 					= port;
+		this.mode 					= mode;
+		this.isRM 					= rm;
+		this.isSB 					= sb;
+		this.isLogging				= isLogging;
+		this.logMode				= logMode;
+		this.id 					= id;
+		this.nodeTypes				= nodeTypes;
+		this.setLoggingContents(isLoggingContents);
+		this.setContentsLoggingLimit(contentsLimit);
 		
 		try {
 			this.ip			= java.net.InetAddress.getLocalHost();
@@ -181,9 +196,11 @@ public class UsaProxy {
 		 *  						(optional; default: all)
 		 *  -id <id>				identifies the UsaProxy instance (useful for distinguishing
 		 *  						between versions and authentication of users); default: undefined
-		 *  -nodeTypes				lists the node types whose appearances and
+		 *  -nodeTypes <types>		lists the node types whose appearances and
 		 *  						disappearances are to be logged, separated by a 
 		 *  						semi-colon (;) default: img;h1;h2;h3;h4;h5;h6 		
+		 *  -logContents			Log also element contents on appear events?
+		 *  -logContentsLimit <n>	Limit contents logging to n characters.
 		 */
 		
 		/** UsaProxy modes:
@@ -386,7 +403,38 @@ public class UsaProxy {
 			}
 			else
 			{
-				System.err.println( "An error occured while parsing for node types." );
+				System.err.println( "An error occurred while parsing for node types." );
+				System.err.println( "UsaProxy will log the default node types." );
+			}
+		}
+
+		/**
+		 * Log element contents?
+		 */
+		boolean logContents = indexOf( args, "-logContents" ) != -1;
+		
+		int limitContents = -1;
+		if ( (index = indexOf( args, "-logContentsLimit" )) != -1 )
+		{
+			try
+			{
+				limitContents = Integer.parseInt( args[index+1] );
+				if ( limitContents < -1 )
+				{
+					limitContents = -1;
+					System.err.println( "Invalid limit value!" );
+					System.err.println( "Default limit of " + limitContents + " will be used." );
+				}
+			}
+			catch( IndexOutOfBoundsException e )
+			{
+				System.err.println( "No limit value supplied!" );
+				System.err.println( "Default limit of " + limitContents + " will be used." );
+			}
+			catch( NumberFormatException e )
+			{
+				System.err.println( "Invalid limit value!" );
+				System.err.println( "Default limit of " + limitContents + " will be used." );
 			}
 		}
 		
@@ -412,7 +460,7 @@ public class UsaProxy {
 		
 		
 		/** generate an UsaProxy instance */
-		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes);
+		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, logContents, limitContents);
 			
 	}
 
@@ -564,6 +612,22 @@ public class UsaProxy {
 			}
 		}
 		return index;
+	}
+
+	public boolean isLoggingContents() {
+		return isLoggingContents;
+	}
+
+	public void setLoggingContents(boolean isLoggingContents) {
+		this.isLoggingContents = isLoggingContents;
+	}
+
+	public int getContentsLoggingLimit() {
+		return contentsLoggingLimit;
+	}
+
+	public void setContentsLoggingLimit(int contentsLoggingLimit) {
+		this.contentsLoggingLimit = contentsLoggingLimit;
 	}
 
 }
