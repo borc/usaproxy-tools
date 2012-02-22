@@ -91,7 +91,10 @@
 					
 					var tableHTML = createHTMLTableFromObject( detailsTable );
 					
-					$( '<div title="Element details">' + tableHTML + '<h3 class="title">Contents</h3><p>' + details.content + '</p></div>' ).css({
+					$( '<div title="Element details">' + tableHTML + 
+						'<h3 class="title">Contents</h3><p>' + 
+						unescape(details.content) + '</p></div>' )
+					.css({
 						'font-size': '80%'
 					}).dialog({
 						buttons: {
