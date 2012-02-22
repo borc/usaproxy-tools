@@ -25,11 +25,12 @@ public class UsaProxyPageEvent implements Serializable {
 		this.setType(eventType);
 		this.setSession(sessionID, ip);
 		this.setHttpTrafficSession(httpTrafficIndex, ip);
-		setDomPath( attributes.get( "dom" ), attributes.get( "nodeName" ) );
+		setDomPath( attributes.get( "dom" ), attributes.get( "nodeName" ), attributes.get( "contents" ) );
 		setScreen( attributes.get( "screenID" ) );
 		attributes.remove( "dom" );
 		attributes.remove( "screenID" );
 		attributes.remove( "nodeName" );
+		attributes.remove( "contents" );
 		
 		setAttributes(attributes);
 	}
@@ -222,12 +223,22 @@ public class UsaProxyPageEvent implements Serializable {
 		domPath.getEvents().add(this);
 	}
 	
-	public void setDomPath(String domPath, String nodeName) {
+	public void setDomPath(String domPath, String nodeName, String contents) {
 		UsaProxyDOMElement element = UsaProxySessionStore.getDOMElementById( 
 				getHttpTrafficSession().getSessionID(),	domPath );
 		if ( element == null )
 		{
-			element = UsaProxyDOMElement.newDOMElement(domPath, getHttpTrafficSession(), nodeName);
+			element = UsaProxyDOMElement.newDOMElement(domPath, getHttpTrafficSession(), nodeName, contents);
+		}
+		else
+		{
+			// Element contents can be missing in some cases. Set if found.
+			// Note that this leads to the element object only knowing the last
+			// contents logged.
+			if ( contents != null )
+			{
+				element.setContents(contents);
+			}
 		}
 		setDomPath(element);
 	}

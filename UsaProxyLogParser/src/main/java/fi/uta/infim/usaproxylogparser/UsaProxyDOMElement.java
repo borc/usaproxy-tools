@@ -49,16 +49,19 @@ public class UsaProxyDOMElement implements Serializable {
 		return true;
 	}
 
-	private UsaProxyDOMElement(String path, UsaProxyHTTPTraffic httpTraffic, String nodeName) {
+	private UsaProxyDOMElement(String path, UsaProxyHTTPTraffic httpTraffic, 
+			String nodeName, String contents) {
 		super();
 		this.path = path;
 		setHttpTraffic( httpTraffic );
 		setNodeName(nodeName);
+		setContents(contents);
 	}
 	
-	public static UsaProxyDOMElement newDOMElement( String path, UsaProxyHTTPTraffic traffic, String nodeName )
+	public static UsaProxyDOMElement newDOMElement( String path, 
+			UsaProxyHTTPTraffic traffic, String nodeName, String contents )
 	{
-		UsaProxyDOMElement e = new UsaProxyDOMElement(path, traffic, nodeName );
+		UsaProxyDOMElement e = new UsaProxyDOMElement(path, traffic, nodeName, contents);
 		UsaProxySessionStore.putDOMElement(e);
 		return e;
 	}
@@ -99,6 +102,13 @@ public class UsaProxyDOMElement implements Serializable {
 	 * The node name of the element, eg. "h1"
 	 */
 	private String nodeName;
+	
+	/**
+	 * If contents logging was active during logging, this member will contain
+	 * the element's text contents. Note that elements' contents can be empty.
+	 * This member will be null if contents logging was not active.
+	 */
+	private String contents;
 	
 	@XmlAttribute
 	public String getPath() {
@@ -153,6 +163,14 @@ public class UsaProxyDOMElement implements Serializable {
 
 	public void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
+	}
+
+	public String getContents() {
+		return contents;
+	}
+
+	public void setContents(String contents) {
+		this.contents = contents;
 	}
 	
 }
