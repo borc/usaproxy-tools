@@ -502,8 +502,8 @@ function writeLog_UsaProxy(text) {
 function getContents_UsaProxy( node )
 {
 	var amount = contentsLimit_UsaProxy;
-	if ( amount === -1 ) return jQuery_UsaProxy( node ).text();
-	if ( amount > 0 ) return jQuery_UsaProxy( node ).text().substr(0, amount);
+	if ( amount === -1 ) return escape( jQuery_UsaProxy( node ).text() );
+	if ( amount > 0 ) return escape( jQuery_UsaProxy( node ).text().substr(0, amount) );
 	return '';
 }
 
