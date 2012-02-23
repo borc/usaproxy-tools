@@ -1243,7 +1243,9 @@ public class ClientRequest extends Thread {
 	                /** generate individual JavaScript reference String (scriptstring)
 	                 *  together with the corresponding URL parameters such as sd or timestamp */
 	                /** first, get the Mode-dependent scriptstring */
-	                String scriptString		= usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "proxyscript.js");
+	                String scriptString		= usaProxy.getMode().getScriptString(
+	                		usaProxy.getIP(), 
+	                		usaProxy.getPort(), "proxyscript.js");
 	                
 	                timeStamp				= timeStamp();	/** generate new timestamp */
 	                /** paste sd attribute with the current serverdata ID/httptrafficindex,

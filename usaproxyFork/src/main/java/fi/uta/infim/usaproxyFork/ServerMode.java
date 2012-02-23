@@ -60,7 +60,7 @@ public class ServerMode implements Mode {
      *  @return the script string
      */
 	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
-		return "<script src='http://" + hostAddress.getHostName() 
+		return "<script src='" 
 				+ "/usaproxylolo/file/" +  filename + "' type='text/javascript'></script>";
 	}
 

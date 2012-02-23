@@ -51,6 +51,10 @@ public class ProxyMode implements Mode {
      *  @return the script string
      */
 	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
+		return getStaticScriptString(usaProxyIP, usaProxyPort, filename);
+	}
+	
+	public static String getStaticScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
 		String usaProxyHost;
 		if (usaProxyIP != null)
 			usaProxyHost = usaProxyIP.getHostAddress();
