@@ -12,6 +12,13 @@ import java.util.Map;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.GnuParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.Option;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
@@ -31,7 +38,7 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
-public class App 
+public final class App 
 {
 	private static File logFile;
 	
@@ -43,6 +50,29 @@ public class App
 	
 	private static final String REPORTTEMPLATE = "session-report.ftl";
 	
+	/**
+	 * Command line parser
+	 */
+	private static final CommandLineParser parser = new GnuParser();
+	
+	/**
+	 * Command line options
+	 */
+	private static final Options cliOptions = createCLIOptions();
+	
+	private static CommandLine cli = null;
+	
+	@SuppressWarnings("static-access")
+	private static Options createCLIOptions() {
+		// Command line options
+		Options cliOptions = new Options();
+		cliOptions.addOption( OptionBuilder.withArgName( "directory" )
+				.hasArg()
+				.withDescription( "output directory for reports" )
+				.create( "outputDir" ) );
+		return cliOptions;
+	}
+
 	public static UsaProxyHTTPTrafficLogHandler getLogFileHandler()
 	{
 		return logFileHandler;
@@ -53,14 +83,32 @@ public class App
 		return config;
 	}
 	
+	private static void printHelp()
+	{
+		HelpFormatter formatter = new HelpFormatter();
+		formatter.printHelp( "java -jar usaproxyreportgenerator.jar [OPTIONS] logFile", cliOptions );
+	}
+	
     public static void main( String[] args ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
     {
+    	try
+    	{
+    		// Command line arguments
+    		cli = parser.parse(cliOptions, args);
+    	}
+    	catch( org.apache.commons.cli.ParseException e )
+    	{
+    		System.err.println( e.getMessage() );
+    		printHelp();
+    		return;
+    	}
+    	
     	UsaProxyLogParser parser = new UsaProxyLogParser();
     	UsaProxyLog log;
     	File logfile;
     	try
     	{
-    		logfile = new File( args[ 0 ] );
+    		logfile = new File( cli.getArgs()[ 0 ] );
     		System.out.print( "Parsing log file... " );
     		log = parser.parseLog( logfile );
     		System.out.println( "done." );
@@ -71,16 +119,19 @@ public class App
     	catch( IOException ioe )
     	{
     		System.err.println( "Error opening log file.");
+    		printHelp();
     		return;
     	}
     	catch( ParseException pe )
     	{
     		System.err.println( "Error parsing log file." );
+    		printHelp();
     		return;
     	}
     	catch( IndexOutOfBoundsException e )
     	{
     		System.err.println( "Please supply a file name." );
+    		printHelp();
     		return;
     	}
     	
@@ -97,15 +148,8 @@ public class App
     	for ( UsaProxySession s : log.getSessions() )
     	{
     		File outputDir;
-    		try
-    		{
-    			outputDir = new File( args[ 1 ] );
-    		}
-    		catch( IndexOutOfBoundsException e )
-    		{
-    			// Use CWD if output dir not specified
-    			outputDir = new File( "." );
-    		}
+    		// Use CWD if output dir is not supplied
+   			outputDir = new File( cli.hasOption( "outputDir" ) ? cli.getOptionValue( "outputDir" ) : "." );
     		System.out.print( "Generating report for session " + s.getSessionID() + "... " );
     		generateHTMLReport(s, outputDir);
     		System.out.println( "done." );
