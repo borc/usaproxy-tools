@@ -158,8 +158,8 @@ public class EventManager {
 			fos.close();
 			
 			if(out!=null) {
-				/** send 404 message in order to complete the request */
-				SocketData.send404 (out);
+				/** send 204 No Content message in order to complete the request */
+				SocketData.send204 (out);
 			}
 
     	}

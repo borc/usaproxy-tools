@@ -186,5 +186,25 @@ public class SocketData {
 			dout.writeBytes(headers.toString());
 			dout.flush();
     }
+	
+	/**
+	 * Sends an empty HTTP 204 "No Content" status to the client.
+	 * @param out is the http response stream
+	 * @throws IOException
+	 */
+	public static void send204 (OutputStream out) throws IOException {
+		
+		DataOutputStream dout = new DataOutputStream(out);
+		
+		/** new headers StringBuffer */
+		StringBuffer headers = new StringBuffer();
+			
+		headers.append("HTTP/1.1 204 No Content").append(HTTPData.CRLF);
+		headers.append(HTTPData.CRLF);
+		
+		/** send headers */
+		dout.writeBytes(headers.toString());
+		dout.flush();
+}
 
 }
