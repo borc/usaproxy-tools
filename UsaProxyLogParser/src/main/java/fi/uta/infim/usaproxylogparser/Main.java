@@ -18,7 +18,7 @@ class Main {
     	try {
     		if ( args.length < 1 )
     		{
-    			System.out.println( "Please supply a log file name" );
+    			System.err.println( "Please supply a log file name" );
     			return;
     		}
     		String filename = args[0];
@@ -36,11 +36,11 @@ class Main {
     			m.marshal( log, new File( args[1] ) );
     		}
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println( "Error opening log file: " + e.getMessage() );
 		} catch (ParseException e) {
-			e.printStackTrace();
+			System.err.println( "Error parsing log file: " + e.getMessage() );
 		} catch (JAXBException e) {
-			e.printStackTrace();
+			System.err.println( "Error marshalling log to XML format: " + e.getMessage() );
 		}
     }
 
