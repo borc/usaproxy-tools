@@ -1,7 +1,9 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
 import java.io.IOException;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -106,6 +108,12 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return dataset;
 	}
 	
+	@SuppressWarnings("deprecation")
+	public static long removeTimezone( Date timestamp )
+	{
+		return timestamp.getTime() - (60 * 1000 * timestamp.getTimezoneOffset());
+	}
+	
 	private JSONObject getSightings( UsaProxyDOMElement element )
 	{
 		JSONObject jsonElement = new JSONObject();
@@ -121,12 +129,12 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			if ( UsaProxyVisibilityEvent.class.isInstance(e) )
 			{
 				JSONArray topPoint = new JSONArray();
-				topPoint.add( e.getEntry().getTimestamp().getTime() );
+				topPoint.add( removeTimezone( e.getEntry().getTimestamp() ) );
 				topPoint.add( ((UsaProxyVisibilityEvent)e).getTopPosition() );
 				top.add(topPoint);
 				
 				JSONArray bottomPoint = new JSONArray();
-				bottomPoint.add( e.getEntry().getTimestamp().getTime() );
+				bottomPoint.add( removeTimezone( e.getEntry().getTimestamp() ) );
 				bottomPoint.add( ((UsaProxyVisibilityEvent)e).getBottomPosition() );
 				bottom.add(bottomPoint);
 				
@@ -142,12 +150,12 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			if ( UsaProxyDisappearanceEvent.class.isInstance( e ) )
 			{
 				JSONArray topDisappearPoint = new JSONArray();
-				topDisappearPoint.add( e.getEntry().getTimestamp().getTime() + 1 );
+				topDisappearPoint.add( removeTimezone( e.getEntry().getTimestamp() ) + 1 );
 				topDisappearPoint.add( null );
 				top.add(topDisappearPoint);
 					
 				JSONArray bottomDisappearPoint = new JSONArray();
-				bottomDisappearPoint.add( e.getEntry().getTimestamp().getTime() + 1 );
+				bottomDisappearPoint.add( removeTimezone( e.getEntry().getTimestamp() ) + 1 );
 				bottomDisappearPoint.add( null );
 				bottom.add(bottomDisappearPoint);
 			}
@@ -159,12 +167,12 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		if ( element.getDisappears().size() < element.getAppears().size() )
 		{
 			JSONArray topArtificialEndPoint = new JSONArray();
-			topArtificialEndPoint.add( lastAppear.getTime() + ARTIFICIALEND );
+			topArtificialEndPoint.add( removeTimezone( lastAppear ) + ARTIFICIALEND );
 			topArtificialEndPoint.add( lastTop );
 			top.add(topArtificialEndPoint);
 			
 			JSONArray bottomArtificialEndPoint = new JSONArray();
-			bottomArtificialEndPoint.add( lastAppear.getTime() + ARTIFICIALEND );
+			bottomArtificialEndPoint.add( removeTimezone( lastAppear ) + ARTIFICIALEND );
 			bottomArtificialEndPoint.add( lastBottom );
 			bottom.add(bottomArtificialEndPoint);
 		}
@@ -187,7 +195,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			long beginTime;
 			try
 			{
-				beginTime = s.getInitialViewportEvent().getEntry().getTimestamp().getTime();
+				beginTime = removeTimezone( s.getInitialViewportEvent().getEntry().getTimestamp() );
 			}
 			catch ( NullPointerException e )
 			{
@@ -200,7 +208,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			long endTime;
 			try
 			{
-				endTime = s.getScrollStart().getEntry().getTimestamp().getTime();
+				endTime = removeTimezone( s.getScrollStart().getEntry().getTimestamp() );
 			}
 			catch ( NullPointerException e )
 			{
