@@ -116,12 +116,12 @@
 
                     var nvbar = $('<div class="ui-widget-header">' +
                         '<span style="display:inline; float:left;" class="ui-icon ui-icon-circlesmall-plus"></span><span>' +
-                        new String( timestamp.getDate() ).padLeft( '0', 2 ) + '.' + 
-                        new String( (timestamp.getMonth()+1) ).padLeft( '0', 2 ) + '.' + 
-                        timestamp.getFullYear() + " " +
-                        new String( timestamp.getHours() ).padLeft( '0', 2 ) + ':' + 
-                        new String( timestamp.getMinutes() ).padLeft( '0', 2 ) + ':' + 
-                        new String( timestamp.getSeconds() ).padLeft( '0', 2 ) + ' -> ' +
+                        new String( timestamp.getUTCDate() ).padLeft( '0', 2 ) + '.' + 
+                        new String( (timestamp.getUTCMonth()+1) ).padLeft( '0', 2 ) + '.' + 
+                        timestamp.getUTCFullYear() + " " +
+                        new String( timestamp.getUTCHours() ).padLeft( '0', 2 ) + ':' + 
+                        new String( timestamp.getUTCMinutes() ).padLeft( '0', 2 ) + ':' + 
+                        new String( timestamp.getUTCSeconds() ).padLeft( '0', 2 ) + ' -> ' +
                         url + '</span></div>').appendTo(toplevel).click( function(e) {
                             $(this).next().toggle();
                             $(this).children( ':first-child' )
