@@ -33,7 +33,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			jsonHTTPTraffic.accumulate( "url", traffic.getUrl().toString());
 			jsonHTTPTraffic.accumulate( "id", traffic.getSessionID() );
 			jsonHTTPTraffic.accumulate( "timestamp", null == traffic.getEntry() ? null : 
-				traffic.getEntry().getTimestamp().getTime() );
+				removeTimezone( traffic.getEntry().getTimestamp() ) );
 			
 			return jsonHTTPTraffic;
 		} catch (Exception e) {
