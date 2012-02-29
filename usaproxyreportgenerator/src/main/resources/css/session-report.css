@@ -1,0 +1,131 @@
+html
+{
+	height: 100%;
+	min-height: 100%;
+	padding: 0px;
+	margin: 0px;
+}
+
+body
+{
+	font-size: 9pt;
+	font-family: Verdana,sans-serif;
+	height: 100%;
+	padding: 0px;
+	margin: 0px;
+	min-height: 100%;
+	color: #000000;
+}
+
+#outerContainer
+{
+	margin: 0px;
+	padding: 0px;
+	border: 0px;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+#rightContent
+{
+	display: inline-block;
+	height: 100%;
+}
+
+#leftBar
+{
+	border-right: 1px solid black;
+	background-color: #FFE080;
+	width: 205px;
+	display: block;
+	float: left;
+	height: 100%;
+	vertical-align: top;
+	margin: 0px;
+	padding: 0px;
+}
+
+#leftBar h1
+{
+	margin: 0px;
+	padding: 0px;
+	font-size: 120%;
+	font-weight: bold;
+	line-height: 150%;
+	text-align: right;
+	text-decoration: underline;
+}
+
+#leftBar h2
+{
+	margin: 1em 0px 0px 0px;
+	padding: 0px 0px 0px 0.5em;
+	font-size: 110%;
+	font-weight: bold;
+	line-height: 110%;
+	text-align: left;
+	text-decoration: none;
+}
+
+#header-list
+{
+	list-style-type: none;
+	margin: 0px 0px 0px 0px;
+	padding: 0.5em 0px 0.5em 0.5em;
+	background-color: #FFF8E0;
+	border-top: 1px dotted black;
+	border-bottom: 1px dotted black;
+}
+
+#header-list li
+{
+	margin-bottom: 0.5em;
+}
+
+.list-title
+{
+	font-variant: small-caps;
+	display: block;
+	float: left;
+	width: 100px;
+	margin-bottom: 0.5em;
+}
+
+#httpTraffic-list
+{
+	list-style-type: circle;
+	list-style-position: outside;
+	margin: 0px 0px 0px 1em;
+	padding: 0.5em 0px 0.5em 0.5em;
+}
+
+#httpTraffic-list li
+{
+	margin-bottom: 1em;
+}
+
+.list-sub-content
+{
+	font-size: 75%;
+}
+
+.hilight
+{
+	background-color: #FF8000;
+}
+
+.selected
+{
+	background-color: #FF8000;
+	border-right: 4px solid black;
+}
+
+.placeholder
+{
+	display : none;
+	padding : 0px 2em 2em 0px;
+	margin: 2em 0px 0px 2em;
+    width: 80%;
+    height: 80%;
+}

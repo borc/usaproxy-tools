@@ -16,7 +16,6 @@ import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
-import org.apache.commons.cli.Option;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
 import org.w3c.dom.DOMException;
@@ -48,7 +47,12 @@ public final class App
 	
 	private static final String TEMPLATEDIR = "templates";
 	
-	private static final String REPORTTEMPLATE = "session-report.ftl";
+	//private static final String REPORTTEMPLATE = "session-report.ftl";
+	private static final String REPORTTEMPLATE = "session-report-new.ftl";
+	
+	private static final String HTTPTRAFFICLISTIDPREFIX = "http-traffic-id-";
+	
+	private static final String PLACEHOLDERIDPREFIX = "placeholder-id-";
 	
 	/**
 	 * Command line parser
@@ -158,11 +162,11 @@ public final class App
     
     private static void generateHTMLReport( UsaProxySession session, File outputDir ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
     {
-    	JSONArray httptraffic = new JSONArray();
+    	JSONObject httptraffic = new JSONObject();
     	for ( UsaProxyHTTPTraffic t : session.getSortedHttpTrafficSessions() )
 		{
     		System.out.print( "processing traffic id " + t.getSessionID() + "... " );
-			httptraffic.add( JSONObject.fromObject(t, config) );
+			httptraffic.accumulate( t.getSessionID().toString(), JSONObject.fromObject(t, config) );
 		}
     	
     	JSONObject tf = new JSONObject();
@@ -174,8 +178,7 @@ public final class App
     	sessionRoot.put( "timestamp", session.getStart() );
     	sessionRoot.put( "id", session.getSessionID() );
     	sessionRoot.put( "ip", session.getAddress().getHostAddress() );
-    	
-    	
+    	sessionRoot.put( "httpTraffics", session.getHttpTrafficSessions() );
     	
     	Configuration cfg = new Configuration();
     	// Specify the data source where the template files come from.
@@ -186,6 +189,8 @@ public final class App
 
     	Map<String, Object> root = new HashMap<String, Object>();
     	root.put( "session", sessionRoot );
+    	root.put( "httpTrafficListIdPrefix", HTTPTRAFFICLISTIDPREFIX );
+    	root.put( "placeholderIdPrefix", PLACEHOLDERIDPREFIX );
     	
     	try
     	{
