@@ -10,6 +10,8 @@
 	// Entry point. Run when document fully loaded.
 	$( document ).ready( function() {
 		
+		$( "button" ).button();
+		
 		var session = USAPROXYREPORT.session;
 		
 		var showTooltip = function(x, y, contents) {
