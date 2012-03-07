@@ -8,8 +8,12 @@
 (function($)
 {
 	// Main application object init
-	USAPROXYREPORT.visiblePlot = null; // ID of visible plot (http traffic id)
-	USAPROXYREPORT.hideFilteredItems = true; // Hide/show only filtered items?
+	var initApp = function()
+	{
+		USAPROXYREPORT.visiblePlot = null; // ID of visible plot (http traffic id)
+		USAPROXYREPORT.hideFilteredItems = true; // Hide/show only filtered items?
+	}
+	initApp();
 	
 	// Function for showing floating tooltips
 	var showTooltip = function(x, y, contents) {
@@ -221,6 +225,13 @@
 	
 		// Bind the filters button click
 		$( '#filters' ).click( openFiltersWindow );
+		
+		// Bind the reset button click
+		$( '#reset' ).click( function()
+		{
+			session.httptraffics[ USAPROXYREPORT.visiblePlot ].filteredElements = [];
+			$( document ).trigger( 'reinit-plot', USAPROXYREPORT.visiblePlot );
+		} );
 		
 		$( document ).bind( 'reinit-plot', function( event, httpTrafficId )
 		{
