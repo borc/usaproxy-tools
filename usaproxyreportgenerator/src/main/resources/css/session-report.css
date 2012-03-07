@@ -166,7 +166,6 @@ body
 	margin: 0px;
 	height: 40px;
 	font-size: 80%;
-	display: none;
 }
 
 #placeholders
@@ -177,4 +176,23 @@ body
 	top: 40px;
 	bottom: 0;
 	margin-top: 1em;
+}
+
+.filter-list
+{
+	width: 100%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+	overflow: auto;
+}
+
+.filter-list-item
+{
+	float: left;
+	display: inline;
+	width: 30%;
+	margin: 0;
+	padding: 0;
+	border: 0;
 }

@@ -3,6 +3,9 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
     <head>
         <title>UsaProxy session report - ${session.timestamp?datetime} - ${session.id}</title>
+
+		<!-- Augmentations and utils -->        
+        <script src="js/utils.js" type="text/javascript"></script>
         
         <!-- jQuery UI CSS -->
         <link type="text/css" href="js/jquery-ui-1.8.18.custom/css/sunny/jquery-ui-1.8.18.custom.css" rel="Stylesheet" />
@@ -24,11 +27,9 @@
         <script type="text/javascript">
         	var USAPROXYREPORT = {};
         	USAPROXYREPORT.session = ${session.data};
-        	USAPROXYREPORT.visiblePlot = null; // ID of visible plot (http traffic id)
         </script>
         
         <!-- Our very own JS -->
-        <script src="js/utils.js" type="text/javascript"></script>
         <script src="js/main.js" type="text/javascript"></script>
     </head>
     <body>
