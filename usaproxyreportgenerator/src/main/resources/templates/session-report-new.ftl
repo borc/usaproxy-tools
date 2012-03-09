@@ -100,6 +100,7 @@
 							<span id="toolbar" class="ui-corner-all">
 								<button id="filters" title="Manage element filters">Filters</button>
 								<button id="reset" title="Reset the plot">Reset</button>
+								<button id="headers" title="Show HTTP headers">HTTP headers</button>
 							</span>
 						</div>
 						<div id="placeholders">

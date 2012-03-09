@@ -196,3 +196,13 @@ body
 	padding: 0;
 	border: 0;
 }
+
+#httpHeadersDialog div
+{
+	float: left;
+	display: inline;
+	width: 50%;
+	margin: 0;
+	padding: 0;
+	border: 0;
+}

@@ -32,6 +32,32 @@
     // The UsaProxy session
     var session = USAPROXYREPORT.session;
 	
+    // Function for creating a HTML table from a JS object.
+    // Keys in first column. Values in second column.
+    var createHTMLTableFromObject = function( object )
+	{
+		var tableHTML = '<table>';
+		for ( var detail in object )
+		{
+			tableHTML += '<tr><td>' + detail + '</td><td>';
+			if ( object[ detail ].constructor === Date )
+			{
+				tableHTML += object[ detail ].toLocaleString();
+			} 
+			else if ( typeof( object[ detail ] ) === 'object' )
+			{
+				tableHTML += createHTMLTableFromObject( object[ detail ] );
+			}
+			else
+			{
+				tableHTML += object[ detail ];
+			}
+			tableHTML += '</td></tr>';
+		}
+		tableHTML += '</table>';
+		return tableHTML;
+	};
+    
     // Function for opening a dialog window with details of a DOM element
 	var showElementDetails = function( httpTrafficId, domPath )
 	{
@@ -42,30 +68,6 @@
 			'DOM path': details.path,
 			'Appearances': details.appearances,
 			'Disappearances': details.disappearances
-		};
-		
-		var createHTMLTableFromObject = function( object )
-		{
-			var tableHTML = '<table>';
-			for ( var detail in object )
-			{
-				tableHTML += '<tr><td>' + detail + '</td><td>';
-				if ( object[ detail ].constructor === Date )
-				{
-					tableHTML += object[ detail ].toLocaleString();
-				} 
-				else if ( typeof( object[ detail ] ) === 'object' )
-				{
-					tableHTML += createHTMLTableFromObject( object[ detail ] );
-				}
-				else
-				{
-					tableHTML += object[ detail ];
-				}
-				tableHTML += '</td></tr>';
-			}
-			tableHTML += '</table>';
-			return tableHTML;
 		};
 		
 		var tableHTML = createHTMLTableFromObject( detailsTable );
@@ -247,6 +249,30 @@
 		return filteredSightings;
 	};
 	
+	/*
+	 * Shows a http headers dialog
+	 */
+	var showHTTPHeaders = function( httpTrafficId )
+	{
+		var httpTraffic = session.httptraffics[ httpTrafficId ];
+		
+		var requestHTML = createHTMLTableFromObject( httpTraffic.requestHeaders );
+		var responseHTML = createHTMLTableFromObject( httpTraffic.responseHeaders );
+		
+		$( '<div id="httpHeadersDialog" title="HTTP Headers">' + 
+				'<div><h3 class="title">Request</h3>' + requestHTML + '</div>' + 
+				'<div><h3 class="title">Response</h3>' + responseHTML + '</div>' + 
+			'</div>' )
+		.css({
+			'font-size': '80%'
+		}).dialog({
+			buttons: {
+				"OK": function() { $(this).dialog("close"); } 
+			},
+			width: Math.floor( 0.8 * $( window ).width() )
+		});
+	};
+	
 	// Entry point. Run when document fully loaded.
 	$( document ).ready( function() {
 		
@@ -261,6 +287,12 @@
 			// Force reinit of filters and the plot itself
 			initHTTPTrafficFilters( session.httptraffics[ USAPROXYREPORT.visiblePlot ], true );
 			$( document ).trigger( 'reinit-plot', USAPROXYREPORT.visiblePlot );
+		} );
+		
+		// Bind the HTTP headers button click
+		$( '#headers' ).click( function()
+		{
+			showHTTPHeaders( USAPROXYREPORT.visiblePlot );
 		} );
 		
 		$( document ).bind( 'reinit-plot', function( event, httpTrafficId )

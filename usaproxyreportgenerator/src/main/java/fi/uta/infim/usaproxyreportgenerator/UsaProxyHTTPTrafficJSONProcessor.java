@@ -1,9 +1,7 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
 import java.io.IOException;
-import java.util.Calendar;
 import java.util.Date;
-import java.util.TimeZone;
 import java.util.Vector;
 
 import javax.xml.transform.TransformerException;
@@ -32,6 +30,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			jsonHTTPTraffic.accumulate( "domElements", getDOMElements(traffic));
 			jsonHTTPTraffic.accumulate( "url", traffic.getUrl().toString());
 			jsonHTTPTraffic.accumulate( "id", traffic.getSessionID() );
+			jsonHTTPTraffic.accumulate( "requestHeaders", traffic.getRequestHeaders() );
+			jsonHTTPTraffic.accumulate( "responseHeaders", traffic.getResponseHeaders() );
 			jsonHTTPTraffic.accumulate( "timestamp", null == traffic.getEntry() ? null : 
 				removeTimezone( traffic.getEntry().getTimestamp() ) );
 			
