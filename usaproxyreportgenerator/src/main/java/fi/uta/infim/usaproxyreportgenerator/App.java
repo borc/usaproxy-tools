@@ -41,7 +41,7 @@ public final class App
 {
 	private static File logFile;
 	
-	private static UsaProxyHTTPTrafficLogHandler logFileHandler;
+	private static UsaProxyHTTPTrafficLogDocumentReader logFileHandler;
 	
 	private static JsonConfig config;
 	
@@ -77,7 +77,7 @@ public final class App
 		return cliOptions;
 	}
 
-	public static UsaProxyHTTPTrafficLogHandler getLogFileHandler()
+	public static UsaProxyHTTPTrafficLogDocumentReader getLogFileHandler()
 	{
 		return logFileHandler;
 	}
@@ -117,7 +117,7 @@ public final class App
     		log = parser.parseLog( logfile );
     		System.out.println( "done." );
     		logFile = logfile;
-    		logFileHandler = new UsaProxyHTTPTrafficLogHandler(logFile);
+    		logFileHandler = new UsaProxyHTTPTrafficLogDocumentReader(logFile);
     		
     	}
     	catch( IOException ioe )

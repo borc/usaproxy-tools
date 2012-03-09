@@ -18,29 +18,26 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
+import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTrafficLogHandler;
 
-public class UsaProxyHTTPTrafficLogHandler {
+public class UsaProxyHTTPTrafficLogDocumentReader {
 
-	private File logFile; // Log file location
+	private UsaProxyHTTPTrafficLogHandler handler;
 	
-	public UsaProxyHTTPTrafficLogHandler(File logFile) {
+	public UsaProxyHTTPTrafficLogDocumentReader(File logFile) {
 		super();
-		this.logFile = logFile;
-	}
-
-	private File findHTTPTrafficLogRoot()
-	{
-		return new File( logFile.getParentFile(), "httpTraffic/log" );
+		handler = new UsaProxyHTTPTrafficLogHandler(logFile); 
 	}
 	
-	private File findHTTPTrafficLog( UsaProxyHTTPTraffic traffic )
-	{
-		return new File( findHTTPTrafficLogRoot(), "httpTraffic" + traffic.getSessionID() + ".txt" );
-	}
-	
+	/**
+	 * Seeks the http traffic log file until the actual document is found.
+	 * @param traffic the http traffic object
+	 * @return a reader object with the file contents seeked to the beginning of the actual document.
+	 * @throws IOException
+	 */
 	private Reader getSeekedLogReader( UsaProxyHTTPTraffic traffic ) throws IOException
 	{
-		FileInputStream fis = new FileInputStream( findHTTPTrafficLog(traffic) );
+		FileInputStream fis = new FileInputStream( handler.findHTTPTrafficLog(traffic) );
 		BufferedReader fileReader = new BufferedReader( new InputStreamReader( fis ) );
 		int emptyLinesFound = 0;
 		while ( fileReader.ready() )

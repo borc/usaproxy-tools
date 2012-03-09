@@ -39,7 +39,7 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		{
 			try {
 				contents = XPathAPI.eval( trafficLogRoot,
-						UsaProxyHTTPTrafficLogHandler.usaProxyDOMPathToXPath( element.getPath() ) ).toString();
+						UsaProxyHTTPTrafficLogDocumentReader.usaProxyDOMPathToXPath( element.getPath() ) ).toString();
 			} catch (XPathExpressionException e) {
 				throw new RuntimeException( "Error with XPath expression generated from path " + element.getPath() );
 			} catch (Exception e) {
