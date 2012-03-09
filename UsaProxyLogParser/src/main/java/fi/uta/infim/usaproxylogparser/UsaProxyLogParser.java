@@ -17,20 +17,22 @@ import fi.uta.infim.usaproxylogparser.TParser.log_return;
 
 public class UsaProxyLogParser implements IUsaProxyLogParser {
 
+	private File logFile;
+	
 	@Override
 	public UsaProxyLog parseLog(File file) throws IOException, ParseException {
 		FileInputStream fis = new FileInputStream(file);
+		logFile = file;
 		return parseLog(fis);
 	}
 
 	@Override
 	public UsaProxyLog parseLog(String filename) throws IOException, ParseException {
-		FileInputStream fis = new FileInputStream(filename);
-		return parseLog(fis);
+		File logFile = new File( filename );
+		return parseLog(logFile);
 	}
 
-	@Override
-	public UsaProxyLog parseLog(InputStream logStream) throws IOException, ParseException {
+	private UsaProxyLog parseLog(InputStream logStream) throws IOException, ParseException {
 		TLexer lexer = new TLexer();
 		lexer.setCharStream( new ANTLRInputStream( logStream ) );
 		TokenStream tokens = new CommonTokenStream( lexer );
@@ -38,6 +40,7 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 		try {
 			log_return logParseResult = parser.log();
 			UsaProxyLog parsedLog = logParseResult.log;
+			parseHTTPTrafficLogs();
 			return parsedLog;
 		} catch (RecognitionException e) {
 			throw new java.text.ParseException(
@@ -46,4 +49,19 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 		}
 	}
 
+	/**
+	 * Parses HTTP traffic logs for HTTP request and response headers.
+	 * Seeks the session store for HTTP traffic sessions and amends them accordingly.
+	 * @throws IOException 
+	 */
+	private void parseHTTPTrafficLogs() throws IOException
+	{
+		UsaProxyHTTPTrafficLogHandler handler = new UsaProxyHTTPTrafficLogHandler(logFile);
+		UsaProxyHTTPTrafficLogParser httpParser = new UsaProxyHTTPTrafficLogParser(handler);
+		for ( UsaProxyHTTPTraffic httpTrafficSession : UsaProxySessionStore.getHTTPTrafficSessions() )
+		{
+			httpTrafficSession.setRequestHeaders( httpParser.getRequestHeaders(httpTrafficSession) );
+			httpTrafficSession.setResponseHeaders( httpParser.getResponseHeaders(httpTrafficSession) );
+		}
+	}
 }

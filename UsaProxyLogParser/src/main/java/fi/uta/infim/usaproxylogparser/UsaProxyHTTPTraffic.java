@@ -8,6 +8,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -186,6 +187,20 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	private UsaProxyHTTPTrafficStartEntry entry;
 	
 	/**
+	 * HTTP headers in the original HTTP request. Parsed from the http traffic
+	 * log file that corresponds to the traffic id.
+	 */
+	private HashMap< String, String > requestHeaders =
+			new HashMap< String, String >();
+	
+	/**
+	 * HTTP headers in the original HTTP response. Parsed from the corresponding
+	 * http traffic log file.
+	 */
+	private HashMap< String, String > responseHeaders =
+			new HashMap< String, String >();
+	
+	/**
 	 * Returns the user's IP address or null if not set.
 	 * @return user's IP address
 	 */
@@ -303,6 +318,22 @@ public class UsaProxyHTTPTraffic implements Serializable {
 
 	public void setEntry(UsaProxyHTTPTrafficStartEntry entry) {
 		this.entry = entry;
+	}
+
+	public HashMap< String, String > getRequestHeaders() {
+		return requestHeaders;
+	}
+
+	public void setRequestHeaders(HashMap< String, String > requestHeaders) {
+		this.requestHeaders = requestHeaders;
+	}
+
+	public HashMap< String, String > getResponseHeaders() {
+		return responseHeaders;
+	}
+
+	public void setResponseHeaders(HashMap< String, String > responseHeaders) {
+		this.responseHeaders = responseHeaders;
 	}
 
 }

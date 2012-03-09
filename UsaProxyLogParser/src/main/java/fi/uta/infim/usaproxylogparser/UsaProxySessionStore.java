@@ -1,5 +1,6 @@
 package fi.uta.infim.usaproxylogparser;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 
@@ -86,5 +87,15 @@ public final class UsaProxySessionStore {
 	public static void assignSessionsTo( UsaProxyLog log )
 	{
 		log.setSessions(Collections.unmodifiableCollection(sessions.values()));
+	}
+	
+	/**
+	 * Returns an unmodifiable reference to the http traffic sessions map.
+	 * The collection should only be modified by {@link UsaProxySession newSession} method.
+	 * @return 
+	 */
+	public static Collection<UsaProxyHTTPTraffic> getHTTPTrafficSessions()
+	{
+		return Collections.unmodifiableCollection( httpTrafficSessions.values() );
 	}
 }

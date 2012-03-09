@@ -29,14 +29,5 @@ public interface IUsaProxyLogParser {
 	 * @return The root object (node) of the log.
 	 */
 	public UsaProxyLog parseLog( String filename ) throws IOException, ParseException;
-	
-	/**
-	 * Parses the provided UsaProxy log and generates an object-based
-	 * representation of it. The representation can be used to generate XML
-	 * output using JAXB.
-	 * @param logStream A stream containing the log data.
-	 * @return The root object (node) of the log.
-	 */
-	public UsaProxyLog parseLog( InputStream logStream ) throws IOException, ParseException;
-	
+		
 }
