@@ -59,30 +59,67 @@
 	};
     
     // Function for opening a dialog window with details of a DOM element
-	var showElementDetails = function( httpTrafficId, domPath )
+	var showElementDetails = function( httpTrafficId, dataseries )
 	{
-		var details = session.httptraffics[ httpTrafficId ].domElements.details[ domPath ];
+		var details = session.httptraffics[ httpTrafficId ].domElements.details[ dataseries.elementDomId ];
 		
 		var detailsTable = {
 			'Node name': details.nodeName,
-			'DOM path': details.path,
-			'Appearances': details.appearances,
-			'Disappearances': details.disappearances
+			'DOM path': details.path
 		};
 		
 		var tableHTML = createHTMLTableFromObject( detailsTable );
 		
-		$( '<div title="Element details">' + tableHTML + 
-			'<h3 class="title">Contents</h3><p>' + 
-			unescape(details.content) + '</p></div>' )
+		var appearancesPlaceholder = $('<div />').css( {
+			width: '80%',
+			height: '50px',
+			margin: '1em',
+			padding: 0
+		} );
+		
+		$( '<div title="Element details" />' )  
 		.css({
 			'font-size': '80%'
-		}).dialog({
+		})
+		.append( $( tableHTML ) )
+		.append( $( '<h3 class="title">Appearances</h3>' ) )
+		.append( appearancesPlaceholder )
+		.append( $( '<h3 class="title">Contents</h3>' ) )
+		.append( $( '<p>' + unescape(details.content) + '</p>' ) )
+		.dialog({
 			buttons: {
 				"OK": function() { $(this).dialog("close"); } 
 			},
 			width: Math.floor( 0.8 * $( window ).width() )
 		});
+		
+		$.plot( appearancesPlaceholder, [ {data: dataseries.data} ], {
+				xaxis : {
+					mode: 'time',
+					min: dataseries.xaxis.min,
+					max: dataseries.xaxis.max
+                },
+	            yaxis : {
+	            	show: false,
+	                transform : function(v) {
+	                	return -v;
+	                },
+	                inverseTransform : function(v) {
+	                	return -v;
+	                }
+	            },
+	            series: {
+	            	lines: {
+	            		show: true,
+	            		lineWidth: 2
+	            	},
+	            	points: {
+	            		show: true,
+	            		radius: 5
+	            	},
+	            	shadowSize: 0
+	            }
+	    } );
 	};
 	
 	var initHTTPTrafficFilters = function( pTrafficObject, pForce )
@@ -358,7 +395,7 @@
             	{
             		if ( item )
             		{
-            			showElementDetails( x, item.series.elementDomId );
+            			showElementDetails( x, item.series );
             		}
             	};
             })( httpTrafficId ) );

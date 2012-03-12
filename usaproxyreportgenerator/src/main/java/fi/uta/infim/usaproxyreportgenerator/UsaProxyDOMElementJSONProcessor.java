@@ -27,8 +27,6 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		
 		JSONObject details = new JSONObject();
 		details.accumulate( "path", element.getPath() );
-		details.accumulate( "appearances", element.getAppears(), App.getConfig() );
-		details.accumulate( "disappearances", element.getDisappears(), App.getConfig() );
 		details.accumulate( "nodeName", element.getNodeName() );
 		
 		// Contents can either be read from the log if contents logging was enabled,
