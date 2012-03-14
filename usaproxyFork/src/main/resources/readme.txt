@@ -43,6 +43,11 @@ Command line switches:
 
 -logContentsLimit <n>	Limit contents logging to n characters.				
 
+-logExternalUrl			Only in server mode:
+						Log the external URL (UsaProxy URL) instead of the actual URL?
+						This is useful when the actual URL is only accessible to UsaProxy, so
+						logging it would be pointless.
+
 with <port> best between 1024 and 65535.				
 
 		

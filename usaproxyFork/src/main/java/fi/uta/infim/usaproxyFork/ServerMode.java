@@ -73,7 +73,7 @@ public class ServerMode implements Mode {
 	 */
 	public void setRequestURL(String url, String host) {
 		try {
-			this.requestURL = new URL("http://" + hostAddress.getHostName() + url);
+			this.requestURL = new URL("http://" + hostAddress.getHostName() + ":" + serverPort + url);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

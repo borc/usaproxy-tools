@@ -1396,9 +1396,22 @@ public class ClientRequest extends Thread {
 				
 				if(usaProxy.isLogging()) {
 					/** httpTraffic log entry */
-					// TODO: fix URL for local proxying
+
+					String loggedURL = "";
+					if ( usaProxy.isLogExternalUrl() && client.getHeaders().containsKey( "host" ) )
+					{
+						// Use HTTP header Host to find out the host name and port.
+						// If the header is not available, fall back to using actual URL.
+						// Use URL class to make sure the URL is valid.
+						loggedURL = new URL("http://" + client.getHeaders().get( "host" ) + url).toString();
+					}
+					else
+					{
+						loggedURL = requestURL.toString();
+					}
+					
 					String logData = (timeStamp != null ? timeStamp : timeStamp()) + 
-							" httptraffic url=" + URLEncoder.encode( requestURL.toString(), "ISO-8859-1" ) 
+							" httptraffic url=" + URLEncoder.encode( loggedURL, "ISO-8859-1" ) 
 							+ " sd=" + httpTrafficIndex;
 					usaProxy.getEventManager().log(null, logData, client.getSocket(), "log.txt");
 				}

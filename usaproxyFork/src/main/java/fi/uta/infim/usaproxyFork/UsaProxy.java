@@ -71,6 +71,14 @@ public class UsaProxy {
      */
     private int					contentsLoggingLimit;
     
+    /**
+     * Only in server mode:
+     * Log the external URL (UsaProxy URL) instead of the actual URL?
+     * This is useful when the actual URL is only accessible to UsaProxy, so
+     * logging it would be pointless.
+     */
+    private boolean 			logExternalUrl;
+    
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
     
@@ -86,6 +94,7 @@ public class UsaProxy {
      *  @param logMode specifies the type of logging (e.g. "all": full logging, "pagereq": only page requests)
      *  @param id is the name of this UsaProxy instance
      *  @param nodeTypes the node types whose appearances and disappearances are to be logged
+     *  @param logExternalUrl log UsaProxy URL instead of the actual URL (only in server mode)
      */
 	public UsaProxy(
 			int port, 
@@ -97,7 +106,8 @@ public class UsaProxy {
 			String id,
 			String[] nodeTypes,
 			boolean isLoggingContents,
-			int contentsLimit
+			int contentsLimit,
+			boolean logExternalUrl
 			) {
 		
 		this.port 					= port;
@@ -110,6 +120,7 @@ public class UsaProxy {
 		this.nodeTypes				= nodeTypes;
 		this.setLoggingContents(isLoggingContents);
 		this.setContentsLoggingLimit(contentsLimit);
+		this.setLogExternalUrl(logExternalUrl);
 		
 		try {
 			this.ip			= java.net.InetAddress.getLocalHost();
@@ -309,10 +320,15 @@ public class UsaProxy {
 		
 		/** switch -server */
 		boolean server = false;
+		boolean exUrls = false;
 		/** try to detect server declaration */
 		if ((index = indexOf(args, "-server"))!=-1) {
 			if(!remoteIP.equals("") && remotePort!=-1) {
 				server = true;
+				
+				// Check whether we want to log external URLs
+				exUrls = indexOf( args, "-logExternalUrl" ) != -1;
+				
 			/** server mode specified without specified remoteIP resp. remotePort */
 			} else {
 				/** reset remoteIP and remotePort */
@@ -460,7 +476,7 @@ public class UsaProxy {
 		
 		
 		/** generate an UsaProxy instance */
-		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, logContents, limitContents);
+		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, logContents, limitContents, exUrls);
 			
 	}
 
@@ -628,6 +644,14 @@ public class UsaProxy {
 
 	public void setContentsLoggingLimit(int contentsLoggingLimit) {
 		this.contentsLoggingLimit = contentsLoggingLimit;
+	}
+
+	public boolean isLogExternalUrl() {
+		return logExternalUrl;
+	}
+
+	public void setLogExternalUrl(boolean logExternalUrl) {
+		this.logExternalUrl = logExternalUrl;
 	}
 
 }
