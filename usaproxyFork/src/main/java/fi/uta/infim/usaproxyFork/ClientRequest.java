@@ -1062,8 +1062,8 @@ public class ClientRequest extends Thread {
          *  already done when original response was stored in corresponding
          *  httpTraffic file)
          *  */
-        if((server.getSocket().getLocalAddress()!=usaProxy.getIP()
-        		&& server.getSocket().getPort()!=usaProxy.getPort())
+        if((!server.getSocket().getInetAddress().equals( usaProxy.getIP() )
+        		|| server.getSocket().getPort()!=usaProxy.getPort())
         	/** if original (<> usaproxyload) remote monitoring page requested */
         	|| (requestURL.getPath().startsWith("/remotemonitoring")
         			&& (requestURL.getQuery()!=null ? requestURL.getQuery().indexOf("usaproxyload&")==-1:true))
@@ -1396,7 +1396,9 @@ public class ClientRequest extends Thread {
 				
 				if(usaProxy.isLogging()) {
 					/** httpTraffic log entry */
-					String logData = (timeStamp != null ? timeStamp : timeStamp()) + " httptraffic url=" + URLEncoder.encode( requestURL.toString(), "ISO-8859-1" ) 
+					// TODO: fix URL for local proxying
+					String logData = (timeStamp != null ? timeStamp : timeStamp()) + 
+							" httptraffic url=" + URLEncoder.encode( requestURL.toString(), "ISO-8859-1" ) 
 							+ " sd=" + httpTrafficIndex;
 					usaProxy.getEventManager().log(null, logData, client.getSocket(), "log.txt");
 				}
@@ -1476,7 +1478,7 @@ public class ClientRequest extends Thread {
 		}		
     }
     
-    /** Returns a timestamp string of the form "2004-12-31,23:59:59"
+    /** Returns a timestamp string of the form "2004-12-31,23:59:59.999"
      *  
      *  @return the timestamp
      *  */
