@@ -178,7 +178,7 @@ public final class App
     	sessionRoot.put( "timestamp", session.getStart() );
     	sessionRoot.put( "id", session.getSessionID() );
     	sessionRoot.put( "ip", session.getAddress().getHostAddress() );
-    	sessionRoot.put( "httpTraffics", session.getHttpTrafficSessions() );
+    	sessionRoot.put( "httpTraffics", session.getSortedHttpTrafficSessions() );
     	
     	Configuration cfg = new Configuration();
     	// Specify the data source where the template files come from.
