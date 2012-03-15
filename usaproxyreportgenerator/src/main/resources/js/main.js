@@ -230,7 +230,7 @@
 				.appendTo( listItem );
 			
 			$( '<label for="' + id + '">' + elementDetails.nodeName + ': ' + elementDetails.path + 
-					( elementDetails.content ? " (" + elementDetails.content.substr(0,30) + ")" : "" ) + 
+					( elementDetails.content ? " (" + unescape(elementDetails.content.substr(0,30)) + ")" : "" ) + 
 					'</label>' ).appendTo( listItem );
 			
 			listItem.appendTo( listElement );
