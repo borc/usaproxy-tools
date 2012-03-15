@@ -105,7 +105,7 @@
 						</div>
 						<div id="placeholders">
 							<#list session.httpTraffics as httpTraffic>
-								<div class="placeholder" id="${placeholderIdPrefix}${httpTraffic.sessionID}" />
+								<div class="placeholder" id="${placeholderIdPrefix}${httpTraffic.sessionID}"></div>
 							</#list>
 						</div>
 					</div>
