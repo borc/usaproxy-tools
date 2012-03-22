@@ -130,7 +130,7 @@ public enum EventType {
 	 * Returns the internal value used in JAXB [un]marshalling.
 	 * @return internal value
 	 */
-	public String value() {
+	String value() {
         return value;
     }
 	
@@ -139,7 +139,7 @@ public enum EventType {
 	 * @param value internal value (XML representation)
 	 * @return corresponding enum object
 	 */
-	public static EventType fromValue(String value) {
+	static EventType fromValue(String value) {
         for (EventType c: EventType.values()) {
             if (c.value.equals(value)) {
                 return c;

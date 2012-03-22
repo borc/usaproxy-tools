@@ -48,7 +48,7 @@ public final class UsaProxySessionStore {
 		return sessions.get(id);
 	}
 	
-	public static void putSession( UsaProxySession session )
+	static void putSession( UsaProxySession session )
 	{
 		sessions.put( session.getSessionID(), session );
 	}
@@ -58,7 +58,7 @@ public final class UsaProxySessionStore {
 		return httpTrafficSessions.get(Integer.valueOf( id ));
 	}
 	
-	public static void putHTTPTrafficSession( UsaProxyHTTPTraffic hts )
+	static void putHTTPTrafficSession( UsaProxyHTTPTraffic hts )
 	{
 		httpTrafficSessions.put( hts.getSessionID(), hts );
 	}
@@ -69,7 +69,7 @@ public final class UsaProxySessionStore {
 				screens.get( httpTrafficId ).get( Integer.parseInt(id) );
 	}
 	
-	public static void putScreen( UsaProxyScreen screen, UsaProxyHTTPTraffic httpTraffic )
+	static void putScreen( UsaProxyScreen screen, UsaProxyHTTPTraffic httpTraffic )
 	{
 		HashMap<Integer,UsaProxyScreen> theMap = screens.get( httpTraffic.getSessionID() );
 		if ( theMap == null )
@@ -86,7 +86,7 @@ public final class UsaProxySessionStore {
 			domElements.get( httpTrafficId ).get( id );
 	}
 	
-	public static void putDOMElement( UsaProxyDOMElement element )
+	static void putDOMElement( UsaProxyDOMElement element )
 	{
 		HashMap<String,UsaProxyDOMElement> theMap = domElements.get( element.getHttpTraffic().getSessionID() );
 		if ( theMap == null )
@@ -104,7 +104,7 @@ public final class UsaProxySessionStore {
 	 * modify the collection.
 	 * @param log the log to insert the sessions into
 	 */
-	public static void assignSessionsTo( UsaProxyLog log )
+	static void assignSessionsTo( UsaProxyLog log )
 	{
 		log.setSessions(Collections.unmodifiableCollection(sessions.values()));
 	}

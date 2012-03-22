@@ -86,7 +86,7 @@ public class UsaProxySession implements Serializable {
 	 * @param address user's ip address
 	 * @return the created object
 	 */
-	public static UsaProxySession newSession( String sessionID, String address, Date start )
+	static UsaProxySession newSession( String sessionID, String address, Date start )
 	{
 		UsaProxySession s = new UsaProxySession(sessionID, address, start );
 		UsaProxySessionStore.putSession(s);
@@ -154,7 +154,7 @@ public class UsaProxySession implements Serializable {
 		return sessionID;
 	}
 
-	public void setSessionID(String sessionID) {
+	void setSessionID(String sessionID) {
 		this.sessionID = sessionID;
 	}
 
@@ -164,7 +164,7 @@ public class UsaProxySession implements Serializable {
 		return address;
 	}
 
-	public void setAddress(InetAddress address) {
+	void setAddress(InetAddress address) {
 		this.address = address;
 	}
 
@@ -173,7 +173,7 @@ public class UsaProxySession implements Serializable {
 		return httpTrafficSessions;
 	}
 
-	public void setHttpTrafficSessions(HashSet< UsaProxyHTTPTraffic > httpTrafficSessions) {
+	void setHttpTrafficSessions(HashSet< UsaProxyHTTPTraffic > httpTrafficSessions) {
 		this.httpTrafficSessions = httpTrafficSessions;
 	}
 
@@ -194,7 +194,7 @@ public class UsaProxySession implements Serializable {
 		return start;
 	}
 
-	public void setStart(Date start) {
+	void setStart(Date start) {
 		this.start = start;
 	}
 	
@@ -203,7 +203,7 @@ public class UsaProxySession implements Serializable {
 	 * or represents a later time than the parameter.
 	 * @param start timestamp to test against
 	 */
-	public void testAndSetStart(Date start) {
+	void testAndSetStart(Date start) {
 		if ( this.start == null || start.before(this.start) )
 		{
 			this.start = start;

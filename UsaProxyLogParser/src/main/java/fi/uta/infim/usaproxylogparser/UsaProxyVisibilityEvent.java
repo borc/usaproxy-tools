@@ -75,7 +75,7 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		 * Returns the internal value used in JAXB [un]marshalling.
 		 * @return internal value
 		 */
-		public String value() {
+		String value() {
 	        return value;
 	    }
 		
@@ -84,7 +84,7 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		 * @param value "top", "left", "right", "bottom", "initial" or "unknown"
 		 * @return the enum representation of supplied string
 		 */
-		public static Edge fromValue(String value) {
+		static Edge fromValue(String value) {
 	        for (Edge c: Edge.values()) {
 	            if (c.value.equals(value)) {
 	                return c;
@@ -116,7 +116,7 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 	 * Constructs a full visibility event. Note that this constructor should 
 	 * only be called by subclass constructors.
 	 */
-	protected UsaProxyVisibilityEvent(String eventType,
+	UsaProxyVisibilityEvent(String eventType,
 			HashMap<String, String> attributes, String sessionID,
 			String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry) {
 		super(eventType, attributes, sessionID, httpTrafficIndex, ip, entry);
@@ -142,7 +142,7 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		return edge;
 	}
 
-	public void setEdge(Edge edge) {
+	void setEdge(Edge edge) {
 		this.edge = edge;
 	}
 
@@ -150,7 +150,7 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		return topPosition;
 	}
 
-	public void setTopPosition(Double topPosition) {
+	void setTopPosition(Double topPosition) {
 		this.topPosition = topPosition;
 	}
 
@@ -158,7 +158,7 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		return bottomPosition;
 	}
 
-	public void setBottomPosition(Double bottomPosition) {
+	void setBottomPosition(Double bottomPosition) {
 		this.bottomPosition = bottomPosition;
 	}
 

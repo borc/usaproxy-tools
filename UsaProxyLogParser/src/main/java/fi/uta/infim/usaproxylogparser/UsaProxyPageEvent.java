@@ -27,7 +27,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * @param ip user's IP address as logged (will be parsed)
 	 * @param entry the log entry that contains this event
 	 */
-	public UsaProxyPageEvent(String eventType, HashMap< String, String > attributes,
+	UsaProxyPageEvent(String eventType, HashMap< String, String > attributes,
 			String sessionID, String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry) {
 		super();
 		
@@ -149,7 +149,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return type;
 	}
 
-	public void setType(EventType type) {
+	void setType(EventType type) {
 		this.type = type;
 	}
 
@@ -158,7 +158,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * if event type is unknown (ie. not known by {@link EventType}).
 	 * @param evtype the event name as string
 	 */
-	public void setType( String evtype )
+	void setType( String evtype )
 	{
 		// Find the correct event type by looping the enum values
 		for ( EventType type : EventType.values() )
@@ -181,7 +181,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return attributes;
 	}
 
-	public void setAttributes(HashMap< String, String > attributes) {
+	void setAttributes(HashMap< String, String > attributes) {
 		this.attributes = attributes;
 	}
 
@@ -191,7 +191,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return session;
 	}
 
-	public void setSession(UsaProxySession session) {
+	void setSession(UsaProxySession session) {
 		this.session = session;
 		if ( session != null )
 		{
@@ -206,7 +206,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * @param sessionId session id, as logged
 	 * @param ip user's ip address, as logged
 	 */
-	public void setSession( String sessionId, String ip )
+	void setSession( String sessionId, String ip )
 	{
 		// Use an existing session if one exists in the session store
 		UsaProxySession session = UsaProxySessionStore.getSessionById(sessionId);
@@ -222,7 +222,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return httpTrafficSession;
 	}
 
-	public void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
+	void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
 		this.httpTrafficSession = httpTrafficSession;
 	}
 
@@ -235,7 +235,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * @param id HTTP traffic id, as logged
 	 * @param ip user's ip address, as logged
 	 */
-	public void setHttpTrafficSession(String id, String ip) {
+	void setHttpTrafficSession(String id, String ip) {
 		UsaProxyHTTPTraffic httpSession = UsaProxySessionStore.getHTTPTrafficSessionById(id);
 		if ( httpSession == null )
 		{
@@ -256,7 +256,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return domPath;
 	}
 
-	public void setDomPath(UsaProxyDOMElement domPath) {
+	void setDomPath(UsaProxyDOMElement domPath) {
 		this.domPath = domPath;
 		domPath.getEvents().add(this);
 	}
@@ -270,7 +270,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * @param nodeName node name as logged
 	 * @param contents element contents as a string - can be null
 	 */
-	public void setDomPath(String domPath, String nodeName, String contents) {
+	void setDomPath(String domPath, String nodeName, String contents) {
 		UsaProxyDOMElement element = UsaProxySessionStore.getDOMElementById( 
 				getHttpTrafficSession().getSessionID(),	domPath );
 		if ( element == null )
@@ -295,7 +295,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return screen;
 	}
 
-	public void setScreen(UsaProxyScreen screen) {
+	void setScreen(UsaProxyScreen screen) {
 		this.screen = screen;
 		screen.getEvents().add(this);
 	}
@@ -305,7 +305,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * used if one exists in the session store. If not, a new one is created.
 	 * @param screenID
 	 */
-	private void setScreen(String screenID) {
+	void setScreen(String screenID) {
 		UsaProxyScreen s = UsaProxySessionStore.getScreenById(getHttpTrafficSession().getSessionID(), screenID);
 		if ( s == null )
 		{
@@ -318,7 +318,7 @@ public class UsaProxyPageEvent implements Serializable {
 		return entry;
 	}
 
-	public void setEntry(UsaProxyPageEventEntry entry) {
+	void setEntry(UsaProxyPageEventEntry entry) {
 		this.entry = entry;
 	}
 

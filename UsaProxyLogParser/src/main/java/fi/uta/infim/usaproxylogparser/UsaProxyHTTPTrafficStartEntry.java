@@ -24,7 +24,7 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 	private UsaProxyHTTPTraffic httpTrafficSession;
 
 	/**
-	 * Constructor.
+	 * Constructor. Left public for different log parser implementations.
 	 * @param address user's IP address as logged
 	 * @param url the url accessed as logged
 	 * @param sessionID session id as logged
@@ -76,7 +76,7 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 		return httpTrafficSession;
 	}
 
-	public void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
+	void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
 		this.httpTrafficSession = httpTrafficSession;
 	}
 	
@@ -88,7 +88,7 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 	 * @param url the url accessed, as logged
 	 * @param sessionID session id as logged
 	 */
-	public void setHttpTrafficSession(String address, String url, String sessionID) {
+	void setHttpTrafficSession(String address, String url, String sessionID) {
 		UsaProxyHTTPTraffic htSession = UsaProxySessionStore.getHTTPTrafficSessionById(sessionID);
 		if ( htSession == null )
 		{

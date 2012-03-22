@@ -27,7 +27,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 	 * @param ip user's ip address as logged
 	 * @param entry the log entry that contains this event
 	 */
-	public UsaProxyViewportChangeEvent(String eventType,
+	UsaProxyViewportChangeEvent(String eventType,
 			HashMap<String, String> attributes, String sessionID,
 			String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry) {
 		super(eventType, attributes, sessionID, httpTrafficIndex, ip, entry);
@@ -111,7 +111,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return viewportTop;
 	}
 
-	public void setViewportTop(Double viewportTop) {
+	void setViewportTop(Double viewportTop) {
 		this.viewportTop = viewportTop;
 	}
 
@@ -119,7 +119,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return viewportBottom;
 	}
 
-	public void setViewportBottom(Double viewportBottom) {
+	void setViewportBottom(Double viewportBottom) {
 		this.viewportBottom = viewportBottom;
 	}
 
@@ -127,7 +127,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return viewportLeft;
 	}
 
-	public void setViewportLeft(Double viewportLeft) {
+	void setViewportLeft(Double viewportLeft) {
 		this.viewportLeft = viewportLeft;
 	}
 
@@ -135,7 +135,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return viewportRight;
 	}
 
-	public void setViewportRight(Double viewportRight) {
+	void setViewportRight(Double viewportRight) {
 		this.viewportRight = viewportRight;
 	}
 
@@ -143,7 +143,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return documentHeight;
 	}
 
-	public void setDocumentHeight(Integer documentHeight) {
+	void setDocumentHeight(Integer documentHeight) {
 		this.documentHeight = documentHeight;
 	}
 
@@ -151,7 +151,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return documentWidth;
 	}
 
-	public void setDocumentWidth(Integer documentWidth) {
+	void setDocumentWidth(Integer documentWidth) {
 		this.documentWidth = documentWidth;
 	}
 
@@ -159,7 +159,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return viewportHeight;
 	}
 
-	public void setViewportHeight(Integer viewportHeight) {
+	void setViewportHeight(Integer viewportHeight) {
 		this.viewportHeight = viewportHeight;
 	}
 
@@ -167,7 +167,7 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		return viewportWidth;
 	}
 
-	public void setViewportWidth(Integer viewportWidth) {
+	void setViewportWidth(Integer viewportWidth) {
 		this.viewportWidth = viewportWidth;
 	}
 	

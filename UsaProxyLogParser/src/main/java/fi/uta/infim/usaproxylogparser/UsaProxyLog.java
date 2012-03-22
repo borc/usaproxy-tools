@@ -45,7 +45,7 @@ public class UsaProxyLog implements Serializable {
 	}
 
 	/**
-	 * Regular constructor.
+	 * Regular constructor. Left public for parser implementations.
 	 * @param entries the log entries contained in this log.
 	 */
 	public UsaProxyLog(Vector<UsaProxyLogEntry> entries) {
@@ -59,7 +59,7 @@ public class UsaProxyLog implements Serializable {
 		return entries;
 	}
 
-	public void setEntries(Vector< UsaProxyLogEntry > entries) {
+	void setEntries(Vector< UsaProxyLogEntry > entries) {
 		this.entries = entries;
 	}
 	
@@ -104,7 +104,7 @@ public class UsaProxyLog implements Serializable {
 		return Collections.unmodifiableCollection( sessions );
 	}
 
-	public void setSessions(Collection< UsaProxySession > sessions) {
+	void setSessions(Collection< UsaProxySession > sessions) {
 		this.sessions = sessions;
 	}
 }

@@ -19,7 +19,7 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 	private static final long serialVersionUID = 2933150130413400056L;
 	
 	/**
-	 * Constructor for a full entry object.
+	 * Constructor for a full entry object. Left public for parser implementations.
 	 * @param ip user's ip address, as logged
 	 * @param timestamp log timestamp, as logged
 	 * @param index HTTP traffic id, as logged
@@ -76,7 +76,7 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 		return event;
 	}
 
-	public void setEvent(UsaProxyPageEvent event) {
+	void setEvent(UsaProxyPageEvent event) {
 		this.event = event;
 	}
 	

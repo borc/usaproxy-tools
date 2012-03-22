@@ -85,7 +85,7 @@ public class UsaProxyDOMElement implements Serializable {
 	 * for parameters.
 	 * @return the constructed object
 	 */
-	public static UsaProxyDOMElement newDOMElement( String path, 
+	static UsaProxyDOMElement newDOMElement( String path, 
 			UsaProxyHTTPTraffic traffic, String nodeName, String contents )
 	{
 		UsaProxyDOMElement e = new UsaProxyDOMElement(path, traffic, nodeName, contents);
@@ -146,7 +146,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return path;
 	}
 
-	public void setPath(String path) {
+	void setPath(String path) {
 		this.path = path;
 	}
 
@@ -155,7 +155,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return httpTraffic;
 	}
 
-	public void setHttpTraffic(UsaProxyHTTPTraffic httpTraffic) {
+	void setHttpTraffic(UsaProxyHTTPTraffic httpTraffic) {
 		this.httpTraffic = httpTraffic;
 		httpTraffic.getDomElements().add(this);
 	}
@@ -165,7 +165,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return events;
 	}
 
-	public void setEvents(Vector< UsaProxyPageEvent > events) {
+	void setEvents(Vector< UsaProxyPageEvent > events) {
 		this.events = events;
 	}
 
@@ -174,7 +174,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return appears;
 	}
 
-	public void setAppears(Vector< UsaProxyAppearanceEvent > appears) {
+	void setAppears(Vector< UsaProxyAppearanceEvent > appears) {
 		this.appears = appears;
 	}
 
@@ -183,7 +183,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return disappears;
 	}
 
-	public void setDisappears(Vector< UsaProxyDisappearanceEvent > disappears) {
+	void setDisappears(Vector< UsaProxyDisappearanceEvent > disappears) {
 		this.disappears = disappears;
 	}
 
@@ -192,7 +192,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return nodeName;
 	}
 
-	public void setNodeName(String nodeName) {
+	void setNodeName(String nodeName) {
 		this.nodeName = nodeName;
 	}
 
@@ -200,7 +200,7 @@ public class UsaProxyDOMElement implements Serializable {
 		return contents;
 	}
 
-	public void setContents(String contents) {
+	void setContents(String contents) {
 		this.contents = contents;
 	}
 	

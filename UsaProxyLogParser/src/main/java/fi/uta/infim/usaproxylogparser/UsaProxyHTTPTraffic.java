@@ -115,7 +115,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * @param sessionID UsaProxy generated HTTP Traffic Index as string, eg. "10993"
 	 * @return the newly created session object
 	 */
-	public static UsaProxyHTTPTraffic newHTTPTrafficSession( String address, 
+	static UsaProxyHTTPTraffic newHTTPTrafficSession( String address, 
 			String url, String sessionID, UsaProxySession session, UsaProxyHTTPTrafficStartEntry entry )
 	{
 		UsaProxyHTTPTraffic t = new UsaProxyHTTPTraffic( address, url, sessionID, session, entry );
@@ -227,7 +227,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Setter for the user's IP address
 	 * @param address user's IP address
 	 */
-	public void setAddress(InetAddress address) {
+	void setAddress(InetAddress address) {
 		this.address = address;
 	}
 
@@ -243,7 +243,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Generic setter for the URL accessed during this http traffic session.
 	 * @param url the URL object
 	 */
-	public void setUrl(URL url) {
+	void setUrl(URL url) {
 		this.url = url;
 	}
 
@@ -251,7 +251,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * String-based setter for the URL accessed during this HTTP traffic session.
 	 * @param url the URL as string, eg. "http://www.hs.fi"
 	 */
-	public void setUrl(String url) {
+	void setUrl(String url) {
 		String decodedURL = "";
 		try {
 			decodedURL = URLDecoder.decode(url, "ISO-8859-1" );
@@ -280,7 +280,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Generic setter for the http traffic session ID. Identifiers must be unique.
 	 * @param sessionID the http traffic session id
 	 */
-	public void setSessionID(Integer sessionID) {
+	void setSessionID(Integer sessionID) {
 		this.sessionID = sessionID;
 	}
 
@@ -290,7 +290,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		return screens;
 	}
 
-	public void setScreens(LinkedList< UsaProxyScreen > screens) {
+	void setScreens(LinkedList< UsaProxyScreen > screens) {
 		this.screens = screens;
 	}
 
@@ -308,7 +308,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		return session;
 	}
 
-	public void setSession(UsaProxySession session) {
+	void setSession(UsaProxySession session) {
 		this.session = session;
 		if ( session != null )
 		{
@@ -325,7 +325,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		return domElements;
 	}
 
-	public void setDomElements(HashSet< UsaProxyDOMElement > domElements) {
+	void setDomElements(HashSet< UsaProxyDOMElement > domElements) {
 		this.domElements = domElements;
 	}
 
@@ -333,7 +333,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		return entry;
 	}
 
-	public void setEntry(UsaProxyHTTPTrafficStartEntry entry) {
+	void setEntry(UsaProxyHTTPTrafficStartEntry entry) {
 		this.entry = entry;
 	}
 
@@ -341,7 +341,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		return requestHeaders;
 	}
 
-	public void setRequestHeaders(HashMap< String, String > requestHeaders) {
+	void setRequestHeaders(HashMap< String, String > requestHeaders) {
 		this.requestHeaders = requestHeaders;
 	}
 
@@ -349,7 +349,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		return responseHeaders;
 	}
 
-	public void setResponseHeaders(HashMap< String, String > responseHeaders) {
+	void setResponseHeaders(HashMap< String, String > responseHeaders) {
 		this.responseHeaders = responseHeaders;
 	}
 

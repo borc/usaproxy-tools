@@ -46,7 +46,7 @@ public class UsaProxyScreen implements Serializable {
 	 * @param httpTrafficSession the containing http traffic session
 	 * @return the newly created screen object
 	 */
-	public static UsaProxyScreen newScreen( Integer id, UsaProxyHTTPTraffic httpTrafficSession )
+	static UsaProxyScreen newScreen( Integer id, UsaProxyHTTPTraffic httpTrafficSession )
 	{
 		UsaProxyScreen screen = new UsaProxyScreen(id );
 		UsaProxySessionStore.putScreen(screen, httpTrafficSession);
@@ -87,7 +87,7 @@ public class UsaProxyScreen implements Serializable {
 		return ID;
 	}
 
-	public void setID(Integer iD) {
+	void setID(Integer iD) {
 		ID = iD;
 	}
 
@@ -96,7 +96,7 @@ public class UsaProxyScreen implements Serializable {
 		return httpTrafficSession;
 	}
 
-	public void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
+	void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
 		this.httpTrafficSession = httpTrafficSession;
 		httpTrafficSession.getScreens().add(this);
 	}
@@ -111,7 +111,7 @@ public class UsaProxyScreen implements Serializable {
 		return events;
 	}
 
-	public void setEvents(Vector< UsaProxyPageEvent > events) {
+	void setEvents(Vector< UsaProxyPageEvent > events) {
 		this.events = events;
 	}
 
@@ -120,7 +120,7 @@ public class UsaProxyScreen implements Serializable {
 		return initialViewportEvent;
 	}
 
-	public void setInitialViewportEvent(UsaProxyViewportChangeEvent initialViewportEvent) {
+	void setInitialViewportEvent(UsaProxyViewportChangeEvent initialViewportEvent) {
 		this.initialViewportEvent = initialViewportEvent;
 	}
 
@@ -129,7 +129,7 @@ public class UsaProxyScreen implements Serializable {
 		return scrollStart;
 	}
 
-	public void setScrollStart(UsaProxyScrollStartEvent scrollStart) {
+	void setScrollStart(UsaProxyScrollStartEvent scrollStart) {
 		this.scrollStart = scrollStart;
 	}
 	

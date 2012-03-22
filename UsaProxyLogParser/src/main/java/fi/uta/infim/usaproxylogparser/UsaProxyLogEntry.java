@@ -59,7 +59,7 @@ public abstract class UsaProxyLogEntry implements Serializable {
 	 * Constructor for log entries.
 	 * @param timestamp the timestamp of this log entry, as logged
 	 */
-	public UsaProxyLogEntry(String timestamp) {
+	UsaProxyLogEntry(String timestamp) {
 		super();
 		try {
 			this.timestamp = usaProxyTSFormat.parse( timestamp );
@@ -86,7 +86,7 @@ public abstract class UsaProxyLogEntry implements Serializable {
 		return timestamp;
 	}
 
-	public void setTimestamp(Date timestamp) {
+	void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
 }

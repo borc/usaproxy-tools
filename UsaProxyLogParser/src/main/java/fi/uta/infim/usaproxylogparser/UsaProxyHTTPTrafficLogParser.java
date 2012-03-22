@@ -12,7 +12,7 @@ import java.util.HashMap;
  * @author Teemu Pääkkönen
  *
  */
-public class UsaProxyHTTPTrafficLogParser {
+class UsaProxyHTTPTrafficLogParser {
 
 	/**
 	 * A handler is needed for accessing the files.
@@ -23,7 +23,7 @@ public class UsaProxyHTTPTrafficLogParser {
 	 * Constructor.
 	 * @param handler a handler for accessing the http log files
 	 */
-	public UsaProxyHTTPTrafficLogParser(UsaProxyHTTPTrafficLogHandler handler) {
+	UsaProxyHTTPTrafficLogParser(UsaProxyHTTPTrafficLogHandler handler) {
 		super();
 		this.handler = handler;
 	}
@@ -34,7 +34,7 @@ public class UsaProxyHTTPTrafficLogParser {
 	 * @return the HTTP request headers of the supplied http traffic session
 	 * @throws IOException when http traffic log file is not found or is inaccessible
 	 */
-	public HashMap< String, String > getRequestHeaders( UsaProxyHTTPTraffic traffic ) throws IOException
+	HashMap< String, String > getRequestHeaders( UsaProxyHTTPTraffic traffic ) throws IOException
 	{
 		return getHeaders(traffic, false);
 	}
@@ -45,7 +45,7 @@ public class UsaProxyHTTPTrafficLogParser {
 	 * @return the HTTP response headers for the supplied http traffic session
 	 * @throws IOException when the http traffic log file is not found or cannot be read
 	 */
-	public HashMap< String, String > getResponseHeaders( UsaProxyHTTPTraffic traffic ) throws IOException
+	HashMap< String, String > getResponseHeaders( UsaProxyHTTPTraffic traffic ) throws IOException
 	{
 		return getHeaders(traffic, true);
 	}
