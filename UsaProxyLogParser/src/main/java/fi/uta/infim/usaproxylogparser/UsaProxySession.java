@@ -107,7 +107,7 @@ public class UsaProxySession implements Serializable {
 	/**
 	 * The HTTP traffics contained in this session. Each HTTP traffic
 	 * describes a single page load. Orderable by timestamp with 
-	 * {@link HTTPTrafficComparator}.
+	 * {@link fi.uta.infim.usaproxylogparser.UsaProxySession.HTTPTrafficComparator}.
 	 */
 	private HashSet< UsaProxyHTTPTraffic > httpTrafficSessions =
 			new HashSet<UsaProxyHTTPTraffic>();

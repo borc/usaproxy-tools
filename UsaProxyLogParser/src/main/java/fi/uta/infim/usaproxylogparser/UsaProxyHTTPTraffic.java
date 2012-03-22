@@ -296,7 +296,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 
 	/**
 	 * Sorts all the screen objects in this HTTP traffic object, using
-	 * {@link UsaProxyScreenComparator}.
+	 * {@link fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic.UsaProxyScreenComparator}.
 	 */
 	public void sortScreens()
 	{

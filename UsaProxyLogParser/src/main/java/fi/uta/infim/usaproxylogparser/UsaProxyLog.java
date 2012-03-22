@@ -97,7 +97,7 @@ public class UsaProxyLog implements Serializable {
 
 	/**
 	 * A read-only view to the sessions collection.
-	 * @return
+	 * @return an unmodifiable collection containing all current usaproxy sessions
 	 */
 	@XmlElement( name="session" )
 	public Collection< UsaProxySession > getSessions() {
