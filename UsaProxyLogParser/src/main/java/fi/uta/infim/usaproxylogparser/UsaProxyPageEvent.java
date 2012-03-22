@@ -144,6 +144,10 @@ public class UsaProxyPageEvent implements Serializable {
 	@XmlTransient
 	private UsaProxyPageEventEntry entry;
 	
+	/**
+	 * The event type. See {@link EventType} for details.
+	 * @return this event's type
+	 */
 	@XmlAttribute
 	public EventType getType() {
 		return type;
@@ -177,6 +181,11 @@ public class UsaProxyPageEvent implements Serializable {
 		}
 	}
 
+	/**
+	 * The attributes of this event in key-value pairs. Contains only the
+	 * attributes that havent been mapped to member variables.
+	 * @return map of event attributes
+	 */
 	public HashMap< String, String > getAttributes() {
 		return attributes;
 	}
@@ -185,6 +194,10 @@ public class UsaProxyPageEvent implements Serializable {
 		this.attributes = attributes;
 	}
 
+	/**
+	 * The session during which this event occurred.
+	 * @return session object
+	 */
 	@XmlJavaTypeAdapter( SessionAdapter.class )
 	@XmlAttribute
 	public UsaProxySession getSession() {
@@ -217,6 +230,10 @@ public class UsaProxyPageEvent implements Serializable {
 		setSession(session);
 	}
 	
+	/**
+	 * The HTTP traffic session during which this event occurred.
+	 * @return http traffic session of this event
+	 */
 	@XmlTransient
 	public UsaProxyHTTPTraffic getHttpTrafficSession() {
 		return httpTrafficSession;
@@ -252,6 +269,10 @@ public class UsaProxyPageEvent implements Serializable {
 		setHttpTrafficSession(httpSession);
 	}
 
+	/**
+	 * The DOM element whose context this event occurred in.
+	 * @return a dom element
+	 */
 	public UsaProxyDOMElement getDomPath() {
 		return domPath;
 	}
@@ -290,6 +311,10 @@ public class UsaProxyPageEvent implements Serializable {
 		setDomPath(element);
 	}
 	
+	/**
+	 * The screen during which this event occurred.
+	 * @return screen object
+	 */
 	@XmlTransient
 	public UsaProxyScreen getScreen() {
 		return screen;
@@ -314,6 +339,10 @@ public class UsaProxyPageEvent implements Serializable {
 		setScreen(s);
 	}
 
+	/**
+	 * The log entry that contains this event.
+	 * @return event's log entry
+	 */
 	public UsaProxyPageEventEntry getEntry() {
 		return entry;
 	}

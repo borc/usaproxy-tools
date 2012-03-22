@@ -81,6 +81,11 @@ public abstract class UsaProxyLogEntry implements Serializable {
 	 */
 	private Date timestamp;
 
+	/**
+	 * The time stamp of this log entry. Doesn't necessarily represent the 
+	 * exact moment when the event described in the entry occurred.
+	 * @return time stamp of log entry
+	 */
 	@XmlAttribute
 	public Date getTimestamp() {
 		return timestamp;

@@ -107,6 +107,11 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 	 */
 	private Integer viewportWidth;
 
+	/**
+	 * Returns viewport's top's position
+	 * @return The position of the viewport's top, relative to the document's height.
+	 * Percentage. 0% = top, 100% = bottom.
+	 */
 	public Double getViewportTop() {
 		return viewportTop;
 	}
@@ -115,6 +120,11 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.viewportTop = viewportTop;
 	}
 
+	/**
+	 * Return viewport's bottom's position
+	 * @return The position of the viewport's bottom, relative to the document's height.
+	 * Percentage. 0% = top, 100% = bottom.
+	 */
 	public Double getViewportBottom() {
 		return viewportBottom;
 	}
@@ -123,6 +133,11 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.viewportBottom = viewportBottom;
 	}
 
+	/**
+	 * Returns viewport's left edge's position
+	 * @return The position of the viewport's left edge, relative to the document's width.
+	 * Percentage. 0% = top, 100% = bottom.
+	 */
 	public Double getViewportLeft() {
 		return viewportLeft;
 	}
@@ -131,6 +146,11 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.viewportLeft = viewportLeft;
 	}
 
+	/**
+	 * Returns viewport's right edge's position
+	 * @return The position of the viewport's right edge, relative to the document's width.
+	 * Percentage. 0% = top, 100% = bottom.
+	 */
 	public Double getViewportRight() {
 		return viewportRight;
 	}
@@ -139,6 +159,10 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.viewportRight = viewportRight;
 	}
 
+	/**
+	 * Returns document's height
+	 * @return Document's height in pixels
+	 */
 	public Integer getDocumentHeight() {
 		return documentHeight;
 	}
@@ -147,6 +171,10 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.documentHeight = documentHeight;
 	}
 
+	/**
+	 * Returns document's width
+	 * @return document's width in pixels
+	 */
 	public Integer getDocumentWidth() {
 		return documentWidth;
 	}
@@ -155,6 +183,10 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.documentWidth = documentWidth;
 	}
 
+	/**
+	 * Returns viewport's height
+	 * @return Height of browser window (viewport) in pixels
+	 */
 	public Integer getViewportHeight() {
 		return viewportHeight;
 	}
@@ -163,6 +195,10 @@ public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 		this.viewportHeight = viewportHeight;
 	}
 
+	/**
+	 * Returns viewport's width
+	 * @return Width of the browser window (viewport) in pixels.
+	 */
 	public Integer getViewportWidth() {
 		return viewportWidth;
 	}

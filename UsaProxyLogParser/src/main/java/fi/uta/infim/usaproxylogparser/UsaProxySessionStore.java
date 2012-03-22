@@ -43,6 +43,11 @@ public final class UsaProxySessionStore {
 	 */
 	private UsaProxySessionStore(){}
 	
+	/**
+	 * Finds a session by session id.
+	 * @param id session id
+	 * @return the session object if it exists in the store. Otherwise null.
+	 */
 	public static UsaProxySession getSessionById( String id )
 	{
 		return sessions.get(id);
@@ -53,6 +58,11 @@ public final class UsaProxySessionStore {
 		sessions.put( session.getSessionID(), session );
 	}
 	
+	/**
+	 * Finds a HTTP traffic session by http traffic id.
+	 * @param id http traffic id
+	 * @return the http traffic session if it exists in the store. Otherwise null.
+	 */
 	public static UsaProxyHTTPTraffic getHTTPTrafficSessionById( String id )
 	{
 		return httpTrafficSessions.get(Integer.valueOf( id ));
@@ -63,6 +73,12 @@ public final class UsaProxySessionStore {
 		httpTrafficSessions.put( hts.getSessionID(), hts );
 	}
 	
+	/**
+	 * Finds a screen by http traffic id and screen id.
+	 * @param httpTrafficId http traffic id
+	 * @param id screen id (as logged)
+	 * @return the screen if it exists in the store. Otherwise null.
+	 */
 	public static UsaProxyScreen getScreenById( Integer httpTrafficId, String id )
 	{
 		return !screens.containsKey( httpTrafficId ) ? null : 
@@ -80,6 +96,12 @@ public final class UsaProxySessionStore {
 		theMap.put( screen.getID(), screen );
 	}
 	
+	/**
+	 * Finds a DOM element by supplied traffic id and dom path.
+	 * @param httpTrafficId the HTTP traffic id
+	 * @param id DOM path of the element
+	 * @return the element if it exists in the store, otherwise null
+	 */
 	public static UsaProxyDOMElement getDOMElementById( Integer httpTrafficId, String id )
 	{
 		return !domElements.containsKey( httpTrafficId ) ? null : 

@@ -284,6 +284,12 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.sessionID = sessionID;
 	}
 
+	/**
+	 * The "screens" that have appeared during this http traffic session.
+	 * Each screen object represents a single browser viewport state on
+	 * the document represented by the {@link #url}.
+	 * @return list of screens
+	 */
 	@XmlElementWrapper
 	@XmlElement( name="screen", type=UsaProxyScreen.class )
 	public LinkedList< UsaProxyScreen > getScreens() {
@@ -303,6 +309,11 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		Collections.sort( this.screens, new UsaProxyScreenComparator() );
 	}
 	
+	/**
+	 * The usaproxy session during which this http traffic session was
+	 * initialized.
+	 * @return usaproxy session object
+	 */
 	@XmlTransient
 	public UsaProxySession getSession() {
 		return session;
@@ -320,6 +331,11 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		}
 	}
 
+	/**
+	 * The DOM elements that appeared or had events occur in their context
+	 * during this HTTP traffic session. May be empty.
+	 * @return list of DOM elements
+	 */
 	@XmlTransient
 	public HashSet< UsaProxyDOMElement > getDomElements() {
 		return domElements;
@@ -329,6 +345,10 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.domElements = domElements;
 	}
 
+	/**
+	 * The log entry that contains this http traffic session init line.
+	 * @return a log entry object
+	 */
 	public UsaProxyHTTPTrafficStartEntry getEntry() {
 		return entry;
 	}
@@ -337,6 +357,10 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.entry = entry;
 	}
 
+	/**
+	 * HTTP request headers in key-value pairs
+	 * @return a map of request headers
+	 */
 	public HashMap< String, String > getRequestHeaders() {
 		return requestHeaders;
 	}
@@ -345,6 +369,10 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.requestHeaders = requestHeaders;
 	}
 
+	/**
+	 * HTTP response headers in key-value pairs
+	 * @return a map of response headers
+	 */
 	public HashMap< String, String > getResponseHeaders() {
 		return responseHeaders;
 	}

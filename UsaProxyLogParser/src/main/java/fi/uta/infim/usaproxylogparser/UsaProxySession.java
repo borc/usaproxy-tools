@@ -149,6 +149,10 @@ public class UsaProxySession implements Serializable {
 		return true;
 	}
 
+	/**
+	 * The identifier of this session. A string such as 'FLmtgNQHaVj7'. Unique.
+	 * @return session identifier
+	 */
 	@XmlAttribute
 	public String getSessionID() {
 		return sessionID;
@@ -158,6 +162,10 @@ public class UsaProxySession implements Serializable {
 		this.sessionID = sessionID;
 	}
 
+	/**
+	 * User's IP address. IPv4.
+	 * @return user's ip address
+	 */
 	@XmlJavaTypeAdapter( InetAddressXmlAdapter.class )
 	@XmlAttribute
 	public InetAddress getAddress() {
@@ -168,6 +176,10 @@ public class UsaProxySession implements Serializable {
 		this.address = address;
 	}
 
+	/**
+	 * All the HTTP traffic sessions that were initialized during this session.
+	 * @return list of http traffic sessions
+	 */
 	@XmlElement( name="httpTraffic" )
 	public HashSet< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
 		return httpTrafficSessions;
@@ -190,6 +202,10 @@ public class UsaProxySession implements Serializable {
 		return list;
 	}
 	
+	/**
+	 * The start timestamp of this session.
+	 * @return start timestamp
+	 */
 	public Date getStart() {
 		return start;
 	}

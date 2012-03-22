@@ -138,7 +138,8 @@ public class UsaProxyDOMElement implements Serializable {
 	private String contents;
 	
 	/**
-	 * 
+	 * The DOM path of this element. Represents the element's place in the 
+	 * DOM tree (a = first child, b = second, etc.)
 	 * @return the DOM path of this element (eg. "abaab")
 	 */
 	@XmlAttribute
@@ -150,6 +151,10 @@ public class UsaProxyDOMElement implements Serializable {
 		this.path = path;
 	}
 
+	/**
+	 * This element's http traffic session.
+	 * @return the http traffic session object
+	 */
 	@XmlTransient
 	public UsaProxyHTTPTraffic getHttpTraffic() {
 		return httpTraffic;
@@ -160,6 +165,10 @@ public class UsaProxyDOMElement implements Serializable {
 		httpTraffic.getDomElements().add(this);
 	}
 
+	/**
+	 * Every event that occurred in this element's context. List may be empty.
+	 * @return events that occurred in this element's context
+	 */
 	@XmlTransient
 	public Vector< UsaProxyPageEvent > getEvents() {
 		return events;
@@ -169,6 +178,11 @@ public class UsaProxyDOMElement implements Serializable {
 		this.events = events;
 	}
 
+	/**
+	 * All the appearance events of this element. An element can appear several
+	 * times within a HTTP traffic session, but only once during a screen.
+	 * @return appearance events of this element
+	 */
 	@XmlTransient
 	public Vector< UsaProxyAppearanceEvent > getAppears() {
 		return appears;
@@ -178,6 +192,12 @@ public class UsaProxyDOMElement implements Serializable {
 		this.appears = appears;
 	}
 
+	/**
+	 * All the disappearance events of this element. An element may disappear
+	 * zero or more times within a http traffic session, but only once during
+	 * a screen.
+	 * @return disappearances of this element
+	 */
 	@XmlTransient
 	public Vector< UsaProxyDisappearanceEvent > getDisappears() {
 		return disappears;
@@ -187,6 +207,10 @@ public class UsaProxyDOMElement implements Serializable {
 		this.disappears = disappears;
 	}
 
+	/**
+	 * The node name of this element (eg. "h1" or "p")
+	 * @return node name of this element
+	 */
 	@XmlAttribute
 	public String getNodeName() {
 		return nodeName;
@@ -196,6 +220,10 @@ public class UsaProxyDOMElement implements Serializable {
 		this.nodeName = nodeName;
 	}
 
+	/**
+	 * The contents of this element. Null if not found or logged.
+	 * @return contents of this element
+	 */
 	public String getContents() {
 		return contents;
 	}

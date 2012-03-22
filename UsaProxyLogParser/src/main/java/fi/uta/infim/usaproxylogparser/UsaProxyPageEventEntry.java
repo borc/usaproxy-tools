@@ -71,6 +71,10 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 	 */
 	private UsaProxyPageEvent event;
 
+	/**
+	 * The event that is described by this log entry.
+	 * @return event described in this entry
+	 */
 	@XmlTransient
 	public UsaProxyPageEvent getEvent() {
 		return event;

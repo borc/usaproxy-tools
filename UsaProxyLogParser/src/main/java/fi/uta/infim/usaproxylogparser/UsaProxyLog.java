@@ -54,6 +54,10 @@ public class UsaProxyLog implements Serializable {
 		UsaProxySessionStore.assignSessionsTo(this);
 	}
 
+	/**
+	 * All log entries contained in this log. May be empty.
+	 * @return list of log entries
+	 */
 	@XmlTransient
 	public Vector< UsaProxyLogEntry > getEntries() {
 		return entries;

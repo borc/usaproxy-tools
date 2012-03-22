@@ -82,6 +82,10 @@ public class UsaProxyScreen implements Serializable {
 	 */
 	private UsaProxyScrollStartEvent scrollStart;
 	
+	/**
+	 * The identifier of this screen. Unique.
+	 * @return unique identifier of this screen
+	 */
 	@XmlAttribute
 	public Integer getID() {
 		return ID;
@@ -91,6 +95,10 @@ public class UsaProxyScreen implements Serializable {
 		ID = iD;
 	}
 
+	/**
+	 * The HTTP traffic session during which this screen was seen.
+	 * @return a http traffic session object
+	 */
 	@XmlTransient
 	public UsaProxyHTTPTraffic getHttpTrafficSession() {
 		return httpTrafficSession;
@@ -101,6 +109,10 @@ public class UsaProxyScreen implements Serializable {
 		httpTrafficSession.getScreens().add(this);
 	}
 
+	/**
+	 * All the events that occurred within this screen. May be empty.
+	 * @return list of events
+	 */
 	@XmlElements({ 
 		@XmlElement( name="event", type=UsaProxyPageEvent.class ),
 		@XmlElement( name="appearance", type=UsaProxyAppearanceEvent.class ),
@@ -115,6 +127,10 @@ public class UsaProxyScreen implements Serializable {
 		this.events = events;
 	}
 
+	/**
+	 * The event that initialized this screen.
+	 * @return screen's initializing event
+	 */
 	@XmlTransient
 	public UsaProxyViewportChangeEvent getInitialViewportEvent() {
 		return initialViewportEvent;
@@ -124,6 +140,13 @@ public class UsaProxyScreen implements Serializable {
 		this.initialViewportEvent = initialViewportEvent;
 	}
 
+	/**
+	 * The scroll start event that marks the end point of this screen.
+	 * Can be null if no scrolling happened. In that case, either:
+	 * 1. the HTTP traffic session ended here, or
+	 * 2. the browser window was resized 
+	 * @return scroll start event, or null
+	 */
 	@XmlTransient
 	public UsaProxyScrollStartEvent getScrollStart() {
 		return scrollStart;

@@ -137,6 +137,10 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		super();
 	}
 
+	/**
+	 * Through which edge did the element travel to trigger this event?
+	 * @return The edge through which this element traveled
+	 */
 	@XmlAttribute
 	public Edge getEdge() {
 		return edge;
@@ -146,6 +150,10 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		this.edge = edge;
 	}
 
+	/**
+	 * @return The position of the element's top, relative to the document's height.
+	 * Percentage. 0% = top, 100% = bottom.
+	 */
 	public Double getTopPosition() {
 		return topPosition;
 	}
@@ -154,6 +162,10 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		this.topPosition = topPosition;
 	}
 
+	/**
+	 * @return The position of the element's bottom, relative to the document's height.
+	 * Percentage. 0% = top, 100% = bottom.
+	 */
 	public Double getBottomPosition() {
 		return bottomPosition;
 	}

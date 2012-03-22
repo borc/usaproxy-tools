@@ -71,6 +71,10 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 		return true;
 	}
 
+	/**
+	 * The HTTP traffic session that was initialized by this entry.
+	 * @return this entry's http traffic session object
+	 */
 	@XmlTransient
 	public UsaProxyHTTPTraffic getHttpTrafficSession() {
 		return httpTrafficSession;
