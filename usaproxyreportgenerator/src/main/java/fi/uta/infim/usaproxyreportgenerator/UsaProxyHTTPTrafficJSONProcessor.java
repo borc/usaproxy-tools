@@ -13,6 +13,7 @@ import fi.uta.infim.usaproxylogparser.UsaProxyDisappearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 import fi.uta.infim.usaproxylogparser.UsaProxyPageEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyScreen;
+import fi.uta.infim.usaproxylogparser.UsaProxySessionStore;
 import fi.uta.infim.usaproxylogparser.UsaProxyVisibilityEvent;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -212,9 +213,19 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			}
 			catch ( NullPointerException e )
 			{
-				// If the end time cannot be determined, assume an end time of
-				// beginTime + 20 seconds.
-				endTime = beginTime + ARTIFICIALEND;
+				// If the end time cannot be determined, the viewport has either
+				// been resized or this is the last screen. Generate an end time.
+				if ( UsaProxySessionStore.getScreenById(traffic.getSessionID(), new Integer(s.getID() + 1).toString()) != null )
+				{
+					// If a next screen exists, this was a resize event
+					endTime = beginTime + 1;
+				}
+				else
+				{
+					// If a next screen does not exist, this was the last screen
+					// and we should generate an end time further in future.
+					endTime = beginTime + ARTIFICIALEND;
+				}
 			}
 				
 			JSONArray topBegin = new JSONArray();
