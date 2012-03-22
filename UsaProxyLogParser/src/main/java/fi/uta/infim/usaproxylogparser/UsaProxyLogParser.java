@@ -11,9 +11,9 @@ import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
 
-import fi.uta.infim.usaproxylogparser.TLexer;
-import fi.uta.infim.usaproxylogparser.TParser;
-import fi.uta.infim.usaproxylogparser.TParser.log_return;
+import fi.uta.infim.usaproxylogparser.antlr.TLexer;
+import fi.uta.infim.usaproxylogparser.antlr.TParser;
+import fi.uta.infim.usaproxylogparser.antlr.TParser.log_return;
 
 /**
  * An ANTLR-based implementation of the {@link IUsaProxyLogParser} interface.

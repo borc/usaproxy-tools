@@ -1,4 +1,4 @@
-package fi.uta.infim.usaproxylogparser;
+package fi.uta.infim.usaproxylogparser.antlr;
 
 import org.antlr.runtime.*;
 

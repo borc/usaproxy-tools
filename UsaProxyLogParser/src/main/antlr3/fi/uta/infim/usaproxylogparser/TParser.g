@@ -67,10 +67,12 @@ tokens {
 //
 @header {
 
-    package fi.uta.infim.usaproxylogparser;
+    package fi.uta.infim.usaproxylogparser.antlr;
 
 	import java.util.HashMap;
 	import java.util.Vector;
+	
+	import fi.uta.infim.usaproxylogparser.*;
 }
 
 // Start rule. The whole log. Note that the input should contain at least one
