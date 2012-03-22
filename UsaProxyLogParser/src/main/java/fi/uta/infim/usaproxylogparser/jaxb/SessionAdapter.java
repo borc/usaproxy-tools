@@ -1,6 +1,9 @@
-package fi.uta.infim.usaproxylogparser;
+package fi.uta.infim.usaproxylogparser.jaxb;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import fi.uta.infim.usaproxylogparser.UsaProxySession;
+import fi.uta.infim.usaproxylogparser.UsaProxySessionStore;
 
 /**
  * Adapter for marshalling and unmarshalling UsaProxySession objects.

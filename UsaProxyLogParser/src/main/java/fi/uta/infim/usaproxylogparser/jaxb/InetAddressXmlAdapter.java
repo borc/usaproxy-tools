@@ -1,8 +1,10 @@
-package fi.uta.infim.usaproxylogparser;
+package fi.uta.infim.usaproxylogparser.jaxb;
 
 import java.net.InetAddress;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
+
+import fi.uta.infim.usaproxylogparser.UsaProxyLog;
 
 /**
  * Adapter class for Marshalling/Unmarshalling InetAddress objects.

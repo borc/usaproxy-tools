@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import fi.uta.infim.usaproxylogparser.jaxb.InetAddressXmlAdapter;
+
 /**
  * 
  * 

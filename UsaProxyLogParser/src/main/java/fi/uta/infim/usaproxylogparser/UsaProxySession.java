@@ -13,6 +13,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import fi.uta.infim.usaproxylogparser.jaxb.InetAddressXmlAdapter;
+
 /**
  * Data model of UsaProxy 2.0 session. A session consists of a user's IP
  * address and one or more HTTP traffic sessions.

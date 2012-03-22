@@ -9,11 +9,10 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
 
 /**
- * 
- * @author Teemu Pääkkönen
  * Data model of a single log entry (one line).
  * Abstract since there are different kinds of lines with some similarities.
  * Extends CommonTree in order to be used in the ANTLR parser.
+ * @author Teemu Pääkkönen
  *
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
