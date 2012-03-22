@@ -6,6 +6,16 @@ import java.util.Vector;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ * An object of this class represents a DOM element. Each DOM element in a 
+ * UsaProxy log is given a unique DOM path (eg. "abaab") within the HTTP
+ * traffic session. The DOM path represents the element's location in the
+ * DOM tree, with "a" being the first child, "b" the second, etc.
+ * An element object contains all the events that were triggered and logged
+ * in this element's context.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class UsaProxyDOMElement implements Serializable {
 
 	/**
@@ -13,6 +23,9 @@ public class UsaProxyDOMElement implements Serializable {
 	 */
 	private static final long serialVersionUID = 4849107937656330641L;
 
+	/**
+	 * No-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxyDOMElement() {
 		super();
 	}
@@ -49,6 +62,14 @@ public class UsaProxyDOMElement implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Private constructor. Use {@link #newDOMElement} for creating new objects.
+	 * @param path the DOM path in UsaProxy format (eg. "abaab")
+	 * @param httpTraffic the HTTP traffic session during which this event occurred
+	 * @param nodeName node name (eg. "H1" or "P")
+	 * @param contents element contents (if available); if null, report generator
+	 * will attempt parsing content from the original http traffic log file.
+	 */
 	private UsaProxyDOMElement(String path, UsaProxyHTTPTraffic httpTraffic, 
 			String nodeName, String contents) {
 		super();
@@ -58,6 +79,12 @@ public class UsaProxyDOMElement implements Serializable {
 		setContents(contents);
 	}
 	
+	/**
+	 * Constructs a new DOM element object and places it in the session store.
+	 * See {@link #UsaProxyDOMElement(String, UsaProxyHTTPTraffic, String, String)}
+	 * for parameters.
+	 * @return the constructed object
+	 */
 	public static UsaProxyDOMElement newDOMElement( String path, 
 			UsaProxyHTTPTraffic traffic, String nodeName, String contents )
 	{
@@ -110,6 +137,10 @@ public class UsaProxyDOMElement implements Serializable {
 	 */
 	private String contents;
 	
+	/**
+	 * 
+	 * @return the DOM path of this element (eg. "abaab")
+	 */
 	@XmlAttribute
 	public String getPath() {
 		return path;

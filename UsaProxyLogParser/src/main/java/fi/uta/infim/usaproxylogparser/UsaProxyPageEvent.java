@@ -16,6 +16,15 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxyPageEvent implements Serializable {
 	
+	/**
+	 * Constructor for full page event objects
+	 * @param eventType event type as logged
+	 * @param attributes event attributes as a map of key value pairs
+	 * @param sessionID session id as logged
+	 * @param httpTrafficIndex http traffic id as logged
+	 * @param ip user's IP address as logged (will be parsed)
+	 * @param entry the log entry that contains this event
+	 */
 	public UsaProxyPageEvent(String eventType, HashMap< String, String > attributes,
 			String sessionID, String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry) {
 		super();
@@ -35,6 +44,9 @@ public class UsaProxyPageEvent implements Serializable {
 		setAttributes(attributes);
 	}
 
+	/**
+	 * No-arg constructor for JAXB.
+	 */
 	public UsaProxyPageEvent() {
 		super();
 	}
@@ -124,6 +136,9 @@ public class UsaProxyPageEvent implements Serializable {
 	 */
 	private UsaProxyScreen screen;
 	
+	/**
+	 * The log entry that contains this event
+	 */
 	@XmlTransient
 	private UsaProxyPageEventEntry entry;
 	
@@ -136,6 +151,11 @@ public class UsaProxyPageEvent implements Serializable {
 		this.type = type;
 	}
 
+	/**
+	 * Sets event type by string representation. Will throw a runtime exception
+	 * if event type is unknown (ie. not known by {@link EventType}).
+	 * @param evtype the event name as string
+	 */
 	public void setType( String evtype )
 	{
 		// Find the correct event type by looping the enum values
@@ -177,6 +197,13 @@ public class UsaProxyPageEvent implements Serializable {
 		}
 	}
 
+	/**
+	 * Sets session by session id and ip address. Makes sure that an existing
+	 * session is used if one exists in the session store. Otherwise creates
+	 * a new one. 
+	 * @param sessionId session id, as logged
+	 * @param ip user's ip address, as logged
+	 */
 	public void setSession( String sessionId, String ip )
 	{
 		// Use an existing session if one exists in the session store
@@ -197,6 +224,15 @@ public class UsaProxyPageEvent implements Serializable {
 		this.httpTrafficSession = httpTrafficSession;
 	}
 
+	/**
+	 * Sets HTTP traffic session by id and user's ip. Makes sure that an
+	 * existing HTTP traffic session is used if one exists in the session
+	 * store. If not, a new one will be created. Note that a HTTP traffic
+	 * session should contain a URL as well, but event entries don't know
+	 * the URL. Therefore a dummy url (http://dummyurl) is used instead.
+	 * @param id HTTP traffic id, as logged
+	 * @param ip user's ip address, as logged
+	 */
 	public void setHttpTrafficSession(String id, String ip) {
 		UsaProxyHTTPTraffic httpSession = UsaProxySessionStore.getHTTPTrafficSessionById(id);
 		if ( httpSession == null )
@@ -223,6 +259,15 @@ public class UsaProxyPageEvent implements Serializable {
 		domPath.getEvents().add(this);
 	}
 	
+	/**
+	 * Sets the DOM element referenced by this event with logged values. If 
+	 * the element already exists in the session store, the existing one will
+	 * be used instead. If not, a new one will be created. However, this
+	 * method updates the contents of the element unless the parameter is null.
+	 * @param domPath the dom path, as logged
+	 * @param nodeName node name as logged
+	 * @param contents element contents as a string - can be null
+	 */
 	public void setDomPath(String domPath, String nodeName, String contents) {
 		UsaProxyDOMElement element = UsaProxySessionStore.getDOMElementById( 
 				getHttpTrafficSession().getSessionID(),	domPath );
@@ -253,6 +298,11 @@ public class UsaProxyPageEvent implements Serializable {
 		screen.getEvents().add(this);
 	}
 	
+	/**
+	 * Sets screen using the screen id. Makes sure that an existing screen is
+	 * used if one exists in the session store. If not, a new one is created.
+	 * @param screenID
+	 */
 	private void setScreen(String screenID) {
 		UsaProxyScreen s = UsaProxySessionStore.getScreenById(getHttpTrafficSession().getSessionID(), screenID);
 		if ( s == null )

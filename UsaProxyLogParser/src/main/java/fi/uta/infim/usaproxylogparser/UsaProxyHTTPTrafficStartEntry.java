@@ -23,12 +23,22 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 	 */
 	private UsaProxyHTTPTraffic httpTrafficSession;
 
+	/**
+	 * Constructor.
+	 * @param address user's IP address as logged
+	 * @param url the url accessed as logged
+	 * @param sessionID session id as logged
+	 * @param timestamp timestamp as logged
+	 */
 	public UsaProxyHTTPTrafficStartEntry( String address, String url, 
 			String sessionID, String timestamp ) {
 		super( timestamp );
 		setHttpTrafficSession(address, url, sessionID);
 	}
 
+	/**
+	 * No-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxyHTTPTrafficStartEntry() {
 		super();
 	}
@@ -70,6 +80,14 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 		this.httpTrafficSession = httpTrafficSession;
 	}
 	
+	/**
+	 * A special setter for the http traffic session. Makes sure that an existing
+	 * session is used if one corresponding to the session ID exists in the 
+	 * session store. Otherwise creates a new one.
+	 * @param address user's IP address as logged
+	 * @param url the url accessed, as logged
+	 * @param sessionID session id as logged
+	 */
 	public void setHttpTrafficSession(String address, String url, String sessionID) {
 		UsaProxyHTTPTraffic htSession = UsaProxySessionStore.getHTTPTrafficSessionById(sessionID);
 		if ( htSession == null )

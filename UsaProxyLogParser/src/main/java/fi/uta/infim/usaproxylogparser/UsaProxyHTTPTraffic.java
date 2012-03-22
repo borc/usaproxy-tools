@@ -31,6 +31,14 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxyHTTPTraffic implements Serializable {
 
+	/**
+	 * A comparator class for UsaProxy screens. Orders screens by appearance
+	 * time. Uses {@link java.util.Date#compareTo} for comparison.
+	 * In case timestamps are exactly equal or cannot be compared, screen
+	 * IDs will be compared with {@link java.lang.Integer#compareTo(Integer)}.
+	 * @author Teemu Pääkkönen
+	 *
+	 */
 	private final class UsaProxyScreenComparator implements
 			Comparator<UsaProxyScreen>, Serializable {
 		
@@ -184,6 +192,9 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	private HashSet< UsaProxyDOMElement > domElements =
 			new HashSet<UsaProxyDOMElement>();
 	
+	/**
+	 * The log entry that initialized this http traffic session.
+	 */
 	private UsaProxyHTTPTrafficStartEntry entry;
 	
 	/**
@@ -281,6 +292,10 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.screens = screens;
 	}
 
+	/**
+	 * Sorts all the screen objects in this HTTP traffic object, using
+	 * {@link UsaProxyScreenComparator}.
+	 */
 	public void sortScreens()
 	{
 		Collections.sort( this.screens, new UsaProxyScreenComparator() );

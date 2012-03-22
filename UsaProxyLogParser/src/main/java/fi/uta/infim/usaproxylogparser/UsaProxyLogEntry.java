@@ -56,6 +56,10 @@ public abstract class UsaProxyLogEntry implements Serializable {
 		return true;
 	}
 
+	/**
+	 * Constructor for log entries.
+	 * @param timestamp the timestamp of this log entry, as logged
+	 */
 	public UsaProxyLogEntry(String timestamp) {
 		super();
 		try {
@@ -66,6 +70,9 @@ public abstract class UsaProxyLogEntry implements Serializable {
 		}
 	}
 
+	/**
+	 * No-arg JAXB constructor. Do not use.
+	 */
 	public UsaProxyLogEntry() {
 		super();
 	}

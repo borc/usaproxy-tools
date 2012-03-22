@@ -5,6 +5,12 @@ import java.util.HashMap;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlEnum;
 
+/**
+ * A visibility event is either an appearance event or a disappearance event.
+ * This is a superclass for such events.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 
 	/**
@@ -73,6 +79,11 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 	        return value;
 	    }
 		
+		/**
+		 * Creates an enum object from the primitive string value
+		 * @param value "top", "left", "right", "bottom", "initial" or "unknown"
+		 * @return the enum representation of supplied string
+		 */
 		public static Edge fromValue(String value) {
 	        for (Edge c: Edge.values()) {
 	            if (c.value.equals(value)) {
@@ -88,10 +99,24 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 	 * it appared/disappeared.
 	 */
 	protected Edge edge;
+	
+	/**
+	 * The position of the element's top, relative to the document's height.
+	 * Percentage. 0% = top of document, 100% = bottom of document.
+	 */
 	private Double topPosition;
+	
+	/**
+	 * The position of the element's bottom, relative to the document's height.
+	 * Percentage. 0% = top of document, 100% = bottom of document.
+	 */
 	private Double bottomPosition;
 
-	public UsaProxyVisibilityEvent(String eventType,
+	/**
+	 * Constructs a full visibility event. Note that this constructor should 
+	 * only be called by subclass constructors.
+	 */
+	protected UsaProxyVisibilityEvent(String eventType,
 			HashMap<String, String> attributes, String sessionID,
 			String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry) {
 		super(eventType, attributes, sessionID, httpTrafficIndex, ip, entry);
@@ -105,6 +130,9 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 		attributes.remove( "relativeBottom" );
 	}
 
+	/**
+	 * No-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxyVisibilityEvent() {
 		super();
 	}

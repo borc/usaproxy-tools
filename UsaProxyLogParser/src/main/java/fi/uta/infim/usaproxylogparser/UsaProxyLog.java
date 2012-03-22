@@ -37,10 +37,17 @@ public class UsaProxyLog implements Serializable {
 	 */
 	private Collection< UsaProxySession > sessions;
 	
+	/**
+	 * no-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxyLog() {
 		super();
 	}
 
+	/**
+	 * Regular constructor.
+	 * @param entries the log entries contained in this log.
+	 */
 	public UsaProxyLog(Vector<UsaProxyLogEntry> entries) {
 		super();
 		this.entries = entries;
@@ -56,11 +63,22 @@ public class UsaProxyLog implements Serializable {
 		this.entries = entries;
 	}
 	
+	/**
+	 * Takes an IP address fragment string (eg. "1" or "255") and converts it to byte.
+	 * Works for IPv4 fragments in decimal format only.
+	 * @param fragment the fragment to convert
+	 * @return the fragment as a byte
+	 */
 	private static byte ipFragmentToByte( String fragment )
 	{
 		return (byte) Integer.parseInt(fragment);
 	}
 	
+	/**
+	 * Takes an IPv4 address string and converts it to InetAddress
+	 * @param ip address as string
+	 * @return supplied address as an InetAddress
+	 */
 	public static InetAddress ipAddressStringToInetAddress( String ip )
 	{
 		String[] addressParts = ip.split( "\\." );

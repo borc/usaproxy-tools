@@ -2,6 +2,12 @@ package fi.uta.infim.usaproxylogparser;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+/**
+ * Adapter for marshalling and unmarshalling UsaProxySession objects.
+ * INCOMPLETE! Only for testing purposes.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class SessionAdapter extends XmlAdapter< String, UsaProxySession > {
 
 	private SessionAdapter() {

@@ -14,13 +14,22 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 /**
- * Data model of UsaProxy 2.0 session
+ * Data model of UsaProxy 2.0 session. A session consists of a user's IP
+ * address and one or more HTTP traffic sessions.
  * @author Teemu Pääkkönen
  * 
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxySession implements Serializable {
 
+	/**
+	 * Compares http traffic session objects. Orders by time using 
+	 * {@link java.util.Date#compareTo(Date)}. If comparison by time fails,
+	 * objects will be compared by http traffic id using 
+	 * {@link java.lang.Integer#compareTo(Integer)}.
+	 * @author Teemu Pääkkönen
+	 *
+	 */
 	private final class HTTPTrafficComparator implements
 			Comparator<UsaProxyHTTPTraffic> {
 		@Override
@@ -49,6 +58,12 @@ public class UsaProxySession implements Serializable {
 	 */
 	private static final long serialVersionUID = -5827063936997297562L;
 
+	/**
+	 * Constructs a session object using values from the log.
+	 * @param sessionID session id as logged
+	 * @param address user's IP address as logged
+	 * @param start session start time (timestamp of first log entry in this session)
+	 */
 	private UsaProxySession(String sessionID, String address, Date start) {
 		super();
 		this.sessionID = sessionID;
@@ -56,6 +71,9 @@ public class UsaProxySession implements Serializable {
 		setStart(start);
 	}
 
+	/**
+	 * No-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxySession() {
 		super();
 	}
@@ -92,6 +110,9 @@ public class UsaProxySession implements Serializable {
 	private HashSet< UsaProxyHTTPTraffic > httpTrafficSessions =
 			new HashSet<UsaProxyHTTPTraffic>();
 	
+	/**
+	 * Timestamp of the first log entry during this session.
+	 */
 	private Date start;
 	
 	@Override
@@ -154,6 +175,11 @@ public class UsaProxySession implements Serializable {
 		this.httpTrafficSessions = httpTrafficSessions;
 	}
 
+	/**
+	 * Creates a sorted copy of the http traffic sessions list contained within
+	 * this session.
+	 * @return a sorted copy of http traffic session list
+	 */
 	public ArrayList< UsaProxyHTTPTraffic > getSortedHttpTrafficSessions()
 	{
 		ArrayList< UsaProxyHTTPTraffic > list = 
@@ -170,6 +196,11 @@ public class UsaProxySession implements Serializable {
 		this.start = start;
 	}
 	
+	/**
+	 * Sets start time according to parameter, if existing value is null
+	 * or represents a later time than the parameter.
+	 * @param start timestamp to test against
+	 */
 	public void testAndSetStart(Date start) {
 		if ( this.start == null || start.before(this.start) )
 		{

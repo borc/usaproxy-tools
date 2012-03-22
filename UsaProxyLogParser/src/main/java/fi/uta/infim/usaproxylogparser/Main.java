@@ -13,6 +13,11 @@ import javax.xml.bind.Marshaller;
  */
 class Main {
 
+	/**
+	 * Main function (entry point). Takes a log file name and outputs the contents 
+	 * in XML format.
+	 * @param args command line arguments
+	 */
     public static void main(String[] args)
     {
     	try {

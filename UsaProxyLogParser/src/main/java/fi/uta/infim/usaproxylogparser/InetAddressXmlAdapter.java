@@ -4,6 +4,11 @@ import java.net.InetAddress;
 
 import javax.xml.bind.annotation.adapters.XmlAdapter;
 
+/**
+ * Adapter class for Marshalling/Unmarshalling InetAddress objects.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class InetAddressXmlAdapter extends XmlAdapter< String, InetAddress > {
 
 	@Override

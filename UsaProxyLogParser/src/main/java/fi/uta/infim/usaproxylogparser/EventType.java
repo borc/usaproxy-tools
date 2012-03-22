@@ -96,11 +96,19 @@ public enum EventType {
 	
 	/**
 	 * The viewport change event is triggered when the browser window is scrolled
-	 * or resized, ie. the viewport is changed.
+	 * or resized, ie. the viewport is changed. If triggered by scrolling,
+	 * only the end of the scrolling will trigger logging. See {@link EventType#SCROLLSTART}
+	 * for further info.
 	 */
 	@XmlEnumValue( "viewportChange" )
 	VIEWPORTCHANGE( "viewportChange" ),
 	
+	/**
+	 * Scroll start event is triggered when the user begins scrolling a page.
+	 * Note that this will be logged once for every viewportChange event.
+	 * The difference is that this event is logged when the scrolling begins and
+	 * the viewport change is logged when the scrolling stops.
+	 */
 	@XmlEnumValue( "scrollStart" )
 	SCROLLSTART( "scrollStart" );
 	

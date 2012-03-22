@@ -6,9 +6,8 @@ import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlTransient;
 
 /**
- * 
+ * A page event log entry. Can be a DOM event or some other event such as 'scroll'.
  * @author Teemu Pääkkönen
- * A page event. Can be a DOM event or some other event such as 'scroll'.
  *
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
@@ -19,6 +18,15 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 	 */
 	private static final long serialVersionUID = 2933150130413400056L;
 	
+	/**
+	 * Constructor for a full entry object.
+	 * @param ip user's ip address, as logged
+	 * @param timestamp log timestamp, as logged
+	 * @param index HTTP traffic id, as logged
+	 * @param sessionId session id, as logged
+	 * @param event event's name, as logged
+	 * @param attributes map of event attributes in key-value pairs
+	 */
 	public UsaProxyPageEventEntry(String ip,
 			String timestamp, String index, String sessionId, String event,
 			HashMap< String, String > attributes ) {
@@ -50,6 +58,9 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 		}
 	}
 
+	/**
+	 * No-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxyPageEventEntry() {
 		super();
 	}

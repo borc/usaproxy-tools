@@ -15,8 +15,16 @@ import fi.uta.infim.usaproxylogparser.TLexer;
 import fi.uta.infim.usaproxylogparser.TParser;
 import fi.uta.infim.usaproxylogparser.TParser.log_return;
 
+/**
+ * An ANTLR-based implementation of the {@link IUsaProxyLogParser} interface.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class UsaProxyLogParser implements IUsaProxyLogParser {
 
+	/**
+	 * The main UsaProxy log file (log.txt)
+	 */
 	private File logFile;
 	
 	@Override
@@ -32,6 +40,13 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 		return parseLog(logFile);
 	}
 
+	/**
+	 * Parses an UsaProxy main log file from a stream
+	 * @param logStream a stream containing the log
+	 * @return an object representation of the log
+	 * @throws IOException if the stream cannot be read or there is an error reading
+	 * @throws ParseException if the log file cannot be parsed
+	 */
 	private UsaProxyLog parseLog(InputStream logStream) throws IOException, ParseException {
 		TLexer lexer = new TLexer();
 		lexer.setCharStream( new ANTLRInputStream( logStream ) );

@@ -8,6 +8,14 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlTransient;
 
+/**
+ * A UsaProxy "screen". A screen is a single unique state of the browser
+ * viewport. Every element appears and disappears within a screen, and all
+ * events happen within a screen. A screen is contained in a HTTP
+ * traffic session. A single HTTP traffic session can contain multiple screens.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class UsaProxyScreen implements Serializable {
 
 	/**
@@ -15,15 +23,29 @@ public class UsaProxyScreen implements Serializable {
 	 */
 	private static final long serialVersionUID = 8795671281132159416L;
 
+	/**
+	 * No-arg constructor for JAXB. Do not use.
+	 */
 	public UsaProxyScreen() {
 		super();
 	}
 
+	/**
+	 * Private constructor. Use {@link #newScreen(Integer, UsaProxyHTTPTraffic)}
+	 * for creating objects of this class.
+	 * @param iD id number of the screen
+	 */
 	private UsaProxyScreen(Integer iD ) {
 		super();
 		ID = iD;
 	}
 
+	/**
+	 * Creates a new screen object and places it in the session store.
+	 * @param id screen's id number
+	 * @param httpTrafficSession the containing http traffic session
+	 * @return the newly created screen object
+	 */
 	public static UsaProxyScreen newScreen( Integer id, UsaProxyHTTPTraffic httpTrafficSession )
 	{
 		UsaProxyScreen screen = new UsaProxyScreen(id );
@@ -41,11 +63,23 @@ public class UsaProxyScreen implements Serializable {
 	 */
 	private UsaProxyHTTPTraffic httpTrafficSession;
 
+	/**
+	 * All the events that happened in this screen.
+	 */
 	private Vector< UsaProxyPageEvent > events =
 			new Vector<UsaProxyPageEvent>();
 	
+	/**
+	 * The viewport change event that initialized this screen.
+	 */
 	private UsaProxyViewportChangeEvent initialViewportEvent;
 	
+	/**
+	 * The scroll start event that marks the end point of this screen.
+	 * Can be null if no scrolling happened. In that case, either:
+	 * 1. the HTTP traffic session ended here, or
+	 * 2. the browser window was resized
+	 */
 	private UsaProxyScrollStartEvent scrollStart;
 	
 	@XmlAttribute
