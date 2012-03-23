@@ -227,6 +227,14 @@ public class UsaProxy {
 		 *  						(e.g. java UsaProxy [-port <port>] -remoteIP <IP address> -remotePort <port> -server
 		 */
 		
+		System.out.println( "UsaProxyFork version 0.0.1, " +
+				"Copyright (C) 2006  Monika Wnuk - Media Informatics Group at the University of Munich, " +
+				"Copyright (C) 2012 Teemu Pääkkönen - University of Tampere" );
+		System.out.println( "UsaProxyFork comes with ABSOLUTELY NO WARRANTY; for details see gpl.txt." );
+		System.out.println( "This is free software, and you are welcome to redistribute it " +
+				"under certain conditions; see gpl.txt for details.");
+		System.out.println();
+		
 		int index;
 		
 		/** switch -port */
