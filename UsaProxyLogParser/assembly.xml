@@ -12,6 +12,9 @@
       <includes>
         <include>*.jar</include>
         <include>lib/**</include>
+        <include>readme.txt</include>
+        <include>gpl.txt</include>
+        <include>apidocs/**</include>
       </includes>
     </fileSet>
   </fileSets>
