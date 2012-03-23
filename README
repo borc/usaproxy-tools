@@ -23,5 +23,5 @@ USAPROXYREPORTGENERATOR - A tool that turns USAPROXY-FORK log files into
 Licensing:
 ----------
 
-The tools are licensed under GNU GENERAL PUBLIC LICENSE, version 2. See 
-provided files for details.
+The tools are licensed under GNU GENERAL PUBLIC LICENSE, version 2 or later. See 
+provided readme and license files for details.
