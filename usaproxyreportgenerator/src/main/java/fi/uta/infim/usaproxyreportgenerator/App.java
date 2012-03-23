@@ -93,8 +93,20 @@ public final class App
 		formatter.printHelp( "java -jar usaproxyreportgenerator.jar [OPTIONS] logFile", cliOptions );
 	}
 	
+	private static void printLicense()
+	{
+		System.out.println( "UsaProxyReportGenerator version 0.0.1, " +
+				"Copyright (C) 2012 Teemu Pääkkönen - University of Tampere" );
+		System.out.println( "UsaProxyReportGenerator comes with ABSOLUTELY NO WARRANTY; for details see gpl.txt." );
+		System.out.println( "This is free software, and you are welcome to redistribute it " +
+				"under certain conditions; see gpl.txt for details.");
+	}
+	
     public static void main( String[] args ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
     {
+    	printLicense();
+    	System.out.println();
+    	
     	try
     	{
     		// Command line arguments
