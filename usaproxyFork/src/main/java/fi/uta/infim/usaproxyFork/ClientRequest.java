@@ -8,6 +8,7 @@ import java.util.*;
  * in order to enable web-based collaboration. 
  * <br><br>
  * Copyright (C) 2006  Monika Wnuk - Media Informatics Group at the University of Munich
+ * Copyright (C) 2012 Teemu Pääkkönen - University of Tampere
  * <br><br>
  * This program is free software; you can redistribute it and/or modify it under the terms of 
  * the GNU General Public License as published by the Free Software Foundation; either version 2 
