@@ -92,6 +92,8 @@
   										<include>**/*.js</include>
   										<include>**/*.css</include>
   										<include>**/*.png</include>
+  										<include>readme.txt</include>
+  										<include>gpl.txt</include>
   									</includes>
   								</resource>
   							</resources>        
