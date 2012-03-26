@@ -118,7 +118,15 @@ class UsaProxyHTTPTrafficLogParser {
 		return fileReader;
 	}
 	
-	public Document parseLog( UsaProxyHTTPTraffic traffic ) throws ParserConfigurationException, IOException, SAXException
+	/**
+	 * Parses an http traffic log for HTML content.
+	 * @param traffic the traffic session whose log is to be parsed
+	 * @return Root document node
+	 * @throws ParserConfigurationException
+	 * @throws IOException
+	 * @throws SAXException
+	 */
+	Document parseLog( UsaProxyHTTPTraffic traffic ) throws ParserConfigurationException, IOException, SAXException
 	{
 		Parser p = new Parser();
 		// to define the html: prefix (off by default)
@@ -130,7 +138,14 @@ class UsaProxyHTTPTrafficLogParser {
 		return doc;
 	}
 	
-	public static String usaProxyDOMPathToXPath( String usaProxyPath ) throws IOException, XPathExpressionException
+	/**
+	 * Converts a UsaProxy DOM path to an XPath expression
+	 * @param usaProxyPath usaproxy dom path
+	 * @return XPath expression as string
+	 * @throws IOException
+	 * @throws XPathExpressionException
+	 */
+	static String usaProxyDOMPathToXPath( String usaProxyPath ) throws IOException, XPathExpressionException
 	{
 		String path = "";
 		StringReader reader = new StringReader(usaProxyPath);
