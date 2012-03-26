@@ -8,12 +8,13 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringReader;
 
+import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathExpressionException;
 
-import org.apache.xalan.xsltc.trax.SAX2DOM;
 import org.ccil.cowan.tagsoup.Parser;
-import org.w3c.dom.Node;
+import org.springframework.util.xml.DomUtils;
+import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
@@ -49,15 +50,15 @@ public class UsaProxyHTTPTrafficLogDocumentReader {
 		return fileReader;
 	}
 	
-	public Node parseLog( UsaProxyHTTPTraffic traffic ) throws ParserConfigurationException, IOException, SAXException
+	public Document parseLog( UsaProxyHTTPTraffic traffic ) throws ParserConfigurationException, IOException, SAXException
 	{
 		Parser p = new Parser();
-		p.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
 		// to define the html: prefix (off by default)
-		SAX2DOM sax2dom = new SAX2DOM();
-		p.setContentHandler(sax2dom);
+		p.setFeature("http://xml.org/sax/features/namespace-prefixes",true);
+		
+		Document doc = DocumentBuilderFactory.newInstance().newDocumentBuilder().newDocument();
+		p.setContentHandler(DomUtils.createContentHandler(doc));
 		p.parse(new InputSource( getSeekedLogReader(traffic)));
-		Node doc = sax2dom.getDOM();
 		return doc;
 	}
 	

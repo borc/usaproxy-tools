@@ -1,9 +1,10 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
+import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
 
-import org.apache.xpath.XPathAPI;
-import org.w3c.dom.Node;
+import org.w3c.dom.Document;
 
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
 
@@ -18,7 +19,7 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		
 		UsaProxyDOMElement element = (UsaProxyDOMElement) arg0;
 		
-		Node trafficLogRoot;
+		Document trafficLogRoot;
 		try {
 			trafficLogRoot = App.getLogFileHandler().parseLog( element.getHttpTraffic() );
 		} catch (Exception e1) {
@@ -36,8 +37,9 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		if ( contents == null )
 		{
 			try {
-				contents = XPathAPI.eval( trafficLogRoot,
-						UsaProxyHTTPTrafficLogDocumentReader.usaProxyDOMPathToXPath( element.getPath() ) ).toString();
+				contents = XPathFactory.newInstance().newXPath().compile(
+						UsaProxyHTTPTrafficLogDocumentReader.usaProxyDOMPathToXPath( element.getPath() ) )
+						.evaluate(trafficLogRoot, XPathConstants.STRING).toString();
 			} catch (XPathExpressionException e) {
 				throw new RuntimeException( "Error with XPath expression generated from path " + element.getPath() );
 			} catch (Exception e) {

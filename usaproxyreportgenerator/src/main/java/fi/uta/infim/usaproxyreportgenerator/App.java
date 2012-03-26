@@ -21,7 +21,6 @@ import org.apache.commons.cli.Options;
 import org.w3c.dom.DOMException;
 import org.xml.sax.SAXException;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 
