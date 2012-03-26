@@ -9,17 +9,12 @@ import java.text.ParseException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPathExpressionException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
-import org.w3c.dom.DOMException;
-import org.xml.sax.SAXException;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -38,10 +33,6 @@ import freemarker.template.TemplateException;
 
 public final class App 
 {
-	private static File logFile;
-	
-	private static UsaProxyHTTPTrafficLogDocumentReader logFileHandler;
-	
 	private static JsonConfig config;
 	
 	private static final String TEMPLATEDIR = "templates";
@@ -76,11 +67,6 @@ public final class App
 		return cliOptions;
 	}
 
-	public static UsaProxyHTTPTrafficLogDocumentReader getLogFileHandler()
-	{
-		return logFileHandler;
-	}
-	
 	public static JsonConfig getConfig()
 	{
 		return config;
@@ -101,7 +87,7 @@ public final class App
 				"under certain conditions; see gpl.txt for details.");
 	}
 	
-    public static void main( String[] args ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
+    public static void main( String[] args ) throws IOException, TemplateException
     {
     	printLicense();
     	System.out.println();
@@ -127,9 +113,6 @@ public final class App
     		System.out.print( "Parsing log file... " );
     		log = parser.parseLog( logfile );
     		System.out.println( "done." );
-    		logFile = logfile;
-    		logFileHandler = new UsaProxyHTTPTrafficLogDocumentReader(logFile);
-    		
     	}
     	catch( IOException ioe )
     	{
@@ -171,7 +154,7 @@ public final class App
     	}
     }
     
-    private static void generateHTMLReport( UsaProxySession session, File outputDir ) throws DOMException, ParserConfigurationException, IOException, SAXException, TemplateException, XPathExpressionException
+    private static void generateHTMLReport( UsaProxySession session, File outputDir ) throws IOException, TemplateException
     {
     	JSONObject httptraffic = new JSONObject();
     	for ( UsaProxyHTTPTraffic t : session.getSortedHttpTrafficSessions() )

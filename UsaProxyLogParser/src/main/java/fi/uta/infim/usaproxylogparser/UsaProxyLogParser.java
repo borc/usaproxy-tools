@@ -6,10 +6,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.text.ParseException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.xpath.XPathConstants;
+import javax.xml.xpath.XPathExpressionException;
+import javax.xml.xpath.XPathFactory;
+
 import org.antlr.runtime.ANTLRInputStream;
 import org.antlr.runtime.CommonTokenStream;
 import org.antlr.runtime.RecognitionException;
 import org.antlr.runtime.TokenStream;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import fi.uta.infim.usaproxylogparser.antlr.TLexer;
 import fi.uta.infim.usaproxylogparser.antlr.TParser;
@@ -61,15 +68,28 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 			throw new java.text.ParseException(
 					"Unable to parse log at line " + e.line + ", character " + e.charPositionInLine, 
 					e.index );
+		} catch (XPathExpressionException e) {
+			throw new RuntimeException(
+					"Unable to parse log. Invalid XPath expression: " + e.getMessage()  );
+		} catch (ParserConfigurationException e) {
+			throw new RuntimeException(
+					"Unable to parse log. Invalid configuration: " + e.getMessage()  );
+		} catch (SAXException e) {
+			throw new RuntimeException(
+					"Unable to parse log. Problem parsing HTML content: " + e.getMessage()  );
 		}
 	}
 
 	/**
-	 * Parses HTTP traffic logs for HTTP request and response headers.
+	 * Parses HTTP traffic logs for HTTP request and response headers, as well
+	 * as element contents.
 	 * Seeks the session store for HTTP traffic sessions and amends them accordingly.
-	 * @throws IOException 
+	 * @throws IOException when the HTTP traffic log cannot be opened
+	 * @throws SAXException when parsing of HTML content fails
+	 * @throws ParserConfigurationException when parser configuration is invalid
+	 * @throws XPathExpressionException when an XPath generated from a UsaProxy DOM path is invalid
 	 */
-	private void parseHTTPTrafficLogs() throws IOException
+	private void parseHTTPTrafficLogs() throws IOException, ParserConfigurationException, SAXException, XPathExpressionException
 	{
 		UsaProxyHTTPTrafficLogHandler handler = new UsaProxyHTTPTrafficLogHandler(logFile);
 		UsaProxyHTTPTrafficLogParser httpParser = new UsaProxyHTTPTrafficLogParser(handler);
@@ -77,6 +97,21 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 		{
 			httpTrafficSession.setRequestHeaders( httpParser.getRequestHeaders(httpTrafficSession) );
 			httpTrafficSession.setResponseHeaders( httpParser.getResponseHeaders(httpTrafficSession) );
+			
+			Document httpTrafficDocument = null;
+			for ( UsaProxyDOMElement element : httpTrafficSession.getDomElements() )
+			{
+				if ( element.getContents() == null && element.getPath() != null )
+				{
+					if ( httpTrafficDocument == null )
+					{
+						httpTrafficDocument = httpParser.parseLog(httpTrafficSession);
+					}
+					element.setContents( XPathFactory.newInstance().newXPath().compile(
+							UsaProxyHTTPTrafficLogParser.usaProxyDOMPathToXPath( element.getPath() ) )
+							.evaluate(httpTrafficDocument, XPathConstants.STRING).toString() );
+				}
+			}
 		}
 	}
 }

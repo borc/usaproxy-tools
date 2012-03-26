@@ -1,11 +1,5 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
-
-import org.w3c.dom.Document;
-
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
 
 import net.sf.json.JSONObject;
@@ -19,34 +13,10 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		
 		UsaProxyDOMElement element = (UsaProxyDOMElement) arg0;
 		
-		Document trafficLogRoot;
-		try {
-			trafficLogRoot = App.getLogFileHandler().parseLog( element.getHttpTraffic() );
-		} catch (Exception e1) {
-			throw new RuntimeException(e1);
-		}
-		
 		JSONObject details = new JSONObject();
 		details.accumulate( "path", element.getPath() );
 		details.accumulate( "nodeName", element.getNodeName() );
-		
-		// Contents can either be read from the log if contents logging was enabled,
-		// or parsed from the http traffic log files (inaccurate). Reading from
-		// the log is the default.
-		String contents = element.getContents();
-		if ( contents == null )
-		{
-			try {
-				contents = XPathFactory.newInstance().newXPath().compile(
-						UsaProxyHTTPTrafficLogDocumentReader.usaProxyDOMPathToXPath( element.getPath() ) )
-						.evaluate(trafficLogRoot, XPathConstants.STRING).toString();
-			} catch (XPathExpressionException e) {
-				throw new RuntimeException( "Error with XPath expression generated from path " + element.getPath() );
-			} catch (Exception e) {
-				throw new RuntimeException(e);
-			}
-		}
-		details.accumulate( "content", contents );
+		details.accumulate( "content", element.getContents() );
 		
 		return details;
 	}

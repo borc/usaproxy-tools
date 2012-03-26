@@ -4,9 +4,6 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
-import javax.xml.transform.TransformerException;
-import javax.xml.xpath.XPathExpressionException;
-
 import fi.uta.infim.usaproxylogparser.UsaProxyAppearanceEvent;
 import fi.uta.infim.usaproxylogparser.UsaProxyDOMElement;
 import fi.uta.infim.usaproxylogparser.UsaProxyDisappearanceEvent;
@@ -42,7 +39,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		}
 	}
 
-	private JSONObject getDOMElements( UsaProxyHTTPTraffic traffic ) throws XPathExpressionException, IOException, TransformerException
+	private JSONObject getDOMElements( UsaProxyHTTPTraffic traffic ) throws IOException
 	{
 		JSONObject elements = new JSONObject();
 		JSONObject details = new JSONObject();
