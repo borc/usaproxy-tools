@@ -73,6 +73,7 @@ tokens {
 	import java.util.Vector;
 	
 	import fi.uta.infim.usaproxylogparser.*;
+	import fi.uta.infim.usaproxylogparser.antlr.AbstractTParser;
 }
 
 // Start rule. The whole log. Note that the input should contain at least one

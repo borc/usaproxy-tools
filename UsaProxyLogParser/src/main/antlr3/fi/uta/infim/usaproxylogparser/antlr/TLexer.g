@@ -22,6 +22,8 @@ options {
 @header {
 
     package fi.uta.infim.usaproxylogparser.antlr;
+    
+    import fi.uta.infim.usaproxylogparser.antlr.AbstractTLexer;
 }
 
 // An IPv4 address, such as '127.0.0.1' - IPv6 not supported
