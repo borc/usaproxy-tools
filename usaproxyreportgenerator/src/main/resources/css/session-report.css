@@ -128,6 +128,25 @@ body
 	word-wrap:break-word;
 }
 
+table.headers td.objectMemberValue
+{
+	word-break: break-all;
+	word-wrap:break-word;
+	width: 75%;
+}
+
+table.headers
+{
+	width: 100%;
+	position: relative;
+	table-layout:fixed;
+}
+
+table.headers td
+{
+	border-bottom: 1px dotted #CCAA88;
+}
+
 .hilight
 {
 	background-color: #FF8000;

@@ -39,7 +39,7 @@
 		var tableHTML = '<table>';
 		for ( var detail in object )
 		{
-			tableHTML += '<tr><td>' + detail + '</td><td>';
+			tableHTML += '<tr><td class="objectMember">' + detail + '</td><td class="objectMemberValue">';
 			if ( object[ detail ].constructor === Date )
 			{
 				tableHTML += object[ detail ].toLocaleString();
@@ -293,21 +293,24 @@
 	{
 		var httpTraffic = session.httptraffics[ httpTrafficId ];
 		
-		var requestHTML = createHTMLTableFromObject( httpTraffic.requestHeaders );
-		var responseHTML = createHTMLTableFromObject( httpTraffic.responseHeaders );
+		var requestHTML = $( createHTMLTableFromObject( httpTraffic.requestHeaders ) ).addClass('headers');
+		var responseHTML = $( createHTMLTableFromObject( httpTraffic.responseHeaders ) ).addClass('headers');
 		
-		$( '<div id="httpHeadersDialog" title="HTTP Headers">' + 
-				'<div><h3 class="title">Request</h3>' + requestHTML + '</div>' + 
-				'<div><h3 class="title">Response</h3>' + responseHTML + '</div>' + 
-			'</div>' )
-		.css({
-			'font-size': '80%'
-		}).dialog({
-			buttons: {
-				"OK": function() { $(this).dialog("close"); } 
-			},
-			width: Math.floor( 0.8 * $( window ).width() )
-		});
+		$( '<div id="httpHeadersDialog" title="HTTP Headers" />' )
+			.append( $('<div />')
+					.append( '<h3 class="title">Request</h3>' )
+					.append( requestHTML ) ) 
+			.append( $('<div />')
+					.append( '<h3 class="title">Response</h3>' )
+					.append( responseHTML ) )
+			.css({
+				'font-size': '80%'
+			}).dialog({
+				buttons: {
+					"OK": function() { $(this).dialog("close"); } 
+				},
+				width: Math.floor( 0.8 * $( window ).width() )
+			});
 	};
 	
 	// Entry point. Run when document fully loaded.
