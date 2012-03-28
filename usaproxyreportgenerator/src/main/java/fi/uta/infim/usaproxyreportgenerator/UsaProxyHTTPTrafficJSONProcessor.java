@@ -1,6 +1,23 @@
+/*
+ * UsaProxyReportGenerator - tool for processing UsaProxy-fork logs
+ *  Copyright (C) 2012 Teemu Pääkkönen - University of Tampere
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package fi.uta.infim.usaproxyreportgenerator;
 
-import java.io.IOException;
 import java.util.Date;
 import java.util.Vector;
 
@@ -17,8 +34,16 @@ import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
 import net.sf.json.processors.JsonBeanProcessor;
 
+/**
+ * Processes UsaProxyHTTPTraffic objects into JSON objects.
+ * @author Teemu Pääkkönen
+ *
+ */
 public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 
+	/**
+	 * Processes a UsaProxyHTTPTraffic object into a JSON object
+	 */
 	@Override
 	public JSONObject processBean(Object arg0, JsonConfig arg1) {
 		UsaProxyHTTPTraffic traffic = (UsaProxyHTTPTraffic) arg0;
@@ -39,7 +64,15 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		}
 	}
 
-	private JSONObject getDOMElements( UsaProxyHTTPTraffic traffic ) throws IOException
+	/**
+	 * Iterates through a HTTPTraffic object for DOM elements. Returns a JSON
+	 * object with two members: 'details' and 'sightings'. 'Details' contains
+	 * detailed information on each object. 'Sightings' contains an array of
+	 * data points for plotting the element's sightings.
+	 * @param traffic the traffic object whose dom elements are iterated through
+	 * @return a JSON object containing the details and sightings of every element
+	 */
+	private JSONObject getDOMElements( UsaProxyHTTPTraffic traffic )
 	{
 		JSONObject elements = new JSONObject();
 		JSONObject details = new JSONObject();
@@ -60,6 +93,13 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return elements;
 	}
 	
+	/**
+	 * Iterates through a HTTP traffic session object to find all viewport states 
+	 * during the session. Creates a JSON array containing data points ready to
+	 * be plotted using flot.
+	 * @param traffic the HTTP traffic session to be iterated over
+	 * @return a JSON array containing ready-to-plot datapoints for flot
+	 */
 	private JSONArray getViewportMovement( UsaProxyHTTPTraffic traffic )
 	{
 		JSONArray movement = new JSONArray();
@@ -71,11 +111,26 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return movement;
 	}
 	
+	/**
+	 * Generates a name for the viewport/element top edge flot dataset.
+	 * This is used for filling the are between the top and bottom edge.
+	 * Deterministic -> each unique input generates the same unique output each time.
+	 * @param elementTopName the base id to generate the id from.
+	 * @return the generated ID
+	 */
 	static private String generateDatasetTopId( String elementTopName )
 	{
 		return elementTopName + "Top";
 	}
 	
+	/**
+	 * Creates a Flot dataset JSON object. Only to be used with Flot.
+	 * This dataset represents the top edge of the plotted element.
+	 * @param elementTopName a unique element id
+	 * @param sightings a JSON object containing the actual plot data
+	 * @param elementDomId Element's UsaProxy DOM path
+	 * @return the created Flot dataset (a JSON object)
+	 */
 	private JSONObject getTopDataset( String elementTopName, JSONObject sightings, String elementDomId )
 	{
 		JSONObject dataset = new JSONObject();
@@ -90,6 +145,16 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return dataset;
 	}
 	
+	/**
+	 * Creates a Flot dataset JSON object. Only to be used with Flot.
+	 * This dataset represents the bottom edge of the plotted element.
+	 * @param elementTopName a unique element id - notice that this id should
+	 * be the same as what was passed to {@link #getTopDataset}.
+	 * @param sightings a JSON object containing the actual plot data
+	 * @param color fill color for the area between top and bottom
+	 * @param elementDomId Element's UsaProxy DOM path
+	 * @return the created Flot dataset (a JSON object)
+	 */
 	private JSONObject getBottomDataset( String elementTopName, JSONObject sightings, String color, String elementDomId )
 	{
 		JSONObject dataset = new JSONObject();
@@ -106,12 +171,27 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return dataset;
 	}
 	
+	/**
+	 * "Removes" the time zone from a timestamp by subtracting the time zone
+	 * offset from the time stamp. This is done since UsaProxy log entries 
+	 * don't contain a time zone and Flot expects time zone -less timestamps.
+	 * @param timestamp the timestamp to remove time zone from
+	 * @return time zone -less version of the timestamp in unix epoch style
+	 */
 	@SuppressWarnings("deprecation")
 	public static long removeTimezone( Date timestamp )
 	{
 		return timestamp.getTime() - (60 * 1000 * timestamp.getTimezoneOffset());
 	}
 	
+	/**
+	 * Extracts element appearances and disappearances from an element object
+	 * and creates Flot-compatible data arrays for top and bottom edges.
+	 * The top edge data is contained in the returned object's member called 'top'
+	 * and the bottom edge data in a member called 'bottom'. 
+	 * @param element the dom element to extract sightings from
+	 * @return a JSON object containing two Flot-compatible data arrays for plotting
+	 */
 	private JSONObject getSightings( UsaProxyDOMElement element )
 	{
 		JSONObject jsonElement = new JSONObject();
@@ -180,8 +260,21 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		return jsonElement;
 	}
 	
+	/**
+	 * Milliseconds to add to the last appearances of objects in order to 
+	 * generate an artificial disappearance time if the actual disappearance 
+	 * was not logged.
+	 */
 	private static final long ARTIFICIALEND = 20000;
 	
+	/**
+	 * Extracts viewport states from the supplied http traffic session object
+	 * and creates Flot-compatible data arrays from them. The returned object
+	 * contains two members, 'top' and 'bottom', who hold the top data array
+	 * and bottom data array, respectively.
+	 * @param traffic the traffic session to extract viewport states from
+	 * @return a JSON object containing Flot-compatible data arrays for plotting
+	 */
 	private JSONObject getViewportLines( UsaProxyHTTPTraffic traffic )
 	{
 		traffic.sortScreens(); // make sure screens are sorted by timestamp

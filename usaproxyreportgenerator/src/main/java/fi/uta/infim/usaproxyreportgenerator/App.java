@@ -1,3 +1,21 @@
+/*
+ * UsaProxyReportGenerator - tool for processing UsaProxy-fork logs
+ *  Copyright (C) 2012 Teemu Pääkkönen - University of Tampere
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 package fi.uta.infim.usaproxyreportgenerator;
 
 import java.io.File;
@@ -31,17 +49,41 @@ import freemarker.template.DefaultObjectWrapper;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 
+/**
+ * Main class for the report generator command line application
+ * @author Teemu Pääkkönen
+ *
+ */
 public final class App 
 {
+	/**
+	 * Configuration for the JSON processors
+	 */
 	private static JsonConfig config;
 	
+	/**
+	 * Template directory name. This directory contains the freemarker HTML
+	 * templates. The directory will be included in the JAR file during Maven
+	 * packaging process.
+	 */
 	private static final String TEMPLATEDIR = "templates";
 	
-	//private static final String REPORTTEMPLATE = "session-report.ftl";
+	/**
+	 * Name of the template file to be used for generating reports. This file
+	 * must reside in the {@link #TEMPLATEDIR}.
+	 */
 	private static final String REPORTTEMPLATE = "session-report-new.ftl";
 	
+	/**
+	 * This value is used by the report template to generate IDs for list items
+	 * in the http traffic session list.
+	 */
 	private static final String HTTPTRAFFICLISTIDPREFIX = "http-traffic-id-";
 	
+	/**
+	 * This value is used by the report template to generate IDs for plot
+	 * placeholder DIV elements.
+	 */
 	private static final String PLACEHOLDERIDPREFIX = "placeholder-id-";
 	
 	/**
@@ -54,8 +96,16 @@ public final class App
 	 */
 	private static final Options cliOptions = createCLIOptions();
 	
+	/**
+	 * A representation of the parsed command line
+	 */
 	private static CommandLine cli = null;
 	
+	/**
+	 * Creates the options object for the CLI parser. Command line parameters
+	 * are set up here.
+	 * @return options object for CLI parser
+	 */
 	@SuppressWarnings("static-access")
 	private static Options createCLIOptions() {
 		// Command line options
@@ -67,17 +117,27 @@ public final class App
 		return cliOptions;
 	}
 
+	/**
+	 * Returns the JSON processor configuration
+	 * @return the JSON processor configuration
+	 */
 	public static JsonConfig getConfig()
 	{
 		return config;
 	}
 	
+	/**
+	 * Prints the command line help text to std out.
+	 */
 	private static void printHelp()
 	{
 		HelpFormatter formatter = new HelpFormatter();
 		formatter.printHelp( "java -jar usaproxyreportgenerator.jar [OPTIONS] logFile", cliOptions );
 	}
 	
+	/**
+	 * Prints the GPL license information text to std out.
+	 */
 	private static void printLicense()
 	{
 		System.out.println( "UsaProxyReportGenerator version 0.0.1, " +
@@ -87,7 +147,11 @@ public final class App
 				"under certain conditions; see gpl.txt for details.");
 	}
 	
-    public static void main( String[] args ) throws IOException, TemplateException
+	/**
+	 * Entry point.
+	 * @param args command line arguments
+	 */
+    public static void main( String[] args )
     {
     	printLicense();
     	System.out.println();
@@ -149,11 +213,28 @@ public final class App
     		// Use CWD if output dir is not supplied
    			outputDir = new File( cli.hasOption( "outputDir" ) ? cli.getOptionValue( "outputDir" ) : "." );
     		System.out.print( "Generating report for session " + s.getSessionID() + "... " );
-    		generateHTMLReport(s, outputDir);
-    		System.out.println( "done." );
+    		try {
+				generateHTMLReport(s, outputDir);
+				System.out.println( "done." );
+			} catch (IOException e) {
+				System.err.println( "I/O error generating report for session id " + 
+						s.getSessionID() + ": " + e.getMessage() );
+				System.err.println( "Skipping." );
+			} catch (TemplateException e) {
+				System.err.println( "Error populating template for session id " + 
+						s.getSessionID() + ": " + e.getMessage() );
+				System.err.println( "Skipping." );
+			}
     	}
     }
     
+    /**
+     * Generates the actual HTML report file for a single session.
+     * @param session the session to generate the report for
+     * @param outputDir output directory for reports
+     * @throws IOException if the report template cannot be read
+     * @throws TemplateException if there is a problem processing the template
+     */
     private static void generateHTMLReport( UsaProxySession session, File outputDir ) throws IOException, TemplateException
     {
     	JSONObject httptraffic = new JSONObject();
