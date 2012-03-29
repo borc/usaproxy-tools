@@ -171,7 +171,7 @@
 							{
 								listElement.find('input').trigger( 'toggle-all', [this.checked, type] )
 								httpTraffic.filteredTypes[ type ] = this.checked;
-								$( this ).parent().removeClass( 'ui-state-highlight' ).attr( 'title', '' );
+								$( this ).parent().removeClass( 'filter-list-alert' ).attr( 'title', '' );
 							};
 						})( elementDetails.nodeName ) )
 						.each( function()
@@ -190,7 +190,7 @@
 				pJQInputElement
 					.attr( 'checked', true )
 					.parent()
-						.addClass( 'ui-state-highlight' )
+						.addClass( 'filter-list-alert' )
 						.attr( 'title', 'Separate element filters are active' )	;
 			};
 			
@@ -236,6 +236,26 @@
 			listItem.appendTo( listElement );
 		}
 		
+		// Create the show/hide selection
+		var showOnlyFilteredItems = session.httptraffics[ USAPROXYREPORT.visiblePlot ].showOnlyFilteredItems;
+		$( '<div />' )
+			.append( $( '<input type="radio" name="showhide" id="radioHide" ' + 
+					( !showOnlyFilteredItems ? 'checked="checked"' : '' ) + ' />' )
+					.click( function()
+					{
+						session.httptraffics[ USAPROXYREPORT.visiblePlot ].showOnlyFilteredItems = false;
+					} ) )
+			.append( '<label for="radioHide">Hide</label>')
+			.append( $( '<input type="radio" name="showhide" id="radioShowOnly"' +
+					( showOnlyFilteredItems ? 'checked="checked"' : '' ) + ' />' )
+					.click( function()
+					{
+						session.httptraffics[ USAPROXYREPORT.visiblePlot ].showOnlyFilteredItems = true;
+					} ) )
+			.append( '<label for="radioShowOnly">Show</label>')
+			.appendTo( dialogElement )
+			.buttonset();
+		
 		// Create tabs and add the element to the dialog
 		$( '<div>' +
 				'<ul>' +
@@ -278,7 +298,7 @@
 		{
 			var sighting = httpTraffic.domElements.sightings[ i ];
 			if ( httpTraffic.filteredElements[ sighting.elementDomId ] ?
-					!USAPROXYREPORT.hideFilteredItems : USAPROXYREPORT.hideFilteredItems )
+					httpTraffic.showOnlyFilteredItems : !httpTraffic.showOnlyFilteredItems )
 			{
 				filteredSightings.push( sighting );
 			}

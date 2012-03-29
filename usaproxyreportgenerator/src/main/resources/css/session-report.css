@@ -216,6 +216,11 @@ table.headers td
 	border: 0;
 }
 
+.filter-list-alert
+{
+	background-color: #FFF9E5;
+}
+
 #httpHeadersDialog div
 {
 	float: left;
