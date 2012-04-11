@@ -1,5 +1,5 @@
 USAPROXYLOGPARSER - Java API for UsaProxy-fork logs
-version 0.0.1
+version 0.0.2-SNAPSHOT
 Copyright (C) 2012 Teemu Pääkkönen - University of Tampere
 
 

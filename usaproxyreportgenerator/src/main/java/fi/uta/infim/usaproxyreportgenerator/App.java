@@ -140,7 +140,7 @@ public final class App
 	 */
 	private static void printLicense()
 	{
-		System.out.println( "UsaProxyReportGenerator version 0.0.1, " +
+		System.out.println( "UsaProxyReportGenerator version 0.0.2-SNAPSHOT, " +
 				"Copyright (C) 2012 Teemu Pääkkönen - University of Tampere" );
 		System.out.println( "UsaProxyReportGenerator comes with ABSOLUTELY NO WARRANTY; for details see gpl.txt." );
 		System.out.println( "This is free software, and you are welcome to redistribute it " +

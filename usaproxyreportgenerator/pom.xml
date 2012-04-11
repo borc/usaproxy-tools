@@ -4,7 +4,7 @@
 
   <groupId>fi.uta.infim</groupId>
   <artifactId>usaproxyreportgenerator</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.0.2-SNAPSHOT</version>
   <packaging>jar</packaging>
 
   <name>usaproxyreportgenerator</name>
@@ -23,7 +23,7 @@
   	<dependency>
   		<groupId>fi.uta.infim</groupId>
   		<artifactId>usaproxylogparser</artifactId>
-  		<version>0.0.1</version>
+  		<version>0.0.2-SNAPSHOT</version>
 	</dependency>
 	<dependency>
 		<groupId>net.sf.json-lib</groupId>

@@ -227,7 +227,7 @@ public class UsaProxy {
 		 *  						(e.g. java UsaProxy [-port <port>] -remoteIP <IP address> -remotePort <port> -server
 		 */
 		
-		System.out.println( "UsaProxyFork version 0.0.1, " +
+		System.out.println( "UsaProxyFork version 0.0.2-SNAPSHOT, " +
 				"Copyright (C) 2006  Monika Wnuk - Media Informatics Group at the University of Munich, " +
 				"Copyright (C) 2012 Teemu Pääkkönen - University of Tampere" );
 		System.out.println( "UsaProxyFork comes with ABSOLUTELY NO WARRANTY; for details see gpl.txt." );
