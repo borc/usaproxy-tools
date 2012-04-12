@@ -96,8 +96,8 @@
 		$.plot( appearancesPlaceholder, [ {data: dataseries.data} ], {
 				xaxis : {
 					mode: 'time',
-					min: dataseries.xaxis.min,
-					max: dataseries.xaxis.max
+					min: dataseries.xaxis.datamin,
+					max: dataseries.xaxis.datamax
                 },
 	            yaxis : {
 	            	show: false,
