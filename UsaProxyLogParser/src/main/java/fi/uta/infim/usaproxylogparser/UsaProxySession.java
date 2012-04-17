@@ -92,13 +92,6 @@ public class UsaProxySession implements Serializable {
 	}
 
 	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxySession() {
-		super();
-	}
-
-	/**
 	 * Creates a new usaproxy session object and inserts it in the session store.
 	 * @param sessionID identifier
 	 * @param address user's ip address

@@ -88,13 +88,6 @@ public abstract class UsaProxyLogEntry implements Serializable {
 	}
 
 	/**
-	 * No-arg JAXB constructor. Do not use.
-	 */
-	public UsaProxyLogEntry() {
-		super();
-	}
-
-	/**
 	 * The exact time when the action described in this log entry happened.
 	 */
 	private Date timestamp;

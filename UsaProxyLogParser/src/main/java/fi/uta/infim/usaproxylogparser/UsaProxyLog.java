@@ -56,13 +56,6 @@ public class UsaProxyLog implements Serializable {
 	private Collection< UsaProxySession > sessions;
 	
 	/**
-	 * no-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyLog() {
-		super();
-	}
-
-	/**
 	 * Regular constructor. Left public for parser implementations.
 	 * @param entries the log entries contained in this log.
 	 */

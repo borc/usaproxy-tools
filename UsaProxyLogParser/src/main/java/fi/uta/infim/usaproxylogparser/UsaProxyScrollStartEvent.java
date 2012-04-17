@@ -34,13 +34,6 @@ public class UsaProxyScrollStartEvent extends UsaProxyPageEvent {
 	private static final long serialVersionUID = -7484995661351167897L;
 
 	/**
-	 * no-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyScrollStartEvent() {
-		super();
-	}
-
-	/**
 	 * Constructs a full scroll start event.
 	 * @param eventType event type name as logged
 	 * @param attributes map of event attributes, key-value pairs 

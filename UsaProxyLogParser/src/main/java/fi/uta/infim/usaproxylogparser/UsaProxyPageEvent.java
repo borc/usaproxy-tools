@@ -64,13 +64,6 @@ public class UsaProxyPageEvent implements Serializable {
 		setAttributes(attributes);
 	}
 
-	/**
-	 * No-arg constructor for JAXB.
-	 */
-	public UsaProxyPageEvent() {
-		super();
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

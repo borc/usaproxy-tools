@@ -114,13 +114,6 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	}
 
 	/**
-	 * Default no-arg constructor. Required during JAXB unmarshalling.
-	 */
-	public UsaProxyHTTPTraffic() {
-		super();
-	}
-
-	/**
 	 * Creates a new http traffic session object and inserts it into the session
 	 * store. Sessions are indexed by the sessionID argument. Therefore,
 	 * creating a new http traffic session with an already-existing ID will

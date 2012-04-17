@@ -30,13 +30,6 @@ import java.util.HashMap;
 public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 
 	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyViewportChangeEvent() {
-		super();
-	}
-
-	/**
 	 * Constructs a full viewport change event object.
 	 * @param eventType event name as logged
 	 * @param attributes event attributes, map

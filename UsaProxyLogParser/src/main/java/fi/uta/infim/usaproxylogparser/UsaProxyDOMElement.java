@@ -41,13 +41,6 @@ public class UsaProxyDOMElement implements Serializable {
 	 */
 	private static final long serialVersionUID = 4849107937656330641L;
 
-	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyDOMElement() {
-		super();
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

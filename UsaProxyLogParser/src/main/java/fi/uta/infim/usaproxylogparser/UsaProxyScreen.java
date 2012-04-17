@@ -42,13 +42,6 @@ public class UsaProxyScreen implements Serializable {
 	private static final long serialVersionUID = 8795671281132159416L;
 
 	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyScreen() {
-		super();
-	}
-
-	/**
 	 * Private constructor. Use {@link #newScreen(Integer, UsaProxyHTTPTraffic)}
 	 * for creating objects of this class.
 	 * @param iD id number of the screen

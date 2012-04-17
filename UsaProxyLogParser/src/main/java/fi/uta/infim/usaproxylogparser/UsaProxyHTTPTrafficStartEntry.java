@@ -54,13 +54,6 @@ public class UsaProxyHTTPTrafficStartEntry extends UsaProxyLogEntry {
 		setHttpTrafficSession(address, url, sessionID);
 	}
 
-	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyHTTPTrafficStartEntry() {
-		super();
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;

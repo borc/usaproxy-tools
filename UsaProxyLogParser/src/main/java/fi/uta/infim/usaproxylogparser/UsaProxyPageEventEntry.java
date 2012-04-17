@@ -77,13 +77,6 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
 	}
 
 	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyPageEventEntry() {
-		super();
-	}
-
-	/**
 	 * The event described by this log entry. Each page event log entry 
 	 * describes exactly one page event.
 	 */

@@ -34,13 +34,6 @@ public class UsaProxyDisappearanceEvent extends UsaProxyVisibilityEvent {
 	private static final long serialVersionUID = 6698231841198500351L;
 
 	/**
-	 * no-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyDisappearanceEvent() {
-		super();
-	}
-
-	/**
 	 * Constructs a full disappearance event object and adds it to the DOM
 	 * element's disappearance list.
 	 * @param eventType event type as logged

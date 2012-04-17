@@ -149,13 +149,6 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 	}
 
 	/**
-	 * No-arg constructor for JAXB. Do not use.
-	 */
-	public UsaProxyVisibilityEvent() {
-		super();
-	}
-
-	/**
 	 * Through which edge did the element travel to trigger this event?
 	 * @return The edge through which this element traveled
 	 */
