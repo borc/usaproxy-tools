@@ -89,7 +89,6 @@
          				<manifest>
          					<addClasspath>true</addClasspath>
          					<classpathPrefix>lib/</classpathPrefix>
-           					<mainClass>fi.uta.infim.usaproxylogparser.Main</mainClass>
          				</manifest>
        				</archive>
          		</configuration>
