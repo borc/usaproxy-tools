@@ -64,7 +64,7 @@
 		var details = session.httptraffics[ httpTrafficId ].domElements.details[ dataseries.elementDomId ];
 		
 		var detailsTable = {
-			'Node name': details.nodeName,
+			'Element type': details.nodeName ? details.nodeName : '&lt;unknown&gt;',
 			'DOM path': details.path
 		};
 		
@@ -179,7 +179,8 @@
 							if ( httpTraffic.filteredTypes[ elementDetails.nodeName ] ) this.checked = true;
 						} )
 						.appendTo( typeListItem );
-				$( '<label for="' + typeid + '">' + elementDetails.nodeName + 
+				$( '<label for="' + typeid + '">' + 
+						(elementDetails.nodeName ? elementDetails.nodeName : '&lt;unknown&gt;') + 
 						'</label>' ).appendTo( typeListItem );
 				
 				typeListItem.appendTo( elementTypeList );
@@ -229,8 +230,10 @@
 				})
 				.appendTo( listItem );
 			
-			$( '<label for="' + id + '">' + elementDetails.nodeName + ': ' + elementDetails.path + 
-					( elementDetails.content ? " (" + unescape(elementDetails.content.substr(0,30)) + ")" : "" ) + 
+			$( '<label for="' + id + '">' + 
+					( elementDetails.nodeName ? elementDetails.nodeName : '&lt;unknown&gt;' ) + 
+					': ' + elementDetails.path + 
+					( elementDetails.content ? " (" + unescape(elementDetails.content.substr(0,30)) + ")" : '&lt;empty&gt;' ) + 
 					'</label>' ).appendTo( listItem );
 			
 			listItem.appendTo( listElement );
