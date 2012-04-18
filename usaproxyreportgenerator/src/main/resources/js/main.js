@@ -378,6 +378,8 @@
 	            yaxis : {
 	            	position: 'right',
 	            	labelWidth: 40,
+	            	min: 0,
+	            	max: 100,
 	                tickFormatter : function(v) {
 	                	return v + " %";
 	                },
