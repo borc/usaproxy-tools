@@ -19,6 +19,8 @@
 package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -121,20 +123,20 @@ public class UsaProxyDOMElement implements Serializable {
 	/**
 	 * The events that occurred within this DOM element's context
 	 */
-	private Vector< UsaProxyPageEvent > events =
-			new Vector<UsaProxyPageEvent>();
+	private Collection< UsaProxyPageEvent > events =
+			new ArrayList<UsaProxyPageEvent>();
 	
 	/**
 	 * All the appearance events of this element
 	 */
-	private Vector< UsaProxyAppearanceEvent > appears =
-			new Vector<UsaProxyAppearanceEvent>();
+	private Collection< UsaProxyAppearanceEvent > appears =
+			new ArrayList<UsaProxyAppearanceEvent>();
 	
 	/**
 	 * All the disappearance events of this element
 	 */
-	private Vector< UsaProxyDisappearanceEvent > disappears =
-			new Vector<UsaProxyDisappearanceEvent>();
+	private Collection< UsaProxyDisappearanceEvent > disappears =
+			new ArrayList<UsaProxyDisappearanceEvent>();
 	
 	/**
 	 * The node name of the element, eg. "h1"
@@ -147,6 +149,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * This member will be null if contents logging was not active.
 	 */
 	private String contents;
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id;
 	
 	/**
 	 * The DOM path of this element. Represents the element's place in the 
@@ -181,11 +188,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * @return events that occurred in this element's context
 	 */
 	@XmlTransient
-	public Vector< UsaProxyPageEvent > getEvents() {
+	public Collection< UsaProxyPageEvent > getEvents() {
 		return events;
 	}
 
-	void setEvents(Vector< UsaProxyPageEvent > events) {
+	void setEvents(Collection< UsaProxyPageEvent > events) {
 		this.events = events;
 	}
 
@@ -195,11 +202,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * @return appearance events of this element
 	 */
 	@XmlTransient
-	public Vector< UsaProxyAppearanceEvent > getAppears() {
+	public Collection< UsaProxyAppearanceEvent > getAppears() {
 		return appears;
 	}
 
-	void setAppears(Vector< UsaProxyAppearanceEvent > appears) {
+	void setAppears(Collection< UsaProxyAppearanceEvent > appears) {
 		this.appears = appears;
 	}
 
@@ -210,11 +217,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * @return disappearances of this element
 	 */
 	@XmlTransient
-	public Vector< UsaProxyDisappearanceEvent > getDisappears() {
+	public Collection< UsaProxyDisappearanceEvent > getDisappears() {
 		return disappears;
 	}
 
-	void setDisappears(Vector< UsaProxyDisappearanceEvent > disappears) {
+	void setDisappears(Collection< UsaProxyDisappearanceEvent > disappears) {
 		this.disappears = disappears;
 	}
 
@@ -241,6 +248,23 @@ public class UsaProxyDOMElement implements Serializable {
 
 	void setContents(String contents) {
 		this.contents = contents;
+	}
+
+	/**
+	 * Returns the surrogate ID. Usually null, unless loaded from database.
+	 * @return surrogate ID
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the surrogate ID. You should avoid using this unless you need to
+	 * manage IDs manually.
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 }

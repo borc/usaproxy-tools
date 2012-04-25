@@ -21,9 +21,9 @@ package fi.uta.infim.usaproxylogparser;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -48,7 +48,7 @@ public class UsaProxyLog implements Serializable {
 	/**
 	 * All the log entries of this log. Note that no duplicate entries may exist.
 	 */
-	protected Vector< UsaProxyLogEntry > entries;
+	protected Collection< UsaProxyLogEntry > entries;
 
 	/**
 	 * The UsaProxy sessions contained in this log.
@@ -59,7 +59,7 @@ public class UsaProxyLog implements Serializable {
 	 * Regular constructor. Left public for parser implementations.
 	 * @param entries the log entries contained in this log.
 	 */
-	public UsaProxyLog(Vector<UsaProxyLogEntry> entries) {
+	public UsaProxyLog(ArrayList<UsaProxyLogEntry> entries) {
 		super();
 		this.entries = entries;
 		UsaProxySessionStore.assignSessionsTo(this);
@@ -70,11 +70,11 @@ public class UsaProxyLog implements Serializable {
 	 * @return list of log entries
 	 */
 	@XmlTransient
-	public Vector< UsaProxyLogEntry > getEntries() {
+	public Collection< UsaProxyLogEntry > getEntries() {
 		return entries;
 	}
 
-	void setEntries(Vector< UsaProxyLogEntry > entries) {
+	void setEntries(Collection< UsaProxyLogEntry > entries) {
 		this.entries = entries;
 	}
 	
@@ -122,4 +122,26 @@ public class UsaProxyLog implements Serializable {
 	void setSessions(Collection< UsaProxySession > sessions) {
 		this.sessions = sessions;
 	}
+	
+	/**
+	 * Returns the surrogate ID. Usually null, unless loaded from database.
+	 * @return surrogate ID
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the surrogate ID. You should avoid using this unless you need to
+	 * manage IDs manually.
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id;
 }

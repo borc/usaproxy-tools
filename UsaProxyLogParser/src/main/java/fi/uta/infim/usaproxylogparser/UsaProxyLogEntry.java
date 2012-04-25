@@ -105,4 +105,26 @@ public abstract class UsaProxyLogEntry implements Serializable {
 	void setTimestamp(Date timestamp) {
 		this.timestamp = timestamp;
 	}
+	
+	/**
+	 * Returns the surrogate ID. Usually null, unless loaded from database.
+	 * @return surrogate ID
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the surrogate ID. You should avoid using this unless you need to
+	 * manage IDs manually.
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id;
 }

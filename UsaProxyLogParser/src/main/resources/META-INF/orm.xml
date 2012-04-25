@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<entity-mappings 
+  xmlns="http://java.sun.com/xml/ns/persistence/orm"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
+  version="2.0">
+
+    <package>fi.uta.infim.usaproxylogparser</package>
+
+    <entity class="UsaProxyDOMElement" name="DOMElement">
+        <table name="DOMElement" />
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="DOMElementseq"/>
+            </id>
+            <many-to-one name="httpTraffic" />
+            <one-to-many name="appears" />
+            <one-to-many name="disappears" />
+            <one-to-many name="events" mapped-by="domPath" />
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxyHTTPTraffic" name="HTTPTraffic">
+        <table name="HTTPTraffic" />
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="HTTPTrafficseq"/>
+            </id>
+            <many-to-one name="session" />
+            <one-to-many name="screens" mapped-by="httpTrafficSession" />
+            <one-to-many name="domElements" mapped-by="httpTraffic" />
+            <one-to-one name="entry" mapped-by="httpTrafficSession" />
+            <element-collection name="requestHeaders" />
+            <element-collection name="responseHeaders" />
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxyLog" name="Log">
+        <table name="Log" />
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="Logseq"/>
+            </id>
+            <one-to-many name="sessions" />
+            <one-to-many name="entries" />
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxyLogEntry" name="LogEntry">
+        <table name="LogEntry" />
+        <inheritance strategy="JOINED"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="LogEntryseq"/>
+            </id>
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxyPageEvent" name="PageEvent">
+        <table name="PageEvent" />
+        <inheritance strategy="JOINED"/>
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="PageEventseq"/>
+            </id>
+            <many-to-one name="domPath" />
+            <many-to-one name="screen" />
+            <one-to-one name="entry" mapped-by="event" />
+            <element-collection name="attributes" />
+        </attributes>
+    </entity>
+        
+    <entity class="UsaProxyScreen" name="Screen">
+        <table name="Screen" />
+        <attributes>
+            <id name="id2">
+                <column name="id2"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="Screenseq"/>
+            </id>
+            <many-to-one name="httpTrafficSession" />
+            <one-to-many name="events" mapped-by="screen" />
+            <one-to-one name="initialViewportEvent" />
+            <one-to-one name="scrollStart" />
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxySession" name="Session">
+        <table name="Session" />
+        <attributes>
+            <id name="id">
+                <column name="id"/>
+                <generated-value generator="generator" strategy="SEQUENCE"/>
+                <sequence-generator name="generator" sequence-name="Sessionseq"/>
+            </id>
+            <one-to-many name="httpTrafficSessions" mapped-by="session" />
+            <transient name="sortedHttpTrafficSessions" />
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxyScrollStartEvent" name="ScrollStartEvent">
+        <table name="ScrollStartEvent" />
+    </entity>
+    
+    <entity class="UsaProxyAppearanceEvent" name="AppearanceEvent">
+        <table name="AppearanceEvent" />
+    </entity>
+    
+    <entity class="UsaProxyDisappearanceEvent" name="DisappearanceEvent">
+        <table name="DisappearanceEvent" />
+    </entity>
+    
+    <entity class="UsaProxyViewportChangeEvent" name="ViewportChangeEvent">
+        <table name="ViewportChangeEvent" />
+    </entity>
+    
+    <entity class="UsaProxyVisibilityEvent" name="VisibilityEvent">
+        <table name="VisibilityEvent" />
+    </entity>
+    
+    <entity class="UsaProxyHTTPTrafficStartEntry" name="HTTPTrafficStartEntry">
+        <table name="HTTPTrafficStartEntry" />
+        <attributes>
+            <one-to-one name="httpTrafficSession" />
+        </attributes>
+    </entity>
+    
+    <entity class="UsaProxyPageEventEntry" name="PageEventEntry">
+        <table name="PageEventEntry" />
+        <attributes>
+            <one-to-one name="event" />
+        </attributes>
+    </entity>
+    
+</entity-mappings>

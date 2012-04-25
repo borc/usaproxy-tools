@@ -88,7 +88,7 @@ tokens {
     package fi.uta.infim.usaproxylogparser.antlr;
 
 	import java.util.HashMap;
-	import java.util.Vector;
+	import java.util.ArrayList;
 	
 	import fi.uta.infim.usaproxylogparser.*;
 	import fi.uta.infim.usaproxylogparser.antlr.AbstractTParser;
@@ -108,8 +108,8 @@ terminator
 	:	NEWLINE | EOF
 	;
 
-loglines returns [ Vector< UsaProxyLogEntry > entries ]
-	@init { $entries = new Vector< UsaProxyLogEntry >(); }
+loglines returns [ ArrayList< UsaProxyLogEntry > entries ]
+	@init { $entries = new ArrayList< UsaProxyLogEntry >(); }
 	:	(logline { $entries.add( $logline.entry ); })+
 	;
 

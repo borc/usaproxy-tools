@@ -20,6 +20,7 @@ package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
 import java.util.HashMap;
+import java.util.Map;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -129,7 +130,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * 'offset'->'1462,398'. Attributes named at parse-time are stored in
 	 * separate fields, such as {@link #type}.
 	 */
-	private HashMap< String, String > attributes;
+	private Map< String, String > attributes;
 	
 	/**
 	 * The event occurred during this session. The session identifies the 
@@ -154,6 +155,11 @@ public class UsaProxyPageEvent implements Serializable {
 	 */
 	@XmlTransient
 	private UsaProxyPageEventEntry entry;
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id;
 	
 	/**
 	 * The event type. See {@link EventType} for details.
@@ -197,11 +203,11 @@ public class UsaProxyPageEvent implements Serializable {
 	 * attributes that havent been mapped to member variables.
 	 * @return map of event attributes
 	 */
-	public HashMap< String, String > getAttributes() {
+	public Map< String, String > getAttributes() {
 		return attributes;
 	}
 
-	void setAttributes(HashMap< String, String > attributes) {
+	void setAttributes(Map< String, String > attributes) {
 		this.attributes = attributes;
 	}
 
@@ -360,6 +366,23 @@ public class UsaProxyPageEvent implements Serializable {
 
 	void setEntry(UsaProxyPageEventEntry entry) {
 		this.entry = entry;
+	}
+
+	/**
+	 * Returns the surrogate ID. Null, unless loaded from a database.
+	 * @return surrogate ID
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the surrogate ID. Should not be used unless you need to manage
+	 * the IDs manually.
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

@@ -19,6 +19,8 @@
 package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlAttribute;
@@ -77,8 +79,8 @@ public class UsaProxyScreen implements Serializable {
 	/**
 	 * All the events that happened in this screen.
 	 */
-	private Vector< UsaProxyPageEvent > events =
-			new Vector<UsaProxyPageEvent>();
+	private Collection< UsaProxyPageEvent > events =
+			new ArrayList<UsaProxyPageEvent>();
 	
 	/**
 	 * The viewport change event that initialized this screen.
@@ -130,11 +132,11 @@ public class UsaProxyScreen implements Serializable {
 		@XmlElement( name="disappearance", type=UsaProxyDisappearanceEvent.class ),
 		@XmlElement( name="initialViewport", type=UsaProxyViewportChangeEvent.class ),
 		@XmlElement( name="scrollstart", type=UsaProxyScrollStartEvent.class )})
-	public Vector< UsaProxyPageEvent > getEvents() {
+	public Collection< UsaProxyPageEvent > getEvents() {
 		return events;
 	}
 
-	void setEvents(Vector< UsaProxyPageEvent > events) {
+	void setEvents(Collection< UsaProxyPageEvent > events) {
 		this.events = events;
 	}
 
@@ -167,4 +169,25 @@ public class UsaProxyScreen implements Serializable {
 		this.scrollStart = scrollStart;
 	}
 	
+	/**
+	 * Returns the surrogate ID. Usually null, unless loaded from database.
+	 * @return surrogate ID
+	 */
+	public Long getId2() {
+		return id2;
+	}
+
+	/**
+	 * Sets the surrogate ID. You should avoid using this unless you need to
+	 * manage IDs manually.
+	 * @param id
+	 */
+	public void setId2(Long id2) {
+		this.id2 = id2;
+	}
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id2;
 }

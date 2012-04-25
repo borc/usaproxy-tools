@@ -25,6 +25,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashSet;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -120,7 +121,7 @@ public class UsaProxySession implements Serializable {
 	 * describes a single page load. Orderable by timestamp with 
 	 * {@link fi.uta.infim.usaproxylogparser.UsaProxySession.HTTPTrafficComparator}.
 	 */
-	private HashSet< UsaProxyHTTPTraffic > httpTrafficSessions =
+	private Set< UsaProxyHTTPTraffic > httpTrafficSessions =
 			new HashSet<UsaProxyHTTPTraffic>();
 	
 	/**
@@ -192,11 +193,11 @@ public class UsaProxySession implements Serializable {
 	 * @return list of http traffic sessions
 	 */
 	@XmlElement( name="httpTraffic" )
-	public HashSet< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
+	public Set< UsaProxyHTTPTraffic > getHttpTrafficSessions() {
 		return httpTrafficSessions;
 	}
 
-	void setHttpTrafficSessions(HashSet< UsaProxyHTTPTraffic > httpTrafficSessions) {
+	void setHttpTrafficSessions(Set< UsaProxyHTTPTraffic > httpTrafficSessions) {
 		this.httpTrafficSessions = httpTrafficSessions;
 	}
 
@@ -236,4 +237,27 @@ public class UsaProxySession implements Serializable {
 			this.start = start;
 		}
 	}
+	
+	/**
+	 * Returns the surrogate ID. Usually null, unless loaded from database.
+	 * @return surrogate ID
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the surrogate ID. You should avoid using this unless you need to
+	 * manage IDs manually.
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
+	}
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id;
+	
 }

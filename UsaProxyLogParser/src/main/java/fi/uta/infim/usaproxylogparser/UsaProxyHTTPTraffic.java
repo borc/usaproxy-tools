@@ -29,6 +29,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -191,7 +194,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Each screen object represents a single browser viewport state on
 	 * the document represented by the {@link #url}.
 	 */
-	private LinkedList< UsaProxyScreen > screens =
+	private List< UsaProxyScreen > screens =
 			new LinkedList<UsaProxyScreen>();
 	
 	/**
@@ -202,7 +205,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	/**
 	 * All the DOM elements that have triggered events during this http traffic
 	 */
-	private HashSet< UsaProxyDOMElement > domElements =
+	private Set< UsaProxyDOMElement > domElements =
 			new HashSet<UsaProxyDOMElement>();
 	
 	/**
@@ -214,15 +217,20 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * HTTP headers in the original HTTP request. Parsed from the http traffic
 	 * log file that corresponds to the traffic id.
 	 */
-	private HashMap< String, String > requestHeaders =
+	private Map< String, String > requestHeaders =
 			new HashMap< String, String >();
 	
 	/**
 	 * HTTP headers in the original HTTP response. Parsed from the corresponding
 	 * http traffic log file.
 	 */
-	private HashMap< String, String > responseHeaders =
+	private Map< String, String > responseHeaders =
 			new HashMap< String, String >();
+	
+	/**
+	 * Surrogate ID. Null, unless object is loaded from a database.
+	 */
+	private Long id;
 	
 	/**
 	 * Returns the user's IP address or null if not set.
@@ -303,11 +311,11 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 */
 	@XmlElementWrapper
 	@XmlElement( name="screen", type=UsaProxyScreen.class )
-	public LinkedList< UsaProxyScreen > getScreens() {
+	public List< UsaProxyScreen > getScreens() {
 		return screens;
 	}
 
-	void setScreens(LinkedList< UsaProxyScreen > screens) {
+	void setScreens(List< UsaProxyScreen > screens) {
 		this.screens = screens;
 	}
 
@@ -348,11 +356,11 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * @return list of DOM elements
 	 */
 	@XmlTransient
-	public HashSet< UsaProxyDOMElement > getDomElements() {
+	public Set< UsaProxyDOMElement > getDomElements() {
 		return domElements;
 	}
 
-	void setDomElements(HashSet< UsaProxyDOMElement > domElements) {
+	void setDomElements(Set< UsaProxyDOMElement > domElements) {
 		this.domElements = domElements;
 	}
 
@@ -372,11 +380,11 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * HTTP request headers in key-value pairs
 	 * @return a map of request headers
 	 */
-	public HashMap< String, String > getRequestHeaders() {
+	public Map< String, String > getRequestHeaders() {
 		return requestHeaders;
 	}
 
-	void setRequestHeaders(HashMap< String, String > requestHeaders) {
+	void setRequestHeaders(Map< String, String > requestHeaders) {
 		this.requestHeaders = requestHeaders;
 	}
 
@@ -384,12 +392,29 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * HTTP response headers in key-value pairs
 	 * @return a map of response headers
 	 */
-	public HashMap< String, String > getResponseHeaders() {
+	public Map< String, String > getResponseHeaders() {
 		return responseHeaders;
 	}
 
-	void setResponseHeaders(HashMap< String, String > responseHeaders) {
+	void setResponseHeaders(Map< String, String > responseHeaders) {
 		this.responseHeaders = responseHeaders;
+	}
+
+	/**
+	 * Returns the surrogate ID. Usually null, unless loaded from database.
+	 * @return surrogate ID
+	 */
+	public Long getId() {
+		return id;
+	}
+
+	/**
+	 * Sets the surrogate ID. You should avoid using this unless you need to
+	 * manage IDs manually.
+	 * @param id
+	 */
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 }

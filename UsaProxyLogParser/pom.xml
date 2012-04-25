@@ -38,9 +38,9 @@
 		<resources>
   			<resource>
   				<directory>src/main/resources</directory>
-	  			<excludes>
-	  				<exclude>**/.gitignore</exclude>
-	  			</excludes>
+	  			<includes>
+  					<include>**/orm.xml</include>
+  				</includes>
 	  		</resource>
 	  	</resources>
 
@@ -48,14 +48,32 @@
 
         <plugins>
 
-			<plugin>
-	     		<groupId>org.apache.maven.plugins</groupId>
-	     		<artifactId>maven-resources-plugin</artifactId>
-	     		<configuration>
-	     			<outputDirectory>${basedir}/target</outputDirectory>
-	     			<includeEmptyDirs>true</includeEmptyDirs>
-	     		</configuration>
-	     	</plugin>
+	     	<plugin>
+        		<artifactId>maven-resources-plugin</artifactId>
+        		<version>2.5</version>
+        		<executions>
+          			<execution>
+            			<id>copy-resources</id>
+            			<phase>validate</phase>
+            			<goals>
+              				<goal>copy-resources</goal>
+            			</goals>
+            			<configuration>
+            				<includeEmptyDirs>true</includeEmptyDirs>
+              				<outputDirectory>${basedir}/target</outputDirectory>
+              				<resources>
+  								<resource>
+  									<directory>src/main/resources</directory>
+  									<includes>
+  										<include>readme.txt</include>
+  										<include>gpl.txt</include>
+  									</includes>
+  								</resource>
+  							</resources>        
+            			</configuration>            
+          			</execution>
+        		</executions>
+      		</plugin>
 
             <plugin>
                 <groupId>org.antlr</groupId>
@@ -84,6 +102,7 @@
 			<plugin>
          		<groupId>org.apache.maven.plugins</groupId>
          		<artifactId>maven-jar-plugin</artifactId>
+         		<version>2.4</version>
          		<configuration>
        				<archive>
          				<manifest>
