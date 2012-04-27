@@ -54,6 +54,10 @@ import fi.uta.infim.usaproxylogparser.jaxb.InetAddressXmlAdapter;
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxyHTTPTraffic implements Serializable {
 
+	protected UsaProxyHTTPTraffic() {
+		super();
+	}
+
 	/**
 	 * A comparator class for UsaProxy screens. Orders screens by appearance
 	 * time. Uses {@link java.util.Date#compareTo} for comparison.
@@ -250,6 +254,20 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.address = address;
 	}
 
+	/**
+	 * User's IP address as a string.
+	 * @return user's ip address as string
+	 */
+	public String getAddressString()
+	{
+		return address == null ? null : address.getHostAddress();
+	}
+	
+	void setAddressString( String address )
+	{
+		setAddress( UsaProxyLog.ipAddressStringToInetAddress(address) );
+	}
+	
 	/**
 	 * The URL accessed during this http traffic session
 	 * @return a URL object

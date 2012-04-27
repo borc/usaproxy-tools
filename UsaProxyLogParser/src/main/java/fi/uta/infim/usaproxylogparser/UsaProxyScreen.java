@@ -21,7 +21,6 @@ package fi.uta.infim.usaproxylogparser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -37,6 +36,10 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 public class UsaProxyScreen implements Serializable {
+
+	protected UsaProxyScreen() {
+		super();
+	}
 
 	/**
 	 * 

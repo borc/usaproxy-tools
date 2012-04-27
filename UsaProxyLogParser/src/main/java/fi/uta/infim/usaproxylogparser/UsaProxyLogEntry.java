@@ -34,12 +34,16 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  *
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
-public abstract class UsaProxyLogEntry implements Serializable {
+public class UsaProxyLogEntry implements Serializable {
+	
+	protected UsaProxyLogEntry() {
+		super();
+	}
 
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 7121100953768617501L;
+	private static final long serialVersionUID = 4268238020672120629L;
 	
 	/**
 	 * The date time format used in UsaProxy logs.

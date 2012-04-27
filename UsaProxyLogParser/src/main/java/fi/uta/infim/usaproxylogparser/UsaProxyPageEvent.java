@@ -37,6 +37,10 @@ import fi.uta.infim.usaproxylogparser.jaxb.SessionAdapter;
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxyPageEvent implements Serializable {
 	
+	protected UsaProxyPageEvent() {
+		super();
+	}
+
 	/**
 	 * Constructor for full page event objects
 	 * @param eventType event type as logged
@@ -223,7 +227,7 @@ public class UsaProxyPageEvent implements Serializable {
 
 	void setSession(UsaProxySession session) {
 		this.session = session;
-		if ( session != null )
+		if ( session != null && this.getEntry() != null )
 		{
 			session.testAndSetStart(this.getEntry().getTimestamp());
 		}

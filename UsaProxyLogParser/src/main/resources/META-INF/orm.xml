@@ -16,10 +16,24 @@
                 <generated-value generator="generator" strategy="SEQUENCE"/>
                 <sequence-generator name="generator" sequence-name="DOMElementseq"/>
             </id>
-            <many-to-one name="httpTraffic" />
-            <one-to-many name="appears" />
-            <one-to-many name="disappears" />
-            <one-to-many name="events" mapped-by="domPath" />
+            <many-to-one name="httpTraffic">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
+            <one-to-many name="appears">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-many>
+            <one-to-many name="disappears">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-many>
+            <one-to-many name="events" mapped-by="domPath">
+            </one-to-many>
+            <transient name="contents" />
         </attributes>
     </entity>
     
@@ -32,11 +46,17 @@
                 <sequence-generator name="generator" sequence-name="HTTPTrafficseq"/>
             </id>
             <many-to-one name="session" />
-            <one-to-many name="screens" mapped-by="httpTrafficSession" />
-            <one-to-many name="domElements" mapped-by="httpTraffic" />
+            <one-to-many name="screens" mapped-by="httpTrafficSession">
+            </one-to-many>
+            <one-to-many name="domElements" mapped-by="httpTraffic">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-many>
             <one-to-one name="entry" mapped-by="httpTrafficSession" />
             <element-collection name="requestHeaders" />
             <element-collection name="responseHeaders" />
+            <transient name="address" />
         </attributes>
     </entity>
     
@@ -48,8 +68,12 @@
                 <generated-value generator="generator" strategy="SEQUENCE"/>
                 <sequence-generator name="generator" sequence-name="Logseq"/>
             </id>
-            <one-to-many name="sessions" />
-            <one-to-many name="entries" />
+            <one-to-many name="entries">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-many>
+            <transient name="sessions" />
         </attributes>
     </entity>
     
@@ -75,7 +99,21 @@
                 <sequence-generator name="generator" sequence-name="PageEventseq"/>
             </id>
             <many-to-one name="domPath" />
-            <many-to-one name="screen" />
+            <many-to-one name="screen">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="httpTrafficSession">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
+            <many-to-one name="session">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
             <one-to-one name="entry" mapped-by="event" />
             <element-collection name="attributes" />
         </attributes>
@@ -89,9 +127,18 @@
                 <generated-value generator="generator" strategy="SEQUENCE"/>
                 <sequence-generator name="generator" sequence-name="Screenseq"/>
             </id>
-            <many-to-one name="httpTrafficSession" />
-            <one-to-many name="events" mapped-by="screen" />
-            <one-to-one name="initialViewportEvent" />
+            <many-to-one name="httpTrafficSession">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </many-to-one>
+            <one-to-many name="events" mapped-by="screen">
+            </one-to-many>
+            <one-to-one name="initialViewportEvent">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-one>
             <one-to-one name="scrollStart" />
         </attributes>
     </entity>
@@ -104,8 +151,13 @@
                 <generated-value generator="generator" strategy="SEQUENCE"/>
                 <sequence-generator name="generator" sequence-name="Sessionseq"/>
             </id>
-            <one-to-many name="httpTrafficSessions" mapped-by="session" />
+            <one-to-many name="httpTrafficSessions" mapped-by="session">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-many>
             <transient name="sortedHttpTrafficSessions" />
+            <transient name="address" />
         </attributes>
     </entity>
     
@@ -132,14 +184,22 @@
     <entity class="UsaProxyHTTPTrafficStartEntry" name="HTTPTrafficStartEntry">
         <table name="HTTPTrafficStartEntry" />
         <attributes>
-            <one-to-one name="httpTrafficSession" />
+            <one-to-one name="httpTrafficSession">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-one>
         </attributes>
     </entity>
     
     <entity class="UsaProxyPageEventEntry" name="PageEventEntry">
         <table name="PageEventEntry" />
         <attributes>
-            <one-to-one name="event" />
+            <one-to-one name="event">
+                <cascade>
+                    <cascade-persist />
+                </cascade>
+            </one-to-one>
         </attributes>
     </entity>
     

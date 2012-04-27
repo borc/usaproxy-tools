@@ -21,7 +21,6 @@ package fi.uta.infim.usaproxylogparser;
 import java.io.Serializable;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -39,6 +38,10 @@ import javax.xml.bind.annotation.XmlTransient;
 @XmlRootElement
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
 public class UsaProxyLog implements Serializable {
+
+	protected UsaProxyLog() {
+		super();
+	}
 
 	/**
 	 * 
@@ -59,7 +62,7 @@ public class UsaProxyLog implements Serializable {
 	 * Regular constructor. Left public for parser implementations.
 	 * @param entries the log entries contained in this log.
 	 */
-	public UsaProxyLog(ArrayList<UsaProxyLogEntry> entries) {
+	public UsaProxyLog(Collection<UsaProxyLogEntry> entries) {
 		super();
 		this.entries = entries;
 		UsaProxySessionStore.assignSessionsTo(this);
@@ -116,7 +119,7 @@ public class UsaProxyLog implements Serializable {
 	 */
 	@XmlElement( name="session" )
 	public Collection< UsaProxySession > getSessions() {
-		return Collections.unmodifiableCollection( sessions );
+		return sessions == null ? null : Collections.unmodifiableCollection( sessions );
 	}
 
 	void setSessions(Collection< UsaProxySession > sessions) {

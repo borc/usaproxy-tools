@@ -18,6 +18,7 @@
 
 package fi.uta.infim.usaproxylogparser;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -29,7 +30,11 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
-public class UsaProxyPageEventEntry extends UsaProxyLogEntry {
+public class UsaProxyPageEventEntry extends UsaProxyLogEntry implements Serializable {
+
+	protected UsaProxyPageEventEntry() {
+		super();
+	}
 
 	/**
 	 * 

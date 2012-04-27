@@ -21,7 +21,6 @@ package fi.uta.infim.usaproxylogparser;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Vector;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
@@ -37,6 +36,10 @@ import javax.xml.bind.annotation.XmlTransient;
  *
  */
 public class UsaProxyDOMElement implements Serializable {
+
+	protected UsaProxyDOMElement() {
+		super();
+	}
 
 	/**
 	 * 
@@ -247,6 +250,18 @@ public class UsaProxyDOMElement implements Serializable {
 	}
 
 	void setContents(String contents) {
+		this.contents = contents;
+	}
+
+	/**
+	 * The contents of this element, truncated at 255 characters. Null if not found or logged.
+	 * @return contents of this element
+	 */
+	public String getTruncatedContents() {
+		return contents == null ? null : contents.substring(0, contents.length() < 255 ? contents.length() : 255);
+	}
+
+	void setTruncatedContents(String contents) {
 		this.contents = contents;
 	}
 
