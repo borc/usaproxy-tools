@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  *
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
-public class UsaProxyLogEntry implements Serializable {
+public abstract class UsaProxyLogEntry implements Serializable {
 	
 	protected UsaProxyLogEntry() {
 		super();

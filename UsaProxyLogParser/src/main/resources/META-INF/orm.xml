@@ -98,6 +98,9 @@
                 <generated-value generator="generator" strategy="SEQUENCE"/>
                 <sequence-generator name="generator" sequence-name="PageEventseq"/>
             </id>
+            <basic name="type">
+                <enumerated>STRING</enumerated>
+            </basic>
             <many-to-one name="domPath" />
             <many-to-one name="screen">
                 <cascade>
@@ -116,6 +119,7 @@
             </many-to-one>
             <one-to-one name="entry" mapped-by="event" />
             <element-collection name="attributes" />
+            
         </attributes>
     </entity>
         
@@ -179,6 +183,11 @@
     
     <entity class="UsaProxyVisibilityEvent" name="VisibilityEvent">
         <table name="VisibilityEvent" />
+        <attributes>
+            <basic name="edge">
+                <enumerated>STRING</enumerated>
+            </basic>
+        </attributes>
     </entity>
     
     <entity class="UsaProxyHTTPTrafficStartEntry" name="HTTPTrafficStartEntry">
