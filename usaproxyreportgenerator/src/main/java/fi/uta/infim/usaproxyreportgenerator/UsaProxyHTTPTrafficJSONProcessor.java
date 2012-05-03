@@ -305,7 +305,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 			{
 				// If the end time cannot be determined, the viewport has either
 				// been resized or this is the last screen. Generate an end time.
-				if ( UsaProxySessionStore.getScreenById(traffic.getSessionID(), new Integer(s.getID() + 1).toString()) != null )
+				if ( UsaProxySessionStore.getScreenById(traffic.getSessionID(), new Integer(s.getScreenID() + 1).toString()) != null )
 				{
 					// If a next screen exists, this was a resize event
 					endTime = beginTime + 1;
