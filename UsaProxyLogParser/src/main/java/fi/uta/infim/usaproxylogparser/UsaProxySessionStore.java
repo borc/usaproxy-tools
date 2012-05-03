@@ -111,7 +111,7 @@ public final class UsaProxySessionStore {
 			theMap = new HashMap<Integer,UsaProxyScreen>();
 			screens.put( httpTraffic.getSessionID(), theMap );
 		}
-		theMap.put( screen.getID(), screen );
+		theMap.put( screen.getScreenID(), screen );
 	}
 	
 	/**

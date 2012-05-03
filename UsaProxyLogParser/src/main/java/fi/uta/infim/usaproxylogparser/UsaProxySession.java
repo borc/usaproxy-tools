@@ -137,7 +137,6 @@ public class UsaProxySession implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result
 				+ ((sessionID == null) ? 0 : sessionID.hashCode());
 		return result;
@@ -152,11 +151,6 @@ public class UsaProxySession implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		UsaProxySession other = (UsaProxySession) obj;
-		if (address == null) {
-			if (other.address != null)
-				return false;
-		} else if (!address.equals(other.address))
-			return false;
 		if (sessionID == null) {
 			if (other.sessionID != null)
 				return false;

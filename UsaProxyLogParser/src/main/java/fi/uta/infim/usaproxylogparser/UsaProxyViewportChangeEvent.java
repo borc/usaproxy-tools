@@ -29,6 +29,10 @@ import java.util.HashMap;
  */
 public class UsaProxyViewportChangeEvent extends UsaProxyPageEvent {
 
+	protected UsaProxyViewportChangeEvent() {
+		super();
+	}
+
 	/**
 	 * Constructs a full viewport change event object.
 	 * @param eventType event name as logged

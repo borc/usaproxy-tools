@@ -24,14 +24,12 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.TreeSet;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -78,13 +76,23 @@ public class UsaProxyHTTPTraffic implements Serializable {
 			if ( o2.getInitialViewportEvent() == null ) return 1;
 			if ( o1.getInitialViewportEvent() == null ) return -1;
 			
-			int tsCompare = o1.getInitialViewportEvent().getEntry().getTimestamp().compareTo(
+			int tsCompare = 0;
+			try
+			{
+				tsCompare = o1.getInitialViewportEvent().getEntry().getTimestamp().compareTo(
 					o2.getInitialViewportEvent().getEntry().getTimestamp() );
+			}
+			catch ( NullPointerException e )
+			{
+				// If there is a null pointer exception, we are probably loading
+				// data from a DB, and all relations haven't been loaded yet.
+				tsCompare = 0;
+			}
 			if ( tsCompare == 0 )
 			{
 				// if two screens have the exact same timestamps, something is terribly wrong,
 				// but we cant really figure out what, so we let the dupe screen pass for now 
-				return o1.getID().compareTo(o2.getID());
+				return o1.getScreenID().compareTo(o2.getScreenID());
 			}
 			return tsCompare;
 		}
@@ -94,11 +102,9 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
-		result = prime * result + ((address == null) ? 0 : address.hashCode());
 		result = prime * result + ((session == null) ? 0 : session.hashCode());
 		result = prime * result
 				+ ((sessionID == null) ? 0 : sessionID.hashCode());
-		result = prime * result + ((url == null) ? 0 : url.hashCode());
 		return result;
 	}
 
@@ -150,11 +156,6 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		UsaProxyHTTPTraffic other = (UsaProxyHTTPTraffic) obj;
-		if (address == null) {
-			if (other.address != null)
-				return false;
-		} else if (!address.equals(other.address))
-			return false;
 		if (session == null) {
 			if (other.session != null)
 				return false;
@@ -164,11 +165,6 @@ public class UsaProxyHTTPTraffic implements Serializable {
 			if (other.sessionID != null)
 				return false;
 		} else if (!sessionID.equals(other.sessionID))
-			return false;
-		if (url == null) {
-			if (other.url != null)
-				return false;
-		} else if (!url.equals(other.url))
 			return false;
 		return true;
 	}
@@ -198,8 +194,8 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 * Each screen object represents a single browser viewport state on
 	 * the document represented by the {@link #url}.
 	 */
-	private List< UsaProxyScreen > screens =
-			new LinkedList<UsaProxyScreen>();
+	private Set< UsaProxyScreen > screens =
+			new TreeSet<UsaProxyScreen>( new UsaProxyScreenComparator() );
 	
 	/**
 	 * The UsaProxy session during which this http traffic occurred
@@ -329,21 +325,23 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 */
 	@XmlElementWrapper
 	@XmlElement( name="screen", type=UsaProxyScreen.class )
-	public List< UsaProxyScreen > getScreens() {
+	public Set< UsaProxyScreen > getScreens() {
 		return screens;
 	}
 
-	void setScreens(List< UsaProxyScreen > screens) {
+	void setScreens(Set< UsaProxyScreen > screens) {
 		this.screens = screens;
 	}
 
 	/**
 	 * Sorts all the screen objects in this HTTP traffic object, using
 	 * {@link fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic.UsaProxyScreenComparator}.
+	 * @deprecated no-op since 0.0.2 - set is ordered upon insert
 	 */
+	@Deprecated
 	public void sortScreens()
 	{
-		Collections.sort( this.screens, new UsaProxyScreenComparator() );
+		return;
 	}
 	
 	/**

@@ -81,6 +81,31 @@ public class UsaProxyPageEventEntry extends UsaProxyLogEntry implements Serializ
 		}
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((event == null) ? 0 : event.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UsaProxyPageEventEntry other = (UsaProxyPageEventEntry) obj;
+		if (event == null) {
+			if (other.event != null)
+				return false;
+		} else if (!event.equals(other.event))
+			return false;
+		return true;
+	}
+
 	/**
 	 * The event described by this log entry. Each page event log entry 
 	 * describes exactly one page event.

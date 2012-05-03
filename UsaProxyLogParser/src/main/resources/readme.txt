@@ -8,6 +8,12 @@ This Java library provides an object based API for handling UsaProxy-fork
 log files. It is not intended to be used with the original UsaProxy software.
 See apidocs/index.html for API documentation.
 
+The package also contains a JPA compliant orm.xml for O/R mapping. It is only
+intended for very basic mapping; for anything more advanced you should write
+your own mappings. The mapping file resides in the META-INF directory inside 
+the JAR itself; the easiest way to access it is by using the classloader, e.g. 
+ UsaProxyLog.class.getResource( "/META-INF/orm.xml" )
+
 
 LICENSE
     This program is free software: you can redistribute it and/or modify

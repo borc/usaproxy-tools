@@ -69,50 +69,6 @@ public class UsaProxyPageEvent implements Serializable {
 		setAttributes(attributes);
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((attributes == null) ? 0 : attributes.hashCode());
-		result = prime
-				* result
-				+ ((httpTrafficSession == null) ? 0 : httpTrafficSession
-						.hashCode());
-		result = prime * result + ((session == null) ? 0 : session.hashCode());
-		result = prime * result + ((type == null) ? 0 : type.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UsaProxyPageEvent other = (UsaProxyPageEvent) obj;
-		if (attributes == null) {
-			if (other.attributes != null)
-				return false;
-		} else if (!attributes.equals(other.attributes))
-			return false;
-		if (httpTrafficSession == null) {
-			if (other.httpTrafficSession != null)
-				return false;
-		} else if (!httpTrafficSession.equals(other.httpTrafficSession))
-			return false;
-		if (session == null) {
-			if (other.session != null)
-				return false;
-		} else if (!session.equals(other.session))
-			return false;
-		if (type != other.type)
-			return false;
-		return true;
-	}
-
 	/**
 	 * 
 	 */

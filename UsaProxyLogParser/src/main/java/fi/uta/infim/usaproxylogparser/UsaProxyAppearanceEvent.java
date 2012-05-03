@@ -28,6 +28,10 @@ import java.util.HashMap;
  */
 public class UsaProxyAppearanceEvent extends UsaProxyVisibilityEvent {
 
+	protected UsaProxyAppearanceEvent() {
+		super();
+	}
+
 	/**
 	 * 
 	 */
@@ -50,6 +54,5 @@ public class UsaProxyAppearanceEvent extends UsaProxyVisibilityEvent {
 		
 		getDomPath().getAppears().add(this);
 	}
-
 	
 }

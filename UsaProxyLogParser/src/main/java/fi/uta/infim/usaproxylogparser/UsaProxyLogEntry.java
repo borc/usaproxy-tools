@@ -34,7 +34,7 @@ import javax.xml.bind.annotation.XmlSeeAlso;
  *
  */
 @XmlSeeAlso({UsaProxyLogEntry.class,UsaProxyHTTPTrafficStartEntry.class,UsaProxyPageEventEntry.class,UsaProxyHTTPTraffic.class,UsaProxySession.class,UsaProxyPageEvent.class,UsaProxyLog.class})
-public abstract class UsaProxyLogEntry implements Serializable {
+public class UsaProxyLogEntry implements Serializable {
 	
 	protected UsaProxyLogEntry() {
 		super();
@@ -50,32 +50,6 @@ public abstract class UsaProxyLogEntry implements Serializable {
 	 */
 	private static final SimpleDateFormat usaProxyTSFormat = 
 			new SimpleDateFormat( "yyyy-MM-dd,HH:mm:ss.SSS" );
-
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result
-				+ ((timestamp == null) ? 0 : timestamp.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		UsaProxyLogEntry other = (UsaProxyLogEntry) obj;
-		if (timestamp == null) {
-			if (other.timestamp != null)
-				return false;
-		} else if (!timestamp.equals(other.timestamp))
-			return false;
-		return true;
-	}
 
 	/**
 	 * Constructor for log entries.

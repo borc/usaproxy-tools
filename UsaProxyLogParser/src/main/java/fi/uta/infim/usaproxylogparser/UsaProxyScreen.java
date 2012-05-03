@@ -20,7 +20,7 @@ package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
@@ -41,6 +41,40 @@ public class UsaProxyScreen implements Serializable {
 		super();
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((screenID == null) ? 0 : screenID.hashCode());
+		result = prime
+				* result
+				+ ((httpTrafficSession == null) ? 0 : httpTrafficSession
+						.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UsaProxyScreen other = (UsaProxyScreen) obj;
+		if (screenID == null) {
+			if (other.screenID != null)
+				return false;
+		} else if (!screenID.equals(other.screenID))
+			return false;
+		if (httpTrafficSession == null) {
+			if (other.httpTrafficSession != null)
+				return false;
+		} else if (!httpTrafficSession.equals(other.httpTrafficSession))
+			return false;
+		return true;
+	}
+
 	/**
 	 * 
 	 */
@@ -53,7 +87,7 @@ public class UsaProxyScreen implements Serializable {
 	 */
 	private UsaProxyScreen(Integer iD ) {
 		super();
-		ID = iD;
+		screenID = iD;
 	}
 
 	/**
@@ -72,7 +106,7 @@ public class UsaProxyScreen implements Serializable {
 	/**
 	 * Every screenful has a per-httpTraffic unique ID.
 	 */
-	private Integer ID;
+	private Integer screenID;
 	
 	/**
 	 * The http traffic session this screenful is tied to.
@@ -82,7 +116,7 @@ public class UsaProxyScreen implements Serializable {
 	/**
 	 * All the events that happened in this screen.
 	 */
-	private Collection< UsaProxyPageEvent > events =
+	private List< UsaProxyPageEvent > events =
 			new ArrayList<UsaProxyPageEvent>();
 	
 	/**
@@ -103,12 +137,12 @@ public class UsaProxyScreen implements Serializable {
 	 * @return unique identifier of this screen
 	 */
 	@XmlAttribute
-	public Integer getID() {
-		return ID;
+	public Integer getScreenID() {
+		return screenID;
 	}
 
-	void setID(Integer iD) {
-		ID = iD;
+	void setScreenID(Integer screenID) {
+		this.screenID = screenID;
 	}
 
 	/**
@@ -135,11 +169,11 @@ public class UsaProxyScreen implements Serializable {
 		@XmlElement( name="disappearance", type=UsaProxyDisappearanceEvent.class ),
 		@XmlElement( name="initialViewport", type=UsaProxyViewportChangeEvent.class ),
 		@XmlElement( name="scrollstart", type=UsaProxyScrollStartEvent.class )})
-	public Collection< UsaProxyPageEvent > getEvents() {
+	public List< UsaProxyPageEvent > getEvents() {
 		return events;
 	}
 
-	void setEvents(Collection< UsaProxyPageEvent > events) {
+	void setEvents(List< UsaProxyPageEvent > events) {
 		this.events = events;
 	}
 

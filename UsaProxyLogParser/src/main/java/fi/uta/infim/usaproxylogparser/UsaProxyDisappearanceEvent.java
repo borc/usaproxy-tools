@@ -28,6 +28,10 @@ import java.util.HashMap;
  */
 public class UsaProxyDisappearanceEvent extends UsaProxyVisibilityEvent {
 
+	protected UsaProxyDisappearanceEvent() {
+		super();
+	}
+
 	/**
 	 * 
 	 */

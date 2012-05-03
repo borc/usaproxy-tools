@@ -20,7 +20,7 @@ package fi.uta.infim.usaproxylogparser;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlTransient;
@@ -50,8 +50,13 @@ public class UsaProxyDOMElement implements Serializable {
 	public int hashCode() {
 		final int prime = 31;
 		int result = 1;
+		result = prime * result + ((appears == null) ? 0 : appears.hashCode());
+		result = prime * result
+				+ ((disappears == null) ? 0 : disappears.hashCode());
 		result = prime * result
 				+ ((httpTraffic == null) ? 0 : httpTraffic.hashCode());
+		result = prime * result
+				+ ((nodeName == null) ? 0 : nodeName.hashCode());
 		result = prime * result + ((path == null) ? 0 : path.hashCode());
 		return result;
 	}
@@ -65,10 +70,25 @@ public class UsaProxyDOMElement implements Serializable {
 		if (getClass() != obj.getClass())
 			return false;
 		UsaProxyDOMElement other = (UsaProxyDOMElement) obj;
+		if (appears == null) {
+			if (other.appears != null)
+				return false;
+		} else if (!appears.equals(other.appears))
+			return false;
+		if (disappears == null) {
+			if (other.disappears != null)
+				return false;
+		} else if (!disappears.equals(other.disappears))
+			return false;
 		if (httpTraffic == null) {
 			if (other.httpTraffic != null)
 				return false;
 		} else if (!httpTraffic.equals(other.httpTraffic))
+			return false;
+		if (nodeName == null) {
+			if (other.nodeName != null)
+				return false;
+		} else if (!nodeName.equals(other.nodeName))
 			return false;
 		if (path == null) {
 			if (other.path != null)
@@ -126,19 +146,19 @@ public class UsaProxyDOMElement implements Serializable {
 	/**
 	 * The events that occurred within this DOM element's context
 	 */
-	private Collection< UsaProxyPageEvent > events =
+	private List< UsaProxyPageEvent > events =
 			new ArrayList<UsaProxyPageEvent>();
 	
 	/**
 	 * All the appearance events of this element
 	 */
-	private Collection< UsaProxyAppearanceEvent > appears =
+	private List< UsaProxyAppearanceEvent > appears =
 			new ArrayList<UsaProxyAppearanceEvent>();
 	
 	/**
 	 * All the disappearance events of this element
 	 */
-	private Collection< UsaProxyDisappearanceEvent > disappears =
+	private List< UsaProxyDisappearanceEvent > disappears =
 			new ArrayList<UsaProxyDisappearanceEvent>();
 	
 	/**
@@ -191,11 +211,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * @return events that occurred in this element's context
 	 */
 	@XmlTransient
-	public Collection< UsaProxyPageEvent > getEvents() {
+	public List< UsaProxyPageEvent > getEvents() {
 		return events;
 	}
 
-	void setEvents(Collection< UsaProxyPageEvent > events) {
+	void setEvents(List< UsaProxyPageEvent > events) {
 		this.events = events;
 	}
 
@@ -205,11 +225,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * @return appearance events of this element
 	 */
 	@XmlTransient
-	public Collection< UsaProxyAppearanceEvent > getAppears() {
+	public List< UsaProxyAppearanceEvent > getAppears() {
 		return appears;
 	}
 
-	void setAppears(Collection< UsaProxyAppearanceEvent > appears) {
+	void setAppears(List< UsaProxyAppearanceEvent > appears) {
 		this.appears = appears;
 	}
 
@@ -220,11 +240,11 @@ public class UsaProxyDOMElement implements Serializable {
 	 * @return disappearances of this element
 	 */
 	@XmlTransient
-	public Collection< UsaProxyDisappearanceEvent > getDisappears() {
+	public List< UsaProxyDisappearanceEvent > getDisappears() {
 		return disappears;
 	}
 
-	void setDisappears(Collection< UsaProxyDisappearanceEvent > disappears) {
+	void setDisappears(List< UsaProxyDisappearanceEvent > disappears) {
 		this.disappears = disappears;
 	}
 

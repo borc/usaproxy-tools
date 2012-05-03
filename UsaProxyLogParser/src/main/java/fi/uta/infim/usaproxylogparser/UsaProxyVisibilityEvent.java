@@ -31,6 +31,10 @@ import javax.xml.bind.annotation.XmlEnum;
  */
 public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 
+	protected UsaProxyVisibilityEvent() {
+		super();
+	}
+
 	/**
 	 * 
 	 */
@@ -184,5 +188,5 @@ public class UsaProxyVisibilityEvent extends UsaProxyPageEvent {
 	void setBottomPosition(Double bottomPosition) {
 		this.bottomPosition = bottomPosition;
 	}
-
+	
 }

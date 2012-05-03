@@ -28,6 +28,10 @@ import java.util.HashMap;
  */
 public class UsaProxyScrollStartEvent extends UsaProxyPageEvent {
 
+	protected UsaProxyScrollStartEvent() {
+		super();
+	}
+
 	/**
 	 * 
 	 */

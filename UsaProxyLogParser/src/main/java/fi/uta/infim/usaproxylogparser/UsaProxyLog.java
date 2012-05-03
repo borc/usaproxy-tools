@@ -23,6 +23,7 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -51,7 +52,7 @@ public class UsaProxyLog implements Serializable {
 	/**
 	 * All the log entries of this log. Note that no duplicate entries may exist.
 	 */
-	protected Collection< UsaProxyLogEntry > entries;
+	protected List< UsaProxyLogEntry > entries;
 
 	/**
 	 * The UsaProxy sessions contained in this log.
@@ -62,7 +63,7 @@ public class UsaProxyLog implements Serializable {
 	 * Regular constructor. Left public for parser implementations.
 	 * @param entries the log entries contained in this log.
 	 */
-	public UsaProxyLog(Collection<UsaProxyLogEntry> entries) {
+	public UsaProxyLog(List<UsaProxyLogEntry> entries) {
 		super();
 		this.entries = entries;
 		UsaProxySessionStore.assignSessionsTo(this);
@@ -73,11 +74,11 @@ public class UsaProxyLog implements Serializable {
 	 * @return list of log entries
 	 */
 	@XmlTransient
-	public Collection< UsaProxyLogEntry > getEntries() {
+	public List< UsaProxyLogEntry > getEntries() {
 		return entries;
 	}
 
-	void setEntries(Collection< UsaProxyLogEntry > entries) {
+	void setEntries(List< UsaProxyLogEntry > entries) {
 		this.entries = entries;
 	}
 	
