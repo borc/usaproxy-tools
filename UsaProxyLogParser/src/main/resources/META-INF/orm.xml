@@ -18,12 +18,13 @@
             </id>
             <many-to-one name="httpTraffic">
             </many-to-one>
-            <one-to-many name="appears">
+            <one-to-many name="appears" target-entity="UsaProxyAppearanceEvent">
+                <join-table name="domelement_appears" />
             </one-to-many>
-            <one-to-many name="disappears">
+            <one-to-many name="disappears" target-entity="UsaProxyDisappearanceEvent">
+                <join-table name="domelement_disappears" />
             </one-to-many>
-            <one-to-many name="events" mapped-by="domPath">
-            </one-to-many>
+            <one-to-many name="events" mapped-by="domPath"></one-to-many>
             <transient name="contents" />
         </attributes>
     </entity>
@@ -89,7 +90,9 @@
     
     <entity class="UsaProxyPageEvent" name="PageEvent">
         <table name="PageEvent" />
-        <inheritance strategy="JOINED"/>
+        <inheritance strategy="SINGLE_TABLE"/>
+        <discriminator-value>OTHER</discriminator-value>
+        <discriminator-column name="EVENTTYPE" discriminator-type="STRING"/> 
         <attributes>
             <id name="id">
                 <column name="id"/>
@@ -105,8 +108,7 @@
                     <cascade-merge />
                 </cascade>
             </many-to-one>
-            <many-to-one name="screen">
-            </many-to-one>
+            <many-to-one name="screen">            </many-to-one>
             <many-to-one name="httpTrafficSession">
             </many-to-one>
             <many-to-one name="session">
@@ -120,19 +122,17 @@
     <entity class="UsaProxyScreen" name="Screen">
         <table name="Screen" />
         <attributes>
-            <id name="id2">
-                <column name="surrogateID"/>
+            <id name="id">
+                <column name="id"/>
                 <generated-value generator="Screenseqgenerator" strategy="IDENTITY"/>
                 <sequence-generator name="Screenseqgenerator" sequence-name="Screenseq"/>
             </id>
             <many-to-one name="httpTrafficSession">
             </many-to-one>
-            <one-to-many name="events" mapped-by="screen">
-            </one-to-many>
-            <one-to-one name="initialViewportEvent"></one-to-one>
-            <one-to-one name="scrollStart" />
-            <!--<transient name="initialViewportEvent" />-->
-            <!--<transient name="scrollStart" />-->
+            <!--<one-to-many name="events" mapped-by="screen"></one-to-many>-->
+            <one-to-one name="initialViewportEvent" target-entity="UsaProxyViewportChangeEvent"></one-to-one>
+            <one-to-one name="scrollStart" target-entity="UsaProxyScrollStartEvent" />
+            <transient name="events" />
         </attributes>
     </entity>
     
@@ -177,7 +177,6 @@
     
     <entity class="UsaProxyVisibilityEvent" name="VisibilityEvent">
         <table name="VisibilityEvent" />
-        <inheritance strategy="SINGLE_TABLE"/>
         <discriminator-value>VISIBILITY</discriminator-value>
         <attributes>
             <basic name="edge">
@@ -202,7 +201,7 @@
     <entity class="UsaProxyPageEventEntry" name="PageEventEntry">
         <table name="PageEventEntry" />
         <attributes>
-            <one-to-one name="event">
+            <one-to-one name="event" target-entity="UsaProxyPageEvent">
                 <cascade>
                     <cascade-persist />
                     <cascade-merge />

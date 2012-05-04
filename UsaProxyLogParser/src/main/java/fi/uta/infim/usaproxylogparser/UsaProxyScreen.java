@@ -210,8 +210,8 @@ public class UsaProxyScreen implements Serializable {
 	 * Returns the surrogate ID. Usually null, unless loaded from database.
 	 * @return surrogate ID
 	 */
-	public Long getId2() {
-		return id2;
+	public Long getId() {
+		return id;
 	}
 
 	/**
@@ -219,12 +219,12 @@ public class UsaProxyScreen implements Serializable {
 	 * manage IDs manually.
 	 * @param id
 	 */
-	public void setId2(Long id2) {
-		this.id2 = id2;
+	public void setId(Long id) {
+		this.id = id;
 	}
 	
 	/**
 	 * Surrogate ID. Null, unless object is loaded from a database.
 	 */
-	private Long id2;
+	private Long id;
 }
