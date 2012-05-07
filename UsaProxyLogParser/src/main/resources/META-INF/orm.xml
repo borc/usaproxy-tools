@@ -8,6 +8,14 @@
 
     <package>fi.uta.infim.usaproxylogparser</package>
 
+    <mapped-superclass class="UsaProxyVisibilityEvent">
+        <attributes>
+            <basic name="edge">
+                <enumerated>STRING</enumerated>
+            </basic>
+        </attributes>
+    </mapped-superclass>
+
     <entity class="UsaProxyDOMElement" name="DOMElement">
         <table name="DOMElement" />
         <attributes>
@@ -24,8 +32,14 @@
             <one-to-many name="disappears" target-entity="UsaProxyDisappearanceEvent">
                 <join-table name="domelement_disappears" />
             </one-to-many>
-            <one-to-many name="events" mapped-by="domPath"></one-to-many>
+            
+            <!-- Full contents will not be stored in a database. Truncated
+                 contents string available in property 'truncatedContents'. -->
             <transient name="contents" />
+            
+            <!-- Business logic in inverse setter will take care of adding
+                 elements to this collection -->
+            <transient name="events" />
         </attributes>
     </entity>
     
@@ -38,18 +52,23 @@
                 <sequence-generator name="HTTPTrafficseqgenerator" sequence-name="HTTPTrafficseq"/>
             </id>
             <many-to-one name="session" />
-            <one-to-many name="screens" mapped-by="httpTrafficSession">
-                <cascade>
-                    <cascade-persist />
-                    <cascade-merge />
-                </cascade>
-            </one-to-many>
-            <one-to-many name="domElements" mapped-by="httpTraffic">
-            </one-to-many>
             <one-to-one name="entry" mapped-by="httpTrafficSession" />
             <element-collection name="requestHeaders" />
             <element-collection name="responseHeaders" />
+            
+            <!-- Address is an InetAddress object, and it will not be stored
+                 in a database. A string representation ('addressString')
+                 will be stored and used to set the object representation
+                 when loading objects from database. -->
             <transient name="address" />
+            
+            <!-- Business logic in inverse setter will take care of adding
+                 elements to this collection -->
+            <transient name="domElements" />
+            
+            <!-- Business logic in inverse setter will take care of adding
+                 elements to this collection -->
+            <transient name="screens" />
         </attributes>
     </entity>
     
@@ -108,7 +127,12 @@
                     <cascade-merge />
                 </cascade>
             </many-to-one>
-            <many-to-one name="screen">            </many-to-one>
+            <many-to-one name="screen">
+                <cascade>
+                    <cascade-persist />
+                    <cascade-merge />
+                </cascade>
+            </many-to-one>
             <many-to-one name="httpTrafficSession">
             </many-to-one>
             <many-to-one name="session">
@@ -127,11 +151,12 @@
                 <generated-value generator="Screenseqgenerator" strategy="IDENTITY"/>
                 <sequence-generator name="Screenseqgenerator" sequence-name="Screenseq"/>
             </id>
-            <many-to-one name="httpTrafficSession">
-            </many-to-one>
-            <!--<one-to-many name="events" mapped-by="screen"></one-to-many>-->
+            <many-to-one name="httpTrafficSession"></many-to-one>
             <one-to-one name="initialViewportEvent" target-entity="UsaProxyViewportChangeEvent"></one-to-one>
             <one-to-one name="scrollStart" target-entity="UsaProxyScrollStartEvent" />
+            
+            <!-- Business logic in inverse setter will take care of adding
+                 elements to this collection -->
             <transient name="events" />
         </attributes>
     </entity>
@@ -144,46 +169,38 @@
                 <generated-value generator="Sessionseqgenerator" strategy="IDENTITY"/>
                 <sequence-generator name="Sessionseqgenerator" sequence-name="Sessionseq"/>
             </id>
-            <one-to-many name="httpTrafficSessions" mapped-by="session">
-            </one-to-many>
+            
+            <!-- This property is sorted at runtime. No need to store it in a DB. -->
             <transient name="sortedHttpTrafficSessions" />
+            
+            <!-- Address is an InetAddress object, and it will not be stored
+                 in a database. A string representation ('addressString')
+                 will be stored and used to set the object representation
+                 when loading objects from database. -->
             <transient name="address" />
+            
+            <!-- Business logic in inverse setter will take care of adding
+                 elements to this collection -->
+            <transient name="httpTrafficSessions" />
         </attributes>
     </entity>
     
     <entity class="UsaProxyScrollStartEvent" name="ScrollStartEvent">
-        <table name="ScrollStartEvent" />
         <discriminator-value>SCROLLSTART</discriminator-value>
     </entity>
     
     <entity class="UsaProxyAppearanceEvent" name="AppearanceEvent">
-        <table name="AppearanceEvent" />
         <discriminator-value>APPEARANCE</discriminator-value>
         <attributes>
         </attributes>
     </entity>
     
     <entity class="UsaProxyDisappearanceEvent" name="DisappearanceEvent">
-        <table name="DisappearanceEvent" />
         <discriminator-value>DISAPPEARANCE</discriminator-value>
-        <attributes>
-        </attributes>
     </entity>
     
     <entity class="UsaProxyViewportChangeEvent" name="ViewportChangeEvent">
-        <table name="ViewportChangeEvent" />
         <discriminator-value>VIEWPORTCHANGE</discriminator-value>
-    </entity>
-    
-    <entity class="UsaProxyVisibilityEvent" name="VisibilityEvent">
-        <table name="VisibilityEvent" />
-        <discriminator-value>VISIBILITY</discriminator-value>
-        <attributes>
-            <basic name="edge">
-                <enumerated>STRING</enumerated>
-            </basic>
-            <basic name="bottomPosition" />
-        </attributes>
     </entity>
     
     <entity class="UsaProxyHTTPTrafficStartEntry" name="HTTPTrafficStartEntry">
