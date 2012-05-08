@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        
+        <!-- Database connection settings -->
+        
+        <!-- DB drivers are not packaged in the distribution. You must
+             provide your own and set it here. --> 
+        <property name="connection.driver_class">org.postgresql.Driver</property>
+        
+        <!-- Database JDBC URL and login credentials -->
+        <property name="connection.url">jdbc:postgresql://localhost/usaproxyTest</property>
+        <property name="connection.username">usaproxy</property>
+        <property name="connection.password">usaproxy</property>
+
+        <!-- JDBC connection pool (use the built-in) -->
+        <property name="connection.pool_size">1</property>
+
+        <!-- SQL dialect. Dialects are not packaged in the distribution. You must
+             provide your own and set it here. -->
+        <property name="dialect">org.hibernate.dialect.PostgreSQLDialect</property>
+
+        <!-- Disable the second-level cache  -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+
+        <!-- Set this to true to echo all executed SQL to stdout -->
+        <property name="show_sql">false</property>
+
+        <!-- Validate the database schema on startup -->
+        <property name="hbm2ddl.auto">validate</property>
+        
+    </session-factory>
+
+</hibernate-configuration>
