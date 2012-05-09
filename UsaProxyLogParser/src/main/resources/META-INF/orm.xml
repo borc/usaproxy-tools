@@ -27,10 +27,14 @@
             <many-to-one name="httpTraffic">
             </many-to-one>
             <one-to-many name="appears" target-entity="UsaProxyAppearanceEvent">
-                <join-table name="domelement_appears" />
+                <join-table name="elementAppearance">
+                    <inverse-join-column name="event_id" />
+                </join-table>
             </one-to-many>
             <one-to-many name="disappears" target-entity="UsaProxyDisappearanceEvent">
-                <join-table name="domelement_disappears" />
+                <join-table name="elementDisappearance">
+                    <inverse-join-column name="event_id" />
+                </join-table>
             </one-to-many>
             
             <!-- Full contents will not be stored in a database. Truncated
@@ -52,9 +56,19 @@
                 <sequence-generator name="HTTPTrafficseqgenerator" sequence-name="HTTPTrafficseq"/>
             </id>
             <many-to-one name="session" />
-            <one-to-one name="entry" mapped-by="httpTrafficSession" />
-            <element-collection name="requestHeaders" />
-            <element-collection name="responseHeaders" />
+            <one-to-one name="entry">
+                
+            </one-to-one>
+            <element-collection name="requestHeaders">
+                <map-key-column name="name" />
+                <column name="value" />
+                <collection-table name="requestHeader" />
+            </element-collection>
+            <element-collection name="responseHeaders">
+                <map-key-column name="name" />
+                <column name="value" />
+                <collection-table name="responseHeader" />
+            </element-collection>
             
             <!-- Address is an InetAddress object, and it will not be stored
                  in a database. A string representation ('addressString')
@@ -81,12 +95,14 @@
                 <sequence-generator name="Logseqgenerator" sequence-name="Logseq"/>
             </id>
             <one-to-many name="sessions">
+                <join-column name="log_id" />
                 <cascade>
                     <cascade-persist />
                     <cascade-merge />
                 </cascade>
             </one-to-many>
             <one-to-many name="entries">
+                <join-column name="log_id" />
                 <cascade>
                     <cascade-persist />
                     <cascade-merge />
@@ -97,7 +113,9 @@
     
     <entity class="UsaProxyLogEntry" name="LogEntry">
         <table name="LogEntry" />
-        <inheritance strategy="JOINED"/>
+        <inheritance strategy="SINGLE_TABLE"/>
+        <discriminator-value>OTHER</discriminator-value>
+        <discriminator-column name="ENTRYTYPE" discriminator-type="STRING"/>
         <attributes>
             <id name="id">
                 <column name="id"/>
@@ -137,9 +155,13 @@
             </many-to-one>
             <many-to-one name="session">
             </many-to-one>
-            <one-to-one name="entry" mapped-by="event" />
-            <element-collection name="attributes" />
-            
+            <one-to-one name="entry" />
+            <element-collection name="attributes">
+                <map-key-column name="name" />
+                <column name="value" />
+                <collection-table name="eventAttribute" />
+            </element-collection>
+                
         </attributes>
     </entity>
         
@@ -204,9 +226,9 @@
     </entity>
     
     <entity class="UsaProxyHTTPTrafficStartEntry" name="HTTPTrafficStartEntry">
-        <table name="HTTPTrafficStartEntry" />
+        <discriminator-value>HTTPTRAFFICSTART</discriminator-value>
         <attributes>
-            <one-to-one name="httpTrafficSession">
+            <one-to-one name="httpTrafficSession" mapped-by="entry">
                 <cascade>
                     <cascade-persist />
                     <cascade-merge />
@@ -216,9 +238,9 @@
     </entity>
     
     <entity class="UsaProxyPageEventEntry" name="PageEventEntry">
-        <table name="PageEventEntry" />
+        <discriminator-value>PAGEEVENT</discriminator-value>
         <attributes>
-            <one-to-one name="event" target-entity="UsaProxyPageEvent">
+            <one-to-one name="event" target-entity="UsaProxyPageEvent" mapped-by="entry">
                 <cascade>
                     <cascade-persist />
                     <cascade-merge />
