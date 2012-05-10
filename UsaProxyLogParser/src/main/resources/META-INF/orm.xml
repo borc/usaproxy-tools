@@ -62,12 +62,16 @@
             <element-collection name="requestHeaders">
                 <map-key-column name="name" />
                 <column name="value" />
-                <collection-table name="requestHeader" />
+                <collection-table name="requestHeader">
+                    <join-column name="httptraffic_id" />
+                </collection-table>
             </element-collection>
             <element-collection name="responseHeaders">
                 <map-key-column name="name" />
                 <column name="value" />
-                <collection-table name="responseHeader" />
+                <collection-table name="responseHeader">
+                    <join-column name="httptraffic_id" />
+                </collection-table>
             </element-collection>
             
             <!-- Address is an InetAddress object, and it will not be stored
@@ -159,7 +163,9 @@
             <element-collection name="attributes">
                 <map-key-column name="name" />
                 <column name="value" />
-                <collection-table name="eventAttribute" />
+                <collection-table name="eventAttribute">
+                    <join-column name="event_id" />
+                </collection-table>
             </element-collection>
                 
         </attributes>
