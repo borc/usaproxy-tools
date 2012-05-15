@@ -124,59 +124,10 @@ public class EventManager {
 		if (this.events.containsKey(list)) this.events.remove(list);
 	}
 	
-	@SuppressWarnings("deprecation")
 	private void calculateNextLogSplit()
 	{
-		final long MINUTEMSECS = 60000L;
-		final long HOURMSECS = 3600000L;
-		final long DAYMSECS = 86400000L;
-		final long WEEKMSECS = 604800000L;
-		
-		switch( usaProxy.getLogSplit() )
-		{
-		case HOURLY:
-			nextLogSplit = new Date( lastLogSplit.getTime() );
-			nextLogSplit.setSeconds( 0 );
-			nextLogSplit.setTime( nextLogSplit.getTime() + 
-					(usaProxy.getLogSplitInterval() * HOURMSECS) -
-					(((60 - usaProxy.getLogSplitAt() + lastLogSplit.getMinutes()) % 60) * MINUTEMSECS));
-			break;
-			
-		case DAILY:
-			nextLogSplit = new Date( lastLogSplit.getTime() );
-			nextLogSplit.setMinutes( 0 );
-			nextLogSplit.setSeconds( 0 );
-			nextLogSplit.setTime( nextLogSplit.getTime() + 
-					(usaProxy.getLogSplitInterval() * DAYMSECS) -
-					(((24 - usaProxy.getLogSplitAt() + lastLogSplit.getHours()) % 24) * HOURMSECS));
-			break;
-			
-		case WEEKLY:
-			nextLogSplit = new Date( lastLogSplit.getTime() );
-			nextLogSplit.setHours( 0 );
-			nextLogSplit.setMinutes( 0 );
-			nextLogSplit.setSeconds( 0 );
-			nextLogSplit.setTime( nextLogSplit.getTime() +
-					( usaProxy.getLogSplitInterval() * WEEKMSECS ) -
-					( ( ( 7 - usaProxy.getLogSplitAt() + lastLogSplit.getDay() ) % 7 ) * DAYMSECS ) );
-			break;
-			
-		case MONTHLY:
-			nextLogSplit = new Date( lastLogSplit.getTime() );
-			nextLogSplit.setDate( usaProxy.getLogSplitAt() );
-			nextLogSplit.setHours( 0 );
-			nextLogSplit.setMinutes( 0 );
-			nextLogSplit.setSeconds( 0 );
-			nextLogSplit.setMonth( (lastLogSplit.getMonth() + usaProxy.getLogSplitInterval() -
-					( nextLogSplit.getDate() > lastLogSplit.getDate() ? 1 : 0 ) ) % 12 );
-			
-			break;
-			
-		case NOSPLIT:
-			nextLogSplit = null;
-			break;
-			
-		}
+		nextLogSplit = usaProxy.getLogSplit().formatNextSplit(
+				lastLogSplit, usaProxy.getLogSplitInterval(), usaProxy.getLogSplitAt() );
 	}
 	
 	private boolean splitNow()
