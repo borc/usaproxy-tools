@@ -80,6 +80,12 @@ public class UsaProxy {
      */
     private boolean 			logExternalUrl;
     
+    private LogSplitType		logSplitType;
+    
+    private Integer				logSplitAt;
+    
+    private Integer				logSplitInterval;
+    
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
     
@@ -108,7 +114,10 @@ public class UsaProxy {
 			String[] nodeTypes,
 			boolean isLoggingContents,
 			int contentsLimit,
-			boolean logExternalUrl
+			boolean logExternalUrl,
+			LogSplitType splitType,
+			Integer splitAt,
+			Integer splitInterval
 			) {
 		
 		this.port 					= port;
@@ -122,6 +131,9 @@ public class UsaProxy {
 		this.setLoggingContents(isLoggingContents);
 		this.setContentsLoggingLimit(contentsLimit);
 		this.setLogExternalUrl(logExternalUrl);
+		this.logSplitType			= splitType;
+		this.logSplitAt				= splitAt;
+		this.logSplitInterval		= splitInterval;
 		
 		try {
 			this.ip			= java.net.InetAddress.getLocalHost();
@@ -193,26 +205,33 @@ public class UsaProxy {
 	public static void main(String[] args) {
 			
 		/** Command line switches:
-		 *  -port <port> 			is the UsaProxy port the client is contacting (optional; default: 8000)
-		 *  -remoteIP <IP address> 	is the address of the gateway proxy
-		 *  						resp. web server UsaProxy always forwards requests to
-		 *  -remotePort <port>		is the gateway's resp. web server's port (in combination
-		 *  						with switch -remoteIP!)
-		 *  -server					starts UsaProxy in server mode (in combination
-		 *  						with switches -remoteIP and -remotePort!)
-		 *  -rm						starts UsaProxy in Remote Monitoring mode (exclusive)
-		 *  -sb						starts UsaProxy in Shared Browsing mode (exclusive)
-		 *  -log					enables logging of events into log.txt	(additional or stand-alone)
-		 *  -logMode pagereq|all	specifies logging mode, e.g. all events ("all"),
-		 *  						only httptraffic log entries/ page requests ("pagereq")
-		 *  						(optional; default: all)
-		 *  -id <id>				identifies the UsaProxy instance (useful for distinguishing
-		 *  						between versions and authentication of users); default: undefined
-		 *  -nodeTypes <types>		lists the node types whose appearances and
-		 *  						disappearances are to be logged, separated by a 
-		 *  						semi-colon (;) default: img;h1;h2;h3;h4;h5;h6 		
-		 *  -logContents			Log also element contents on appear events?
-		 *  -logContentsLimit <n>	Limit contents logging to n characters.
+		 *  -port <port> 				is the UsaProxy port the client is contacting (optional; default: 8000)
+		 *  -remoteIP <IP address> 		is the address of the gateway proxy
+		 *  							resp. web server UsaProxy always forwards requests to
+		 *  -remotePort <port>			is the gateway's resp. web server's port (in combination
+		 *  							with switch -remoteIP!)
+		 *  -server						starts UsaProxy in server mode (in combination
+		 *  							with switches -remoteIP and -remotePort!)
+		 *  -rm							starts UsaProxy in Remote Monitoring mode (exclusive)
+		 *  -sb							starts UsaProxy in Shared Browsing mode (exclusive)
+		 *  -log						enables logging of events into log.txt	(additional or stand-alone)
+		 *  -logMode pagereq|all		specifies logging mode, e.g. all events ("all"),
+		 *  							only httptraffic log entries/ page requests ("pagereq")
+		 *  							(optional; default: all)
+		 *  -id <id>					identifies the UsaProxy instance (useful for distinguishing
+		 *  							between versions and authentication of users); default: undefined
+		 *  -nodeTypes <types>			lists the node types whose appearances and
+		 *  							disappearances are to be logged, separated by a 
+		 *  							semi-colon (;) default: img;h1;h2;h3;h4;h5;h6 		
+		 *  -logContents				Log also element contents on appear events?
+		 *  -logContentsLimit <n>		Limit contents logging to n characters.
+		 *  -logSplit h|d|w|m			Split logs hourly/daily/weekly/monthly. Default: No splitting.
+		 *  -logSplitAt <hh>			Start a new log file every h/d/w/m
+		 *  							 * at hh minutes on the hour (hourly)
+		 *  							 * at hh o'clock (daily) (24h)
+		 *  							 * on weekday number hh (1=monday) (weekly)
+		 *  							 * on the hh'th day of the month (monthly)
+		 *  -logSplitInterval <nnn>		Split logs every nnn h/d/w/m instead of every h/d/w/m. Default: 1.
 		 */
 		
 		/** UsaProxy modes:
@@ -463,6 +482,86 @@ public class UsaProxy {
 			}
 		}
 		
+		/*
+		 * Handle log splitting cli args.
+		 * Other log splitting args will be ignored if -logSplit is not given.
+		 */
+		LogSplitType lsType = LogSplitType.NOSPLIT;
+		Integer lsAt = 0;
+		Integer lsInterval = 1;
+		if ( (index = indexOf( args, "-logSplit" )) != -1 )
+		{
+			try 
+			{
+				lsType = LogSplitType.getTypeByCLIArg( args[ index + 1 ] );
+			} 
+			catch (NoSuchFieldException e) {
+				System.err.println( "Invalid logSplit argument value! Valid values are: h, d, w, m." );
+				System.err.println( "Defaulting to no log splitting." );
+			}
+			catch( IndexOutOfBoundsException e )
+			{
+				System.err.println( "No logSplit argument value supplied!" );
+				System.err.println( "Defaulting to no log splitting." );
+			}
+			
+			// Set logSplitAt to the minimum (default) value as determined
+			// by the Enum LogSplitType.
+			lsAt = lsType.minSplitValue();
+			
+			/*
+			 * When to split the log. Handle logSplitAt argument.
+			 */
+			if ( (index = indexOf( args, "-logSplitAt" )) != -1 )
+			{
+				try
+				{
+					lsAt = Integer.parseInt( args[index+1] );
+					if ( lsAt.compareTo( lsType.minSplitValue() ) < 0 || 
+							lsAt.compareTo( lsType.maxSplitValue() ) > 0 )
+					{
+						lsAt = lsType.minSplitValue();
+						System.err.println( "Invalid logSplitAt value!" );
+						System.err.println( "Default value of " + lsAt + " will be used." );
+					}
+				}
+				catch( IndexOutOfBoundsException e )
+				{
+					System.err.println( "No logSplitAt value supplied!" );
+					System.err.println( "Default value of " + lsAt + " will be used." );
+				}
+				catch( NumberFormatException e )
+				{
+					System.err.println( "Invalid logSplitAt value!" );
+					System.err.println( "Default value of " + lsAt + " will be used." );
+				}
+			}
+			
+			if ( (index = indexOf( args, "-logSplitInterval" )) != -1 )
+			{
+				try
+				{
+					lsInterval = Integer.parseInt( args[index+1] );
+					if ( lsInterval < 1 )
+					{
+						lsInterval = 1;
+						System.err.println( "Invalid logSplitInterval value!" );
+						System.err.println( "Default value of " + lsInterval + " will be used." );
+					}
+				}
+				catch( IndexOutOfBoundsException e )
+				{
+					System.err.println( "No logSplitInterval value supplied!" );
+					System.err.println( "Default value of " + lsInterval + " will be used." );
+				}
+				catch( NumberFormatException e )
+				{
+					System.err.println( "Invalid logSplitInterval value!" );
+					System.err.println( "Default value of " + lsInterval + " will be used." );
+				}
+			}
+		}
+		
 		System.out.println("Trying to start UsaProxy at port: " + port);
 		
 		/** generate a mode instance */
@@ -485,7 +584,8 @@ public class UsaProxy {
 		
 		
 		/** generate an UsaProxy instance */
-		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, logContents, limitContents, exUrls);
+		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, 
+				logContents, limitContents, exUrls, lsType, lsAt, lsInterval );
 			
 	}
 
@@ -663,4 +763,18 @@ public class UsaProxy {
 		this.logExternalUrl = logExternalUrl;
 	}
 
+	public Integer getLogSplitAt()
+	{
+		return logSplitAt;
+	}
+	
+	public Integer getLogSplitInterval()
+	{
+		return logSplitInterval;
+	}
+	
+	public LogSplitType getLogSplit()
+	{
+		return logSplitType;
+	}
 }

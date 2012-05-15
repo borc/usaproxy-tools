@@ -2,6 +2,7 @@ package fi.uta.infim.usaproxyFork;
 import java.io.*;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 
 /** 
@@ -24,6 +25,17 @@ public class EventManager {
 	 *  for accessing the corresponding partners list. */
 	private UsaProxy	usaProxy;		
 	
+	/**
+	 * When was the log last split? Proxy startup time if splitting is off.
+	 * This is set to the proxy startup time on construct.
+	 */
+	private Date		lastLogSplit;
+	
+	/**
+	 * When is the next log split time?
+	 */
+	private Date		nextLogSplit;
+	
 	/** Constructor: creates an <code>EventManager</code> instance and a
 	 *  new overall events <code>Hashtable</code>, which will be filled with the
 	 *  individual event lists.
@@ -31,6 +43,8 @@ public class EventManager {
 	public EventManager(UsaProxy usaProxy) {
 		events 			= new Hashtable<String, ArrayList<String>>();
 		this.usaProxy = usaProxy;
+		lastLogSplit = new Date();
+		calculateNextLogSplit();
 	}
 	
 	/**
@@ -110,6 +124,85 @@ public class EventManager {
 		if (this.events.containsKey(list)) this.events.remove(list);
 	}
 	
+	@SuppressWarnings("deprecation")
+	private void calculateNextLogSplit()
+	{
+		final long MINUTEMSECS = 60000L;
+		final long HOURMSECS = 3600000L;
+		final long DAYMSECS = 86400000L;
+		final long WEEKMSECS = 604800000L;
+		
+		switch( usaProxy.getLogSplit() )
+		{
+		case HOURLY:
+			nextLogSplit = new Date( lastLogSplit.getTime() );
+			nextLogSplit.setSeconds( 0 );
+			nextLogSplit.setTime( nextLogSplit.getTime() + 
+					(usaProxy.getLogSplitInterval() * HOURMSECS) -
+					(((60 - usaProxy.getLogSplitAt() + lastLogSplit.getMinutes()) % 60) * MINUTEMSECS));
+			break;
+			
+		case DAILY:
+			nextLogSplit = new Date( lastLogSplit.getTime() );
+			nextLogSplit.setMinutes( 0 );
+			nextLogSplit.setSeconds( 0 );
+			nextLogSplit.setTime( nextLogSplit.getTime() + 
+					(usaProxy.getLogSplitInterval() * DAYMSECS) -
+					(((24 - usaProxy.getLogSplitAt() + lastLogSplit.getHours()) % 24) * HOURMSECS));
+			break;
+			
+		case WEEKLY:
+			nextLogSplit = new Date( lastLogSplit.getTime() );
+			nextLogSplit.setHours( 0 );
+			nextLogSplit.setMinutes( 0 );
+			nextLogSplit.setSeconds( 0 );
+			nextLogSplit.setTime( nextLogSplit.getTime() +
+					( usaProxy.getLogSplitInterval() * WEEKMSECS ) -
+					( ( ( 7 - usaProxy.getLogSplitAt() + lastLogSplit.getDay() ) % 7 ) * DAYMSECS ) );
+			break;
+			
+		case MONTHLY:
+			nextLogSplit = new Date( lastLogSplit.getTime() );
+			nextLogSplit.setDate( usaProxy.getLogSplitAt() );
+			nextLogSplit.setHours( 0 );
+			nextLogSplit.setMinutes( 0 );
+			nextLogSplit.setSeconds( 0 );
+			nextLogSplit.setMonth( (lastLogSplit.getMonth() + usaProxy.getLogSplitInterval() -
+					( nextLogSplit.getDate() > lastLogSplit.getDate() ? 1 : 0 ) ) % 12 );
+			
+			break;
+			
+		case NOSPLIT:
+			nextLogSplit = null;
+			break;
+			
+		}
+	}
+	
+	private boolean splitNow()
+	{
+		// Log splitting is turned off if split type is NONE
+		if ( usaProxy.getLogSplit().equals( LogSplitType.NOSPLIT ) ) return false;
+		
+		final Date NOW = new Date();
+
+		if ( NOW.after(nextLogSplit) )
+		{
+			lastLogSplit = new Date( nextLogSplit.getTime() );
+			calculateNextLogSplit();
+			return true;
+		}
+		return false;
+	}
+	
+	@SuppressWarnings("deprecation")
+	private String prependWithSplitTime( String filename )
+	{
+		return "" + (1900 + lastLogSplit.getYear()) + "-" + lastLogSplit.getMonth() +
+				"-" + lastLogSplit.getDate() + "," + lastLogSplit.getHours() + "." + 
+				lastLogSplit.getMinutes() + "-" + usaProxy.getLogSplit() + "-" + filename;
+	}
+	
 	/**
      *  Writes exclusively log records to the log file.
      *  
@@ -123,6 +216,13 @@ public class EventManager {
     	/** if client log request (else: serverdata log-request from proxy)*/
     	if(out!=null)
     		out = new DataOutputStream(out);
+    	
+    	/*
+    	 * Check whether we need to split the log
+    	 */
+    	splitNow();
+    	
+    	filename = prependWithSplitTime( filename );
     	
     	try {
     		
@@ -161,7 +261,7 @@ public class EventManager {
 				/** send 204 No Content message in order to complete the request */
 				SocketData.send204 (out);
 			}
-
+			
     	}
     	catch ( FileNotFoundException e ) { 
     		/** If log file doesn't exist, send 404 message. */
