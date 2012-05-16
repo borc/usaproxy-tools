@@ -58,7 +58,7 @@
 						<ul id="httpTraffic-list" class="ui-corner-right">
 							<#list session.httpTraffics as httpTraffic>
 								<li class="trafficlistitem" id="${httpTrafficListIdPrefix}${httpTraffic.sessionID}">
-									<span class="list-content">${httpTraffic.entry.timestamp?datetime}</span>
+									<span class="list-content">${(httpTraffic.entry.timestamp?datetime)!"N/A"}</span>
 									<span class="list-sub-content">${httpTraffic.url}</span>
 								</li>
 								<script type="text/javascript">

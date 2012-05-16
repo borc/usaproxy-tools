@@ -24,6 +24,7 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.text.ParseException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -132,7 +133,7 @@ public final class App
 	private static void printHelp()
 	{
 		HelpFormatter formatter = new HelpFormatter();
-		formatter.printHelp( "java -jar usaproxyreportgenerator.jar [OPTIONS] logFile", cliOptions );
+		formatter.printHelp( "java -jar usaproxyreportgenerator.jar [OPTIONS] <logFile1 [logFile2 ... logFileN]>", cliOptions );
 	}
 	
 	/**
@@ -170,12 +171,17 @@ public final class App
     	
     	UsaProxyLogParser parser = new UsaProxyLogParser();
     	UsaProxyLog log;
-    	File logfile;
     	try
     	{
-    		logfile = new File( cli.getArgs()[ 0 ] );
+    		String filenames[] = cli.getArgs();
+    		if ( filenames.length == 0 )
+    		{
+    			throw new IndexOutOfBoundsException();
+    		}
+    		
+    		// Interpret remaining cli args as file names
     		System.out.print( "Parsing log file... " );
-    		log = parser.parseLog( logfile );
+    		log = parser.parseFilesByName( Arrays.asList( filenames ) );
     		System.out.println( "done." );
     	}
     	catch( IOException ioe )
