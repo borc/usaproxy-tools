@@ -1,6 +1,7 @@
 package fi.uta.infim.usaproxyFork;
 import java.io.*;
 import java.net.Socket;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
@@ -155,20 +156,23 @@ public class EventManager {
 		}
 		return false;
 	}
+
+	/**
+	 * Simple date format for log file names
+	 */
+	private static final SimpleDateFormat filenameFormat = 
+			new SimpleDateFormat( "yyyy-MM-dd,HH.mm" );
 	
 	/**
 	 * Prepends a file name string with a timestamp generated from the last log
-	 * split time. The timestamp is of the format YYYY-M-D,HH:mm. Also adds
+	 * split time. The timestamp is of the format yyyy-MM-dd,HH.mm. Also adds
 	 * the log split type into the name.
 	 * @param filename the original filename
 	 * @return the amended filename
 	 */
-	@SuppressWarnings("deprecation")
 	private String prependWithSplitTime( String filename )
 	{
-		return "" + (1900 + lastLogSplit.getYear()) + "-" + lastLogSplit.getMonth() +
-				"-" + lastLogSplit.getDate() + "," + lastLogSplit.getHours() + "." + 
-				lastLogSplit.getMinutes() + "-" + usaProxy.getLogSplit() + "-" + filename;
+		return filenameFormat.format( lastLogSplit ) + "-" + usaProxy.getLogSplit() + "-" + filename;
 	}
 	
 	/**
