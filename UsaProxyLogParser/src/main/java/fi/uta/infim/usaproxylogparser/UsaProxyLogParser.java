@@ -20,9 +20,16 @@ package fi.uta.infim.usaproxylogparser;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.SequenceInputStream;
 import java.text.ParseException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.xpath.XPathConstants;
@@ -131,5 +138,42 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 				}
 			}
 		}
+	}
+
+	@Override
+	public UsaProxyLog parseFiles(final Collection<File> files) throws IOException, ParseException 
+	{
+		// Use first file as the root
+		logFile = files.iterator().next();
+		
+		SequenceInputStream seq = new SequenceInputStream( new Enumeration<InputStream>() {
+
+			Iterator< File > filesIter = files.iterator();
+			
+			@Override
+			public boolean hasMoreElements() {
+				return filesIter.hasNext();
+			}
+
+			@Override
+			public InputStream nextElement() {
+				try {
+					return new FileInputStream( filesIter.next() );
+				} catch (FileNotFoundException e) {
+					throw new NoSuchElementException( "File not found: " + e.getMessage() );
+				}
+			}
+		});
+		return parseLog(seq);
+	}
+
+	@Override
+	public UsaProxyLog parseFilesByName(Collection<String> filenames) throws IOException, ParseException {
+		Collection< File > files = new ArrayList< File >();
+		for ( String filename : filenames )
+		{
+			files.add( new File( filename ) );
+		}
+		return parseFiles(files);
 	}
 }

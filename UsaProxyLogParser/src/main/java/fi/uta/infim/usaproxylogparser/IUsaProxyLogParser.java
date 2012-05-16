@@ -21,6 +21,7 @@ package fi.uta.infim.usaproxylogparser;
 import java.io.File;
 import java.io.IOException;
 import java.text.ParseException;
+import java.util.Collection;
 
 /**
  * UsaProxy 2.0 log parser interface definition.
@@ -47,4 +48,22 @@ public interface IUsaProxyLogParser {
 	 */
 	public UsaProxyLog parseLog( String filename ) throws IOException, ParseException;
 		
+	/**
+	 * Parses the provided UsaProxy log files as if they were parts of a 
+	 * larger log file. Returns a single Log object.
+	 * @param files a collection of log files to parse
+	 * @return a log object representing all the log files as a single log
+	 * @throws ParseException 
+	 */
+	public UsaProxyLog parseFiles( Collection< File > files ) throws IOException, ParseException;
+	
+	/**
+	 * Parses the provided UsaProxy log files as if they were parts of a 
+	 * larger log file. Returns a single Log object.
+	 * @param filenames file names of the log files
+	 * @return a log object representing all the log files as a single log
+	 * @throws ParseException 
+	 * @throws IOException 
+	 */
+	public UsaProxyLog parseFilesByName( Collection< String > filenames ) throws IOException, ParseException;
 }
