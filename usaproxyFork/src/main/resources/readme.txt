@@ -53,6 +53,16 @@ Command line switches:
 						Log the external URL (UsaProxy URL) instead of the actual URL?
 						This is useful when the actual URL is only accessible to UsaProxy, so
 						logging it would be pointless.
+						
+-logSplit h|d|w|m		Split logs hourly/daily/weekly/monthly. Default: No splitting.
+
+-logSplitAt <hh>		Start a new log file every h/d/w/m
+						 * at hh minutes on the hour (hourly)
+						 * at hh o'clock (daily) (24h)
+						 * on weekday number hh (1=monday) (weekly)
+						 * on the hh'th day of the month (monthly)
+						 
+-logSplitInterval <nnn>	Split logs every nnn h/d/w/m instead of every h/d/w/m. Default: 1.						
 
 with <port> best between 1024 and 65535.				
 

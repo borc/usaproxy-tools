@@ -1,19 +1,57 @@
+/* 
+ *  UsaProxy - HTTP proxy for tracking, logging, and replay of user interactions on websites
+ *  in order to enable web-based collaboration.
+ *  <br><br>
+ *  Copyright (C) 2006  Monika Wnuk - Media Informatics Group at the University of Munich
+ *  Copyright (C) 2012 Teemu Pääkkönen - University of Tampere
+ *
+ *  This program is free software; you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation; either version 2 of the License, or
+ *  (at your option) any later version.
+*/
 package fi.uta.infim.usaproxyFork;
 
 import java.util.Date;
 
+/**
+ * An enumeration for different log splitting types.
+ * @author Teemu Pääkkönen
+ *
+ */
 public enum LogSplitType {
 
+	/**
+	 * Start a new log file once every n hours.
+	 */
 	HOURLY,
 	
+	/**
+	 * Start a new log file once every n days.
+	 */
 	DAILY,
 	
+	/**
+	 * Start a new log file once every n weeks.
+	 */
 	WEEKLY,
 	
+	/**
+	 * Start a new log file once every n months.
+	 */
 	MONTHLY,
 	
+	/**
+	 * Log everything into a single file.
+	 */
 	NOSPLIT;
 	
+	/**
+	 * Returns the corresponding enum value for a given CLI argument value (h|d|w|m).
+	 * @param pCLIArg the CLI argument
+	 * @return corresponding enum value
+	 * @throws NoSuchFieldException if CLI argument does not match an enum value.
+	 */
 	public static LogSplitType getTypeByCLIArg( String pCLIArg ) throws NoSuchFieldException
 	{
 		if ( "h".equalsIgnoreCase(pCLIArg) ) return HOURLY;
@@ -24,6 +62,10 @@ public enum LogSplitType {
 		throw new NoSuchFieldException( "Enum field for argument '" + pCLIArg + "' is unknown." );
 	}
 	
+	/**
+	 * The minimum value for the logSplitAt argument (when to start a new log file).
+	 * @return min val for logSplitAt
+	 */
 	public Integer minSplitValue()
 	{
 		switch( this )
@@ -39,6 +81,10 @@ public enum LogSplitType {
 		}
 	}
 	
+	/**
+	 * The maximum value for the logSplitAt argument (when to start a new log file).
+	 * @return max val for logSplitAt
+	 */
 	public Integer maxSplitValue()
 	{
 		switch( this )
@@ -56,9 +102,15 @@ public enum LogSplitType {
 		}
 	}
 	
+	/**
+	 * When determining the next log split time, some fields of the timestamp
+	 * should be set to 0, according to split type. This method takes care of that.
+	 * @param pDate the timestamp to zero out
+	 */
 	@SuppressWarnings("deprecation")
 	public void zeroOut( Date pDate )
 	{
+		// Note that there should be no break statements in this switch-case
 		switch( this )
 		{
 		case MONTHLY:
@@ -73,11 +125,31 @@ public enum LogSplitType {
 		}
 	}
 	
-	static final long MINUTEMSECS = 60000L;
-	static final long HOURMSECS = 3600000L;
-	static final long DAYMSECS = 86400000L;
-	static final long WEEKMSECS = 604800000L;
+	/**
+	 * One minute in milliseconds
+	 */
+	private static final long MINUTEMSECS = 60000L;
 	
+	/**
+	 * One hour in milliseconds
+	 */
+	private static final long HOURMSECS = 3600000L;
+	
+	/**
+	 * One day in milliseconds
+	 */
+	private static final long DAYMSECS = 86400000L;
+	
+	/**
+	 * One week in milliseconds
+	 */
+	private static final long WEEKMSECS = 604800000L;
+	
+	/**
+	 * Returns the interval time unit's length in milliseconds for a 
+	 * given enum value. 
+	 * @return interval time unit's length in milliseconds
+	 */
 	private Long oneIntervalMsecs()
 	{
 		switch( this )
@@ -93,6 +165,11 @@ public enum LogSplitType {
 		}
 	}
 	
+	/**
+	 * Returns the split time unit's length in milliseconds for a 
+	 * given enum value.
+	 * @return split time unit's length in milliseconds
+	 */
 	private Long splitTimeUnitMsecs()
 	{
 		switch( this )
@@ -108,6 +185,13 @@ public enum LogSplitType {
 		}
 	}
 	
+	/**
+	 * Calculates the distance between the given timestamp and the previous
+	 * split time in split time units. Only applicable for HOURLY, DAILY and WEEKLY.
+	 * @param pDate timestamp to calculate distance to
+	 * @param splitAt the log split time (in split time units)
+	 * @return distance between the given timestamp and the previous split time in split time units
+	 */
 	@SuppressWarnings("deprecation")
 	private Integer distanceToSplit( Date pDate, int splitAt )
 	{
@@ -124,15 +208,32 @@ public enum LogSplitType {
 		}
 	}
 	
+	/**
+	 * Returns the next log split time in Unix epoch format.
+	 * Only applicable for HOURLY, DAILY and WEEKLY.
+	 * @param originalTime last split time
+	 * @param interval log split interval
+	 * @param splitAt log split time
+	 * @return next log split time in unix epoch format
+	 */
 	private long calculateNextSplit( Date originalTime, int interval, int splitAt )
 	{
-		return originalTime.getTime() + 
+		Date zeroedOutLastSplit = new Date( originalTime.getTime() );
+		this.zeroOut(zeroedOutLastSplit);
+		return zeroedOutLastSplit.getTime() + 
 				(interval * this.oneIntervalMsecs()) -
-				(this.distanceToSplit(originalTime, splitAt) * this.splitTimeUnitMsecs());
+				(this.distanceToSplit(zeroedOutLastSplit, splitAt) * this.splitTimeUnitMsecs());
 	}
 	
+	/**
+	 * Returns the next split time.
+	 * @param lastLogSplit last log split time
+	 * @param interval log split interval in interval time units
+	 * @param splitAt log split time in split time units
+	 * @return next split time
+	 */
 	@SuppressWarnings("deprecation")
-	public Date formatNextSplit( Date lastLogSplit, int interval, int splitAt )
+	public Date getNextSplit( Date lastLogSplit, int interval, int splitAt )
 	{
 		Date nextLogSplit = null;
 		
@@ -141,9 +242,8 @@ public enum LogSplitType {
 		case HOURLY:
 		case DAILY:
 		case WEEKLY:
-			nextLogSplit = new Date( lastLogSplit.getTime() );
-			this.zeroOut(nextLogSplit);
-			nextLogSplit.setTime( this.calculateNextSplit(nextLogSplit, interval, splitAt));
+			nextLogSplit = new Date();
+			nextLogSplit.setTime( this.calculateNextSplit(lastLogSplit, interval, splitAt));
 			break;
 			
 		case MONTHLY:

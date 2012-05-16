@@ -124,12 +124,22 @@ public class EventManager {
 		if (this.events.containsKey(list)) this.events.remove(list);
 	}
 	
+	/**
+	 * Calculates the next log split time according to the log split type
+	 * and the last log split time. Updates the {@link #nextLogSplit} member.
+	 */
 	private void calculateNextLogSplit()
 	{
-		nextLogSplit = usaProxy.getLogSplit().formatNextSplit(
+		nextLogSplit = usaProxy.getLogSplit().getNextSplit(
 				lastLogSplit, usaProxy.getLogSplitInterval(), usaProxy.getLogSplitAt() );
 	}
 	
+	/**
+	 * Checks whether the next log split time has passed and the log file
+	 * should be split. Updates the {@link #lastLogSplit} and 
+	 * {@link #nextLogSplit} members.
+	 * @return true if log file should be split now, otherwise false
+	 */
 	private boolean splitNow()
 	{
 		// Log splitting is turned off if split type is NONE
@@ -146,6 +156,13 @@ public class EventManager {
 		return false;
 	}
 	
+	/**
+	 * Prepends a file name string with a timestamp generated from the last log
+	 * split time. The timestamp is of the format YYYY-M-D,HH:mm. Also adds
+	 * the log split type into the name.
+	 * @param filename the original filename
+	 * @return the amended filename
+	 */
 	@SuppressWarnings("deprecation")
 	private String prependWithSplitTime( String filename )
 	{
