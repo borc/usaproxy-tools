@@ -64,6 +64,10 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		}
 	}
 
+	private static final String DEFAULTVIEWPORTCOLOR = "rgb(255,50,50)";
+	
+	private static final String DEFAULTELEMENTCOLOR = "rgb(50,50,255)";
+	
 	/**
 	 * Iterates through a HTTPTraffic object for DOM elements. Returns a JSON
 	 * object with two members: 'details' and 'sightings'. 'Details' contains
@@ -82,8 +86,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		{
 			if ( e == null || e.getPath() == null ) continue; // Don't process empty elements
 			JSONObject thisSightings = getSightings(e);
-			sightings.add( getTopDataset(e.getPath(), thisSightings, e.getPath()) );
-			sightings.add( getBottomDataset(e.getPath(), thisSightings, "rgb(50,50,255)", e.getPath() ) );
+			sightings.add( getTopDataset(e.getPath(), thisSightings, DEFAULTELEMENTCOLOR, e.getPath()) );
+			sightings.add( getBottomDataset(e.getPath(), thisSightings, DEFAULTELEMENTCOLOR, e.getPath() ) );
 			
 			details.accumulate( e.getPath(), JSONObject.fromObject(e, App.getConfig()) );
 		}
@@ -105,8 +109,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		JSONArray movement = new JSONArray();
 		JSONObject movements = getViewportLines(traffic);
 		String vpMovementDatasetName = "_viewport";
-		movement.add( getTopDataset( vpMovementDatasetName, movements, "_vpTop") );
-		movement.add( getBottomDataset( vpMovementDatasetName, movements, "rgb(255,50,50)", "_vpBottom") );
+		movement.add( getTopDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, "_vpTop") );
+		movement.add( getBottomDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, "_vpBottom") );
 		
 		return movement;
 	}
@@ -131,7 +135,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 	 * @param elementDomId Element's UsaProxy DOM path
 	 * @return the created Flot dataset (a JSON object)
 	 */
-	private JSONObject getTopDataset( String elementTopName, JSONObject sightings, String elementDomId )
+	private JSONObject getTopDataset( String elementTopName, JSONObject sightings, String color, String elementDomId )
 	{
 		JSONObject dataset = new JSONObject();
 		dataset.accumulate( "data", sightings.getJSONArray( "top" ) );
@@ -140,6 +144,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		lines.accumulate( "show", true );
 		lines.accumulate( "lineWidth", 0 );
 		dataset.accumulate( "lines", lines );
+		dataset.accumulate( "color", color );
 		dataset.accumulate( "elementDomId", elementDomId );
 		dataset.accumulate( "hoverable", true );
 		return dataset;
