@@ -45,6 +45,14 @@ public class UsaProxyDOMElementJSONProcessor implements JsonBeanProcessor {
 		details.accumulate( "nodeName", element.getNodeName() );
 		details.accumulate( "content", element.getContents() );
 		
+		// Original image URL for image elements, so the URL can be shown in
+		// element details dialog.
+		if ( "img".equalsIgnoreCase(element.getNodeName()) )
+		{
+			// Grab the image URL from the first appearance event
+			details.accumulate( "img", element.getAppears().iterator().next().getAttributes().get( "img" ) );
+		}
+		
 		return details;
 	}
 

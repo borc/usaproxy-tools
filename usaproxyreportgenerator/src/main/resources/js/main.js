@@ -77,6 +77,27 @@
 			padding: 0
 		} );
 		
+		var contentsId = 'contents-id-' + details.path;
+		var contents = '';
+		if ( details.img )
+		{
+			contents = $( '<p />' )
+				.append( $( '<a href="#">Click here to attempt to load the image</a>' )
+						.click( function()
+						{
+							var image = '<img src="' + unescape(details.img) + '" />';
+							contents
+								.empty()
+								.append( $(image) );
+							details.img = false;
+							details.content = image;
+						} ) );
+		}
+		else
+		{
+			contents = $( '<p>' + unescape(details.content) + '</p>' );
+		}
+		
 		$( '<div title="Element details" />' )  
 		.css({
 			'font-size': '80%'
@@ -85,7 +106,7 @@
 		.append( $( '<h3 class="title">Appearances</h3>' ) )
 		.append( appearancesPlaceholder )
 		.append( $( '<h3 class="title">Contents</h3>' ) )
-		.append( $( '<p>' + unescape(details.content) + '</p>' ) )
+		.append( contents )
 		.dialog({
 			buttons: {
 				"OK": function() { $(this).dialog("close"); } 

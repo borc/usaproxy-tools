@@ -519,8 +519,8 @@ function generateEventString_UsaProxy(node /*DOM element*/) {
 		if(node.nodeName=="img" || node.nodeName=="IMG") {	
 			// if linked image (parent node is an <a>-element)
 			if(node.parentNode.href)  
-				eventString = eventString + "&img=" + escape(getFileName(node.href)) + "&link=" + escape(node.parentNode.href);
-			else eventString = eventString + "&img=" + escape(getFileName(node.href));
+				eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src")) + "&link=" + escape(node.parentNode.href);
+			else eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src"));
 		}
 		// NS+IE: link detection
 		else if(node.nodeName=="a" || node.nodeName=="A") {  // if anchor tag
@@ -534,8 +534,8 @@ function generateEventString_UsaProxy(node /*DOM element*/) {
 		// image detection NS
 		if (node.src) {		
 			if (node.parentNode.href)
-				eventString = eventString + "&img=" + escape(getFileName(node.src)) + "&link=" + escape(node.parentNode.href);
-			else eventString = eventString + "&img=" + escape(getFileName(node.src));
+				eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src")) + "&link=" + escape(node.parentNode.href);
+			else eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src"));
 		}
 	}
 	
