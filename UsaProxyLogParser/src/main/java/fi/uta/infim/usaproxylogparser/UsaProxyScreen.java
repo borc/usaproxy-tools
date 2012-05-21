@@ -133,6 +133,11 @@ public class UsaProxyScreen implements Serializable {
 	private UsaProxyScrollStartEvent scrollStart;
 	
 	/**
+	 * Was this screen resized? The next screen will have a different size if true.
+	 */
+	private Boolean wasResized = false;
+	
+	/**
 	 * The identifier of this screen. Unique.
 	 * @return unique identifier of this screen
 	 */
@@ -223,6 +228,14 @@ public class UsaProxyScreen implements Serializable {
 		this.id = id;
 	}
 	
+	public Boolean getWasResized() {
+		return wasResized;
+	}
+
+	void setWasResized(Boolean wasResized) {
+		this.wasResized = wasResized;
+	}
+
 	/**
 	 * Surrogate ID. Null, unless object is loaded from a database.
 	 */

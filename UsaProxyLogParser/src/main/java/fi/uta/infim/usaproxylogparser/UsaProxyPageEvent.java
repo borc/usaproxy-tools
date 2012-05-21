@@ -67,6 +67,12 @@ public class UsaProxyPageEvent implements Serializable {
 		attributes.remove( "contents" );
 		
 		setAttributes(attributes);
+		
+		// Resize event? Set the appropriate member of Screen.
+		if ( EventType.RESIZE.equals(this.type) )
+		{
+			this.screen.setWasResized( true );
+		}
 	}
 
 	/**
