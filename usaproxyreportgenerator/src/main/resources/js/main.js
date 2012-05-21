@@ -82,7 +82,7 @@
 		if ( details.img )
 		{
 			contents = $( '<p />' )
-				.append( $( '<a href="#">Click here to attempt to load the image</a>' )
+				.append( $( '<a href="javascript:;">Click here to attempt to load the image</a>' )
 						.click( function()
 						{
 							var image = '<img src="' + unescape(details.img) + '" />';
