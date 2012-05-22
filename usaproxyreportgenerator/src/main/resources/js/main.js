@@ -59,7 +59,7 @@
 	};
     
     // Function for opening a dialog window with details of a DOM element
-	var showElementDetails = function( httpTrafficId, dataseries )
+	var showElementDetails = function( httpTrafficId, dataseries, plotObj )
 	{
 		var details = session.httptraffics[ httpTrafficId ].domElements.details[ dataseries.elementDomId ];
 		
@@ -117,8 +117,8 @@
 		$.plot( appearancesPlaceholder, [ {data: dataseries.data} ], {
 				xaxis : {
 					mode: 'time',
-					min: dataseries.xaxis.datamin,
-					max: dataseries.xaxis.datamax
+					min: plotObj.getAxes().xaxis.datamin,
+					max: plotObj.getAxes().xaxis.datamax
                 },
 	            yaxis : {
 	            	show: false,
@@ -583,16 +583,17 @@
 	                    $("#tooltip").remove();
 	                }
 				}
-            })( plotObj )).bind( 'plotclick', (function( x )
+            })( plotObj )).bind( 'plotclick', (function( httpTrafficId, plotObj )
             {
             	return function( event, pos, item )
             	{
-            		if ( item )
+            		var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
+            		if ( hoveringOver !== null || item !== null )
             		{
-            			showElementDetails( x, item.series );
+            			showElementDetails( httpTrafficId, item ? item.series : hoveringOver[ 0 ], plotObj );
             		}
             	};
-            })( httpTrafficId ) );
+            })( httpTrafficId, plotObj ) );
 	    } );
 		
 
