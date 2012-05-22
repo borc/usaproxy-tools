@@ -330,6 +330,131 @@
 		return filteredSightings;
 	};
 	
+	/**
+	 * A function to check whether the mouse cursor is hovering over a DOM 
+	 * element. The plothover event only knows whether the cursor is hovering
+	 * near an edge point. Returns a tuple [element,dataIndex] for the series
+	 * and datapoint near which the cursor is hovering or null if none.
+	 */
+	var isHoveringOverAnElement = function( filteredSightings, xPos, yPos )
+	{
+		/**
+		 * A function for checking whether two segments intersect.
+		 * A,B are the lines, 1,2 are the end points.
+		 * Algorithm stolen from: 
+		 * University of Illinois at Urbana-Champaign • College of Engineering
+		 * lecture material at:
+		 * http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
+		 */
+		var intersect = function( A1X, A1Y, A2X, A2Y, B1X, B1Y, B2X, B2Y )
+		{
+			/**
+			 * Check whether the point triplet (A,B,C) is in 
+			 * counter-clockwise order. That is, the angle between (A->B) and
+			 * (A->C) is positive when A is considered to be the origin.
+			 * Stolen from wikipedia (http://en.wikipedia.org/wiki/Graham_scan).
+			 * "ccw is a determinant that gives the signed area of the triangle
+			 * formed by A, B and C"
+			 */
+			var ccw = function( AX, AY, BX, BY, CX, CY )
+			{
+				return ((BX - AX)*(CY - AY) - (BY - AY)*(CX - AX)) > 0;
+			}
+
+			/*
+			 * "A1 and A2 are on opposite sides of line B1->B2 if and only if exactly one 
+			 * of the two triples (A1,B1,B2) and (A2,B1,B2) is in counterclockwise order"
+			 */
+			return (ccw( A1X, A1Y, B1X, B1Y, B2X, B2Y ) != ccw( A2X, A2Y, B1X, B1Y, B2X, B2Y )) &&
+				(ccw( A1X, A1Y, A2X, A2Y, B1X, B1Y ) != ccw( A1X, A1Y, A2X, A2Y, B2X, B2Y ));
+		}
+		
+		// store the found element in this
+		var found = null;
+		
+		// Assume that top and bottom data points are in order.
+		// i.e. every other item is a top data set and every other a 
+		// bottom data set.
+		// Will fail miserably if that is not the case.
+		for ( var i = 0; i < filteredSightings.length; i += 2 )
+		{
+			var top = filteredSightings[ i ];
+			var bottom = filteredSightings[ i + 1 ];
+			var topDataset = top.data;
+			var bottomDataset = bottom.data;
+			
+			// Create quadrilateral areas using four data points, and
+			// check the coordinates against each one.
+			// Null data points will be skipped over.
+			for ( var j = 0; j < topDataset.length; j += 2 )
+			{
+				// Idx 0 = X axis, idx 1 = Y axis
+				var topLeftPoint = topDataset[ j ];
+				if ( topLeftPoint[ 1 ] == null )
+				{
+					// Null data point = break in element visibility.
+					// Subtracting one will result in the loop starting over
+					// from the next element.
+					--j;
+					continue;
+				}
+				
+				// Establish area boundaries
+				var points = {
+						'top' : {
+							'left' : topLeftPoint,
+							'right' : topDataset[ j + 1 ]
+						},
+						'bottom' : {
+							'left' : bottomDataset[ j ],
+							'right' : bottomDataset[ j + 1 ]
+						}
+				};
+				
+				var absoluteEastBoundary = points.top.right[0] > points.bottom.right[0] ? 
+						points.top.right[0] : points.bottom.right[0];
+				
+				// Use ray casting algorithm to find whether the point resides
+				// inside the area.
+				// In this implementation, we cast the ray from the point 
+				// straight to the right and stop at the absolute east boundary.
+				// Edges are checked counter-clockwise starting from the east edge.
+				
+				var intersections = 0;
+						
+				// East edge
+				if ( intersect( points.top.right[0], points.top.right[1], 
+						points.bottom.right[0], points.bottom.right[1],
+						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
+				
+				// North edge
+				if ( intersect( points.top.left[0], points.top.left[1],
+						points.top.right[0], points.top.right[1], 
+						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
+				
+				// West edge
+				if ( intersect( points.bottom.left[0], points.bottom.left[1],
+						points.top.left[0], points.top.left[1],
+						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
+				
+				// South edge
+				if ( intersect( points.bottom.left[0], points.bottom.left[1],
+						points.bottom.right[0], points.bottom.right[1],
+						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
+				
+				if ( intersections === 1 )
+				{
+					found = [ top, j ];
+					break;
+				}
+			}
+			
+			if ( found !== null ) break;
+		}
+		
+		return found;
+	}
+	
 	/*
 	 * Shows a http headers dialog
 	 */
@@ -360,6 +485,7 @@
 	// Entry point. Run when document fully loaded.
 	$( document ).ready( function() {
 		
+		// Style with jQuery
 		$( "button" ).button();
 	
 		// Bind the filters button click
@@ -379,6 +505,7 @@
 			showHTTPHeaders( USAPROXYREPORT.visiblePlot );
 		} );
 		
+		// Reinit event handler. Reinit event destroys the plot and creates it again.
 		$( document ).bind( 'reinit-plot', function( event, httpTrafficId )
 		{
 			// Destroy previous contents
@@ -388,11 +515,15 @@
 			$( document ).trigger( 'init-plot', [ httpTrafficId, session.httptraffics[httpTrafficId].container ] );
 		} );
 		
+		// Init-plot event handler. Plot init event sets up the plot data,
+		// creates the plot itself and binds the plot's hover and click events.
 		$( document ).bind( 'init-plot', function( event, httpTrafficId, placeholder )
 		{
 			var sightings = getFilteredElementSightings( httpTrafficId );
 			
-			$.plot(placeholder, session.httptraffics[httpTrafficId].viewportMovement.concat(sightings), {
+			var plotObj = $.plot( placeholder, 
+					session.httptraffics[httpTrafficId].viewportMovement.concat(sightings), 
+			{
 				xaxis : {
 					mode : 'time'
                 },
@@ -425,20 +556,34 @@
 			
 			session.httptraffics[httpTrafficId].container = placeholder;
 			
-			$( placeholder ).bind("plothover", function(event, pos, item) {
-                $("#x").text(pos.x.toFixed(2));
-                $("#y").text(pos.y.toFixed(2));
-
-                if(item) {
-                    $("#tooltip").remove();
-                    var x = item.datapoint[0].toFixed(2), y = item.datapoint[1].toFixed(2);
-
-                    showTooltip(item.pageX, item.pageY, item.series.elementDomId + ": " + 
-                    	new Date(parseInt(x)).toUTCString() + ", " + y + " %");
-                } else {
-                    $("#tooltip").remove();
-                }
-            }).bind( 'plotclick', (function( x )
+			$( placeholder ).bind("plothover", (function( plotObj )
+			{
+				return function(event, pos, item) {
+	
+					var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
+					
+	                if( hoveringOver !== null || item !== null ) {
+	                    $("#tooltip").remove();
+	                    
+	                    var series, dataIdx;
+	                    if ( item )
+	                    {
+	                    	series = item.series;
+	                    	dataIdx = item.dataIndex;
+	                    }
+	                    else
+	                    {
+	                    	series = hoveringOver[ 0 ];
+		                    dataIdx = hoveringOver[ 1 ];
+	                    }
+	                    
+	                    showTooltip(pos.pageX, pos.pageY, series.elementDomId + ": " + 
+	                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " %");
+	                } else {
+	                    $("#tooltip").remove();
+	                }
+				}
+            })( plotObj )).bind( 'plotclick', (function( x )
             {
             	return function( event, pos, item )
             	{
