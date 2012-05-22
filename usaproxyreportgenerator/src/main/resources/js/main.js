@@ -556,7 +556,7 @@
 			
 			session.httptraffics[httpTrafficId].container = placeholder;
 			
-			$( placeholder ).bind("plothover", (function( plotObj )
+			$( placeholder ).bind("plothover", (function( httpTrafficId, plotObj )
 			{
 				return function(event, pos, item) {
 	
@@ -577,13 +577,18 @@
 		                    dataIdx = hoveringOver[ 1 ];
 	                    }
 	                    
-	                    showTooltip(pos.pageX, pos.pageY, series.elementDomId + ": " + 
-	                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " %");
+	                    var details = session.httptraffics[ httpTrafficId ].domElements.details[ series.elementDomId ];
+	                    
+	                    showTooltip(pos.pageX, pos.pageY, 
+	                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " % <br />" +
+	                    	series.elementDomId + ", " + 
+	                    	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
+	                    	(details.nodeName !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
 	                } else {
 	                    $("#tooltip").remove();
 	                }
 				}
-            })( plotObj )).bind( 'plotclick', (function( httpTrafficId, plotObj )
+            })( httpTrafficId, plotObj )).bind( 'plotclick', (function( httpTrafficId, plotObj )
             {
             	return function( event, pos, item )
             	{
