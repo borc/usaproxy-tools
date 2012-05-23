@@ -8,14 +8,14 @@
         <script src="js/utils.js" type="text/javascript"></script>
         
         <!-- jQuery UI CSS -->
-        <link type="text/css" href="js/jquery-ui-1.8.18.custom/css/sunny/jquery-ui-1.8.18.custom.css" rel="Stylesheet" />
+        <link type="text/css" href="js/jquery-ui-1.8.20.custom/css/sunny/jquery-ui-1.8.20.custom.css" rel="Stylesheet" />
         
         <!-- Our very own CSS -->
 		<link type="text/css" href="css/session-report.css" rel="Stylesheet" />
 		
 		<!-- jQuery and jQuery UI -->
-        <script src="js/jquery-1.7.1.min.js" type="text/javascript"></script>
-        <script src="js/jquery-ui-1.8.18.custom/js/jquery-ui-1.8.18.custom.min.js" type="text/javascript"></script>
+        <script src="js/jquery-1.7.2.min.js" type="text/javascript"></script>
+        <script src="js/jquery-ui-1.8.20.custom/js/jquery-ui-1.8.20.custom.min.js" type="text/javascript"></script>
         
         <!-- Flot and flot plugins -->
         <script src="js/flot-0.7/jquery.flot.min.js" type="text/javascript"></script>
@@ -101,6 +101,7 @@
 								<button id="filters" title="Manage element filters">Filters</button>
 								<button id="reset" title="Reset the plot">Reset</button>
 								<button id="headers" title="Show HTTP headers">HTTP headers</button>
+								<input type="checkbox" id="autoload" /><label for="autoload">Auto-load images</label>
 							</span>
 						</div>
 						<div id="placeholders">

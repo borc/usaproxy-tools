@@ -58,6 +58,19 @@
 		return tableHTML;
 	};
     
+	/**
+	 * Function that replaces the contents in element details with an img tag
+	 * with the original image URL as source. Only works for images.
+	 */
+	var replaceContentsWithImage = function( details )
+	{
+		if ( !details.img ) return; // not an image
+		
+		var image = '<img src="' + unescape(details.img) + '" />';
+		details.img = false;
+		details.content = image;
+	}
+	
     // Function for opening a dialog window with details of a DOM element
 	var showElementDetails = function( httpTrafficId, dataseries, plotObj )
 	{
@@ -81,17 +94,23 @@
 		var contents = '';
 		if ( details.img )
 		{
-			contents = $( '<p />' )
-				.append( $( '<a href="javascript:;">Click here to attempt to load the image</a>' )
-						.click( function()
-						{
-							var image = '<img src="' + unescape(details.img) + '" />';
-							contents
-								.empty()
-								.append( $(image) );
-							details.img = false;
-							details.content = image;
-						} ) );
+			if ( $( '#autoload' ).is( ':checked' ) )
+			{
+				replaceContentsWithImage( details );
+				contents = $( '<p>' + unescape(details.content) + '</p>' );
+			}
+			else
+			{
+				contents = $( '<p />' )
+					.append( $( '<a href="javascript:;">Click here to attempt to load the image</a>' )
+							.click( function()
+							{
+								replaceContentsWithImage( details );
+								contents
+									.empty()
+									.append( $( details.content ) );
+							} ) );
+			}
 		}
 		else
 		{
@@ -487,6 +506,12 @@
 		
 		// Style with jQuery
 		$( "button" ).button();
+		$( "#autoload" )
+			.button( { icons: { primary: 'ui-icon-radio-off' } } )
+			.click( function() {
+				$( this ).button( 'option', 'icons', { 
+					primary: (this.checked ? 'ui-icon-radio-on' : 'ui-icon-radio-off') } );
+			});
 	
 		// Bind the filters button click
 		$( '#filters' ).click( openFiltersWindow );
@@ -578,6 +603,8 @@
 	                    }
 	                    
 	                    var details = session.httptraffics[ httpTrafficId ].domElements.details[ series.elementDomId ];
+	                    
+	                    if ( $( '#autoload' ).is( ':checked' ) ) replaceContentsWithImage( details );
 	                    
 	                    showTooltip(pos.pageX, pos.pageY, 
 	                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " % <br />" +
