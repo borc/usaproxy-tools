@@ -29,6 +29,17 @@
         }).appendTo("body").show();
     };
     
+    /**
+     * Function for moving the existing tooltip to another location.
+     * Does nothing if the tooltip doesn't exist.
+     */
+    var moveTooltip = function( x, y ) {
+    	$( '#tooltip' ).css( {
+    		top: y + 5,
+    		left: x + 5
+    	});
+    }
+    
     // The UsaProxy session
     var session = USAPROXYREPORT.session;
 	
@@ -583,13 +594,14 @@
 			
 			$( placeholder ).bind("plothover", (function( httpTrafficId, plotObj )
 			{
+				// Which element is shown in the tooltip currently?
+				var elementInTooltip = null;
+				
 				return function(event, pos, item) {
 	
 					var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
 					
 	                if( hoveringOver !== null || item !== null ) {
-	                    $("#tooltip").remove();
-	                    
 	                    var series, dataIdx;
 	                    if ( item )
 	                    {
@@ -602,17 +614,27 @@
 		                    dataIdx = hoveringOver[ 1 ];
 	                    }
 	                    
-	                    var details = session.httptraffics[ httpTrafficId ].domElements.details[ series.elementDomId ];
+	                    if ( elementInTooltip == series.elementDomId )
+	                    {
+	                    	moveTooltip( pos.pageX, pos.pageY );
+	                    }
+	                    else
+	                    {
+	                    	$("#tooltip").remove();
+	                    	elementInTooltip = series.elementDomId;
+	                    	var details = session.httptraffics[ httpTrafficId ].domElements.details[ series.elementDomId ];
 	                    
-	                    if ( $( '#autoload' ).is( ':checked' ) ) replaceContentsWithImage( details );
-	                    
-	                    showTooltip(pos.pageX, pos.pageY, 
-	                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " % <br />" +
-	                    	series.elementDomId + ", " + 
-	                    	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
-	                    	(details.nodeName !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
+		                    if ( $( '#autoload' ).is( ':checked' ) ) replaceContentsWithImage( details );
+		                    
+		                    showTooltip(pos.pageX, pos.pageY, 
+		                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " % <br />" +
+		                    	series.elementDomId + ", " + 
+		                    	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
+		                    	(details.nodeName !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
+	                    }
 	                } else {
 	                    $("#tooltip").remove();
+	                    elementInTooltip = null;
 	                }
 				}
             })( httpTrafficId, plotObj )).bind( 'plotclick', (function( httpTrafficId, plotObj )
