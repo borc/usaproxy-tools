@@ -1083,6 +1083,9 @@ public class ClientRequest extends Thread {
 		    } catch (UnknownHostException e1) {
 		    	System.err.println("\nAn ERROR occured while reading generating VIA header: " + e1 );
 			}
+			
+			/** Add the original content URL in a Content-Location header */
+			server.getHeaders().put( HTTPData.HEADER_CONTENT_LOCATION, requestURL.toString() );
 		    
 	        /** add Cache-Control header so that each page delivered by UsaProxy
 	         *  won't be cached by the client */

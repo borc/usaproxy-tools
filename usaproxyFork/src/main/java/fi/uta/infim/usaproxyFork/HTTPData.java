@@ -15,6 +15,7 @@ public class HTTPData {
     public static final String HEADER_CONTENT_TYPE 				= "Content-Type";
     public static final String HEADER_CONTENT_TRANSFER_ENCODING = "Content-Transfer-Encoding";
     public static final String HEADER_CONTENT_LENGTH 			= "Content-Length";
+    public static final String HEADER_CONTENT_LOCATION			= "Content-Location";
     public static final String HEADER_RANGE 					= "Range";
     public static final String HEADER_IF_RANGE 					= "If-Range";
     public static final String HEADER_EXPIRES 					= "Expires";
