@@ -57,29 +57,29 @@
 						<h2>HTTP traffic</h2>
 						<ul id="httpTraffic-list" class="ui-corner-right">
 							<#list session.httpTraffics as httpTraffic>
-								<li class="trafficlistitem" id="${httpTrafficListIdPrefix}${httpTraffic.sessionID}">
+								<li class="trafficlistitem" id="${httpTrafficListIdPrefix}${httpTraffic.sessionID?string("0")}">
 									<span class="list-content">${(httpTraffic.entry.timestamp?datetime)!"N/A"}</span>
 									<span class="list-sub-content">${httpTraffic.url}</span>
 								</li>
 								<script type="text/javascript">
 									$( document ).ready( function()
 									{
-										$( "#${httpTrafficListIdPrefix}${httpTraffic.sessionID}" )
+										$( "#${httpTrafficListIdPrefix}${httpTraffic.sessionID?string("0")}" )
 											.one( 'click', function()
 											{
-												$( '#${placeholderIdPrefix}${httpTraffic.sessionID}' ).show();
+												$( '#${placeholderIdPrefix}${httpTraffic.sessionID?string("0")}' ).show();
 												$( document ).trigger( 'init-plot', 
-													[ ${httpTraffic.sessionID}, 
-													document.getElementById('${placeholderIdPrefix}${httpTraffic.sessionID}') ] );
-												USAPROXYREPORT.visiblePlot = ${httpTraffic.sessionID};
+													[ ${httpTraffic.sessionID?string("0")}, 
+													document.getElementById('${placeholderIdPrefix}${httpTraffic.sessionID?string("0")}') ] );
+												USAPROXYREPORT.visiblePlot = ${httpTraffic.sessionID?string("0")};
 											} )
 											.click( function()
 											{
 												$( '.placeholder' ).hide();
-												$( '#${placeholderIdPrefix}${httpTraffic.sessionID}' ).show();
+												$( '#${placeholderIdPrefix}${httpTraffic.sessionID?string("0")}' ).show();
 												$( '.trafficlistitem' ).removeClass( 'selected' );
 												$( this ).addClass( 'selected' );
-												USAPROXYREPORT.visiblePlot = ${httpTraffic.sessionID};
+												USAPROXYREPORT.visiblePlot = ${httpTraffic.sessionID?string("0")};
 											} )
 											.css( {
 	                            				cursor: 'pointer'
@@ -106,7 +106,7 @@
 						</div>
 						<div id="placeholders">
 							<#list session.httpTraffics as httpTraffic>
-								<div class="placeholder" id="${placeholderIdPrefix}${httpTraffic.sessionID}"></div>
+								<div class="placeholder" id="${placeholderIdPrefix}${httpTraffic.sessionID?string("0")}"></div>
 							</#list>
 						</div>
 					</div>
