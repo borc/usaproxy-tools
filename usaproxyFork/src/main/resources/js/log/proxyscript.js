@@ -519,8 +519,8 @@ function generateEventString_UsaProxy(node /*DOM element*/) {
 		if(node.nodeName=="img" || node.nodeName=="IMG") {	
 			// if linked image (parent node is an <a>-element)
 			if(node.parentNode.href)  
-				eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src")) + "&link=" + escape(node.parentNode.href);
-			else eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src"));
+				eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node)) + "&link=" + escape(node.parentNode.href);
+			else eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node));
 		}
 		// NS+IE: link detection
 		else if(node.nodeName=="a" || node.nodeName=="A") {  // if anchor tag
@@ -534,12 +534,40 @@ function generateEventString_UsaProxy(node /*DOM element*/) {
 		// image detection NS
 		if (node.src) {		
 			if (node.parentNode.href)
-				eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src")) + "&link=" + escape(node.parentNode.href);
-			else eventString = eventString + "&img=" + escape(jQuery_UsaProxy(node).prop("src"));
+				eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node)) + "&link=" + escape(node.parentNode.href);
+			else eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node));
 		}
 	}
 	
 	return eventString;
+}
+
+/**
+ * Attempts to find out the original image URL for an image node.
+ */
+function getImageUrl_UsaProxy( pImageNode )
+{
+	var actualSrc = jQuery_UsaProxy( pImageNode ).attr( "src" );
+	if ( actualSrc.charAt( 0 ) === '/' )
+	{
+		// Relative URL, keep host part
+		return originURL_UsaProxy.protocol + '://' + originURL_UsaProxy.host + 
+			( originURL_UsaProxy.port === '' ? '' : ':' + originURL_UsaProxy.port )	+ 
+			actualSrc;
+	}
+	else if ( /[A-z]+:\/\/.*/.test( actualSrc ) )
+	{
+		// Absolute URL, return as is
+		return actualSrc;
+	}
+	else
+	{
+		// File name or path, keep host and path
+		return originURL_UsaProxy.protocol + '://' + originURL_UsaProxy.host +
+			( originURL_UsaProxy.port === '' ? '' : ':' + originURL_UsaProxy.port ) + 
+			originURL_UsaProxy.path.substr( 0, originURL_UsaProxy.path.lastIndexOf("/") + 1 ) + 
+			actualSrc;
+	}
 }
 
 /* Returns file name of a URL/path */

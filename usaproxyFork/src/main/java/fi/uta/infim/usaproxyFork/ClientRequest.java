@@ -1584,7 +1584,15 @@ public class ClientRequest extends Thread {
 			comma = ", ";
 		}
 		
-		js += "\";</script>";
+		js += "\"; " +
+		"window.originURL_UsaProxy = { " + 
+				" protocol: \"" + requestURL.getProtocol() + "\", " +
+				" host: \"" + requestURL.getHost() + "\", " +
+				" port: \"" + (requestURL.getPort() == -1 ? "" : requestURL.getPort()) + "\", " +
+				" path: \"" + requestURL.getPath() + "\", " +
+				" file: \"" + requestURL.getFile() + "\" " +
+		"}; " +
+		"</script>";
 		return js;
 	}
 
