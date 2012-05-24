@@ -109,8 +109,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		JSONArray movement = new JSONArray();
 		JSONObject movements = getViewportLines(traffic);
 		String vpMovementDatasetName = "_viewport";
-		movement.add( getTopDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, "_vpTop") );
-		movement.add( getBottomDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, "_vpBottom") );
+		movement.add( getTopDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, null) );
+		movement.add( getBottomDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, null) );
 		
 		return movement;
 	}

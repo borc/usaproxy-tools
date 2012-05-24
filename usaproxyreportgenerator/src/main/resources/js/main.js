@@ -363,7 +363,11 @@
 	/**
 	 * A function to check whether the mouse cursor is hovering over a DOM 
 	 * element. The plothover event only knows whether the cursor is hovering
-	 * near an edge point. Returns a tuple [element,dataIndex] for the series
+	 * near an edge point. Returns an object 
+	 * { 'top': { 'series': <series>,
+	 * 	          'dataIndices': [ <dataIndex>, <dataIndex>, <dataIndex>, <dataIndex> ],
+	 *            'seriesIndex': <seriesIndex> },
+	 *   'bottom': { ... } ] for the series (top and bottom)
 	 * and datapoint near which the cursor is hovering or null if none.
 	 */
 	var isHoveringOverAnElement = function( filteredSightings, xPos, yPos )
@@ -474,7 +478,18 @@
 				
 				if ( intersections === 1 )
 				{
-					found = [ top, j ];
+					found = {
+						'top' : {
+							'series' : top,
+							'dataIndices' : [ j, j + 1 ],
+							'seriesIndex' : i
+						},
+						'bottom' : {
+							'series' : bottom,
+							'dataIndices' : [ j, j + 1 ],
+							'seriesIndex' : i + 1
+						}
+					};
 					break;
 				}
 			}
@@ -558,7 +573,7 @@
 			var sightings = getFilteredElementSightings( httpTrafficId );
 			
 			var plotObj = $.plot( placeholder, 
-					session.httptraffics[httpTrafficId].viewportMovement.concat(sightings), 
+					sightings.concat( session.httptraffics[httpTrafficId].viewportMovement ), 
 			{
 				xaxis : {
 					mode : 'time'
@@ -601,40 +616,65 @@
 	
 					var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
 					
-	                if( hoveringOver !== null || item !== null ) {
-	                    var series, dataIdx;
+					// null element dom id means that the series is a viewport movement series
+					// and will be ignored. In case the mouse cursor is hovering over an
+					// element very close to a viewport corner point, the second condition
+					// will prevent the if block from executing.
+	                if( (item !== null && item.series.elementDomId !== null) || 
+	                		(item ? false : (hoveringOver !== null)) ) {
+	                    var itemdata = [];
 	                    if ( item )
 	                    {
-	                    	series = item.series;
-	                    	dataIdx = item.dataIndex;
+	                    	itemdata = [ {
+								'series' : item.series,
+								'dataIndices' : [ item.dataIndex ],
+								'seriesIndex' : null
+	                    	} ];
 	                    }
 	                    else
 	                    {
-	                    	series = hoveringOver[ 0 ];
-		                    dataIdx = hoveringOver[ 1 ];
+	                    	itemdata = [ hoveringOver.top, hoveringOver.bottom ];
 	                    }
 	                    
-	                    if ( elementInTooltip == series.elementDomId )
+	                    if ( elementInTooltip == itemdata[ 0 ].series.elementDomId )
 	                    {
 	                    	moveTooltip( pos.pageX, pos.pageY );
 	                    }
 	                    else
 	                    {
 	                    	$("#tooltip").remove();
-	                    	elementInTooltip = series.elementDomId;
-	                    	var details = session.httptraffics[ httpTrafficId ].domElements.details[ series.elementDomId ];
+	                    	
+	                    	plotObj.unhighlight();
+	                    	
+	                    	elementInTooltip = itemdata[ 0 ].series.elementDomId;
+	                    	var details = session.httptraffics[ httpTrafficId ]
+	                    		.domElements.details[ itemdata[ 0 ].series.elementDomId ];
 	                    
 		                    if ( $( '#autoload' ).is( ':checked' ) ) replaceContentsWithImage( details );
 		                    
 		                    showTooltip(pos.pageX, pos.pageY, 
 		                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " % <br />" +
-		                    	series.elementDomId + ", " + 
+		                    	itemdata[ 0 ].series.elementDomId + ", " + 
 		                    	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
-		                    	(details.nodeName !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
+		                    	(details.nodeName.toUpperCase() !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
+		                    
+		                    // Highlight the four corners of the element area
+		                    for ( var s in itemdata )
+		                    {
+		                    	var seriesitem = itemdata[ s ];
+		                    	for ( var d in seriesitem.dataIndices )
+		                    	{
+		                    		var dataIndex = seriesitem.dataIndices[ d ];
+		                    		plotObj.highlight( 
+		                    				seriesitem.seriesIndex !== null ? seriesitem.seriesIndex : seriesitem.series, 
+		                    						dataIndex );
+		                    	}
+		                    }
 	                    }
 	                } else {
 	                    $("#tooltip").remove();
 	                    elementInTooltip = null;
+	                    plotObj.unhighlight();
 	                }
 				}
             })( httpTrafficId, plotObj )).bind( 'plotclick', (function( httpTrafficId, plotObj )
@@ -644,7 +684,7 @@
             		var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
             		if ( hoveringOver !== null || item !== null )
             		{
-            			showElementDetails( httpTrafficId, item ? item.series : hoveringOver[ 0 ], plotObj );
+            			showElementDetails( httpTrafficId, item ? item.series : hoveringOver.top.series, plotObj );
             		}
             	};
             })( httpTrafficId, plotObj ) );
