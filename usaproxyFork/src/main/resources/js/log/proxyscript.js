@@ -341,7 +341,7 @@ function init_UsaProxy() {
 		pEdgeName /* <String> The name of the edge where the elements are appearing from. Will appear in log as-is. */
 		)
 	{
-		resetWaypoints = true;
+		resetWaypoints = false;
 		for ( i = pSearchFrom; i < pSearchTo; ++i )
 		{
 			if ( pWaypointEdges[ i ] )
