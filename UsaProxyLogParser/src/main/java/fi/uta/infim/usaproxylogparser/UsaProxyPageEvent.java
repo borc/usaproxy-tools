@@ -254,6 +254,7 @@ public class UsaProxyPageEvent implements Serializable {
 
 	/**
 	 * The DOM element whose context this event occurred in.
+	 * May return null.
 	 * @return a dom element
 	 */
 	public UsaProxyDOMElement getDomPath() {
@@ -270,6 +271,7 @@ public class UsaProxyPageEvent implements Serializable {
 	 * the element already exists in the session store, the existing one will
 	 * be used instead. If not, a new one will be created. However, this
 	 * method updates the contents of the element unless the parameter is null.
+	 * If the path is invalid, the element will be set to null.
 	 * @param domPath the dom path, as logged
 	 * @param nodeName node name as logged
 	 * @param contents element contents as a string - can be null
@@ -279,7 +281,14 @@ public class UsaProxyPageEvent implements Serializable {
 				getHttpTrafficSession().getSessionID(),	domPath );
 		if ( element == null )
 		{
-			element = UsaProxyDOMElement.newDOMElement(domPath, getHttpTrafficSession(), nodeName, contents);
+			try {
+				element = UsaProxyDOMElement.newDOMElement(domPath, getHttpTrafficSession(), nodeName, contents);
+			} catch (InvalidDOMPathException e) {
+				// DOM path is non-existant. There is no DOM element related to
+				// this event, or its path was not logged properly.
+				this.domPath = null;
+				return;
+			}
 		}
 		else
 		{

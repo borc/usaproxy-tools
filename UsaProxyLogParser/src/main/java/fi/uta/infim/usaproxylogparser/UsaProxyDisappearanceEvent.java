@@ -46,13 +46,19 @@ public class UsaProxyDisappearanceEvent extends UsaProxyVisibilityEvent {
 	 * @param httpTrafficIndex HTTP traffic id as logged
 	 * @param ip user's IP address as logged
 	 * @param entry the log entry that contains this event
+	 * @throws InvalidDOMPathException 
 	 */
 	UsaProxyDisappearanceEvent(String eventType,
 			HashMap<String, String> attributes, String sessionID,
 			String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry) {
 		super(eventType, attributes, sessionID, httpTrafficIndex, ip, entry);
 
-		getDomPath().getDisappears().add(this);
+		// A null DOM element is a legal state (the event itself is quite 
+		// meaningless without the element, but nevertheless, it was logged)
+		if ( getDomPath() != null )
+		{
+			getDomPath().getDisappears().add(this);
+		}
 	}
 
 }

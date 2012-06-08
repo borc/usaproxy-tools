@@ -118,12 +118,19 @@ public class UsaProxyDOMElement implements Serializable {
 	/**
 	 * Constructs a new DOM element object and places it in the session store.
 	 * See {@link #UsaProxyDOMElement(String, UsaProxyHTTPTraffic, String, String)}
-	 * for parameters.
+	 * for parameters. If the path is invalid, an {@link IllegalArgumentException}
+	 * will be thrown.
 	 * @return the constructed object
+	 * @throws InvalidDOMPathException 
 	 */
 	static UsaProxyDOMElement newDOMElement( String path, 
-			UsaProxyHTTPTraffic traffic, String nodeName, String contents )
+			UsaProxyHTTPTraffic traffic, String nodeName, String contents ) throws InvalidDOMPathException
 	{
+		if ( path == null || "".equals( path.trim() ) )
+		{
+			throw new InvalidDOMPathException( "DOM path is empty or null." );
+		}
+
 		UsaProxyDOMElement e = new UsaProxyDOMElement(path, traffic, nodeName, contents);
 		UsaProxySessionStore.putDOMElement(e);
 		return e;
@@ -133,7 +140,7 @@ public class UsaProxyDOMElement implements Serializable {
 	 * The path of the dom element in UsaProxy format.
 	 * For example: "abd" for the fourth child of the second element in the
 	 * document. The fist "a" always refers to the document itself and the
-	 * next letter is typically "b" for the body element ("a" is usually HEAD). 
+	 * next letter is typically "b" for the body element ("a" is usually HEAD).
 	 */
 	private String path;
 	

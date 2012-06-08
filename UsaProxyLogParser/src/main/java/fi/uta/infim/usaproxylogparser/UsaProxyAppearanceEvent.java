@@ -46,13 +46,19 @@ public class UsaProxyAppearanceEvent extends UsaProxyVisibilityEvent {
 	 * @param httpTrafficIndex the HTTP traffic id (as logged)
 	 * @param ip user's IP address as logged
 	 * @param entry the log entry object that contains this event
+	 * @throws InvalidDOMPathException 
 	 */
 	UsaProxyAppearanceEvent(String eventType,
 			HashMap<String, String> attributes, String sessionID,
 			String httpTrafficIndex, String ip, UsaProxyPageEventEntry entry ) {
 		super(eventType, attributes, sessionID, httpTrafficIndex, ip, entry);
 		
-		getDomPath().getAppears().add(this);
+		// A null DOM element is a legal state (the event itself is quite 
+		// meaningless without the element, but nevertheless, it was logged)
+		if ( getDomPath() != null )
+		{
+			getDomPath().getAppears().add(this);
+		}
 	}
 	
 }
