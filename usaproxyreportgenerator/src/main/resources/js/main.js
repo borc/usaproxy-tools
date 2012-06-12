@@ -360,146 +360,6 @@
 		return filteredSightings;
 	};
 	
-	/**
-	 * A function to check whether the mouse cursor is hovering over a DOM 
-	 * element. The plothover event only knows whether the cursor is hovering
-	 * near an edge point. Returns an object 
-	 * { 'top': { 'series': <series>,
-	 * 	          'dataIndices': [ <dataIndex>, <dataIndex>, <dataIndex>, <dataIndex> ],
-	 *            'seriesIndex': <seriesIndex> },
-	 *   'bottom': { ... } ] for the series (top and bottom)
-	 * and datapoint near which the cursor is hovering or null if none.
-	 */
-	var isHoveringOverAnElement = function( filteredSightings, xPos, yPos )
-	{
-		/**
-		 * A function for checking whether two segments intersect.
-		 * A,B are the lines, 1,2 are the end points.
-		 * Algorithm stolen from: 
-		 * University of Illinois at Urbana-Champaign • College of Engineering
-		 * lecture material at:
-		 * http://compgeom.cs.uiuc.edu/~jeffe/teaching/373/notes/x06-sweepline.pdf
-		 */
-		var intersect = function( A1X, A1Y, A2X, A2Y, B1X, B1Y, B2X, B2Y )
-		{
-			/**
-			 * Check whether the point triplet (A,B,C) is in 
-			 * counter-clockwise order. That is, the angle between (A->B) and
-			 * (A->C) is positive when A is considered to be the origin.
-			 * Stolen from wikipedia (http://en.wikipedia.org/wiki/Graham_scan).
-			 * "ccw is a determinant that gives the signed area of the triangle
-			 * formed by A, B and C"
-			 */
-			var ccw = function( AX, AY, BX, BY, CX, CY )
-			{
-				return ((BX - AX)*(CY - AY) - (BY - AY)*(CX - AX)) > 0;
-			}
-
-			/*
-			 * "A1 and A2 are on opposite sides of line B1->B2 if and only if exactly one 
-			 * of the two triples (A1,B1,B2) and (A2,B1,B2) is in counterclockwise order"
-			 */
-			return (ccw( A1X, A1Y, B1X, B1Y, B2X, B2Y ) != ccw( A2X, A2Y, B1X, B1Y, B2X, B2Y )) &&
-				(ccw( A1X, A1Y, A2X, A2Y, B1X, B1Y ) != ccw( A1X, A1Y, A2X, A2Y, B2X, B2Y ));
-		}
-		
-		// store the found element in this
-		var found = null;
-		
-		// Assume that top and bottom data points are in order.
-		// i.e. every other item is a top data set and every other a 
-		// bottom data set.
-		// Will fail miserably if that is not the case.
-		for ( var i = 0; i < filteredSightings.length; i += 2 )
-		{
-			var top = filteredSightings[ i ];
-			var bottom = filteredSightings[ i + 1 ];
-			var topDataset = top.data;
-			var bottomDataset = bottom.data;
-			
-			// Create quadrilateral areas using four data points, and
-			// check the coordinates against each one.
-			// Null data points will be skipped over.
-			for ( var j = 0; j < topDataset.length; j += 2 )
-			{
-				// Idx 0 = X axis, idx 1 = Y axis
-				var topLeftPoint = topDataset[ j ];
-				if ( topLeftPoint[ 1 ] == null )
-				{
-					// Null data point = break in element visibility.
-					// Subtracting one will result in the loop starting over
-					// from the next element.
-					--j;
-					continue;
-				}
-				
-				// Establish area boundaries
-				var points = {
-						'top' : {
-							'left' : topLeftPoint,
-							'right' : topDataset[ j + 1 ]
-						},
-						'bottom' : {
-							'left' : bottomDataset[ j ],
-							'right' : bottomDataset[ j + 1 ]
-						}
-				};
-				
-				var absoluteEastBoundary = points.top.right[0] > points.bottom.right[0] ? 
-						points.top.right[0] : points.bottom.right[0];
-				
-				// Use ray casting algorithm to find whether the point resides
-				// inside the area.
-				// In this implementation, we cast the ray from the point 
-				// straight to the right and stop at the absolute east boundary.
-				// Edges are checked counter-clockwise starting from the east edge.
-				
-				var intersections = 0;
-						
-				// East edge
-				if ( intersect( points.top.right[0], points.top.right[1], 
-						points.bottom.right[0], points.bottom.right[1],
-						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
-				
-				// North edge
-				if ( intersect( points.top.left[0], points.top.left[1],
-						points.top.right[0], points.top.right[1], 
-						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
-				
-				// West edge
-				if ( intersect( points.bottom.left[0], points.bottom.left[1],
-						points.top.left[0], points.top.left[1],
-						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
-				
-				// South edge
-				if ( intersect( points.bottom.left[0], points.bottom.left[1],
-						points.bottom.right[0], points.bottom.right[1],
-						xPos, yPos, absoluteEastBoundary, yPos ) ) intersections++;
-				
-				if ( intersections === 1 )
-				{
-					found = {
-						'top' : {
-							'series' : top,
-							'dataIndices' : [ j, j + 1 ],
-							'seriesIndex' : i
-						},
-						'bottom' : {
-							'series' : bottom,
-							'dataIndices' : [ j, j + 1 ],
-							'seriesIndex' : i + 1
-						}
-					};
-					break;
-				}
-			}
-			
-			if ( found !== null ) break;
-		}
-		
-		return found;
-	}
-	
 	/*
 	 * Shows a http headers dialog
 	 */
@@ -595,7 +455,9 @@
 	            },
 	            grid : {
 	                        hoverable : true,
-	                        clickable : true
+	                        clickable : true,
+	                        hoverableFill: true,
+	                        clickableFill: true
 	            },
 	            zoom: {
 	                        interactive: true
@@ -607,87 +469,120 @@
 			
 			session.httptraffics[httpTrafficId].container = placeholder;
 			
+			// Which element is shown in the tooltip currently?
+			var elementInTooltip = null;
+			
+			/*
+			 * Updates or creates the element tooltip.
+			 */
+			var updateTooltip = function( elementDomId, mouseX, mouseY, elementDetails, plotX, plotY )
+			{
+				if ( elementInTooltip == elementDomId )
+                {
+                	moveTooltip( mouseX, mouseY );
+                }
+                else
+                {
+                	$("#tooltip").remove();
+                	
+                	elementInTooltip = elementDomId;
+                	var details = elementDetails;
+                
+                    if ( $( '#autoload' ).is( ':checked' ) ) replaceContentsWithImage( details );
+                    
+                    showTooltip(mouseX, mouseY, 
+                    	new Date(parseInt(plotX.toFixed(2))).toUTCString() + ", " + plotY.toFixed(2) + " % <br />" +
+                    	elementDomId + ", " + 
+                    	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
+                    	(details.nodeName.toUpperCase() !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
+                }
+			}
+			
+			/*
+			 * Removes the tooltip entirely.
+			 */
+			var removeTooltip = function()
+			{
+				$("#tooltip").remove();
+                elementInTooltip = null;
+			}
+			
+			/*
+			 * Gets the first non-viewport series from the areas-array.
+			 * If no other series is found, the viewport series is returned.
+			 * The array must be in the same format as the areas array parameter
+			 * of the fillareahover and fillareaclick event handlers.
+			 */
+			var getFirstSeries = function( areas )
+			{
+            	var series = null;
+            	for ( i in areas )
+            	{
+            		series = areas[i][0].elementDomId === null ?
+            				areas[i][1] : areas[i][0];
+            		if ( series.elementDomId === null ) continue; // viewport area, skip to next
+            		break;
+            	}
+            	return series;
+			}
+			
 			$( placeholder ).bind("plothover", (function( httpTrafficId, plotObj )
 			{
-				// Which element is shown in the tooltip currently?
-				var elementInTooltip = null;
-				
 				return function(event, pos, item) {
 	
-					var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
-					
 					// null element dom id means that the series is a viewport movement series
-					// and will be ignored. In case the mouse cursor is hovering over an
-					// element very close to a viewport corner point, the second condition
-					// will prevent the if block from executing.
-	                if( (item !== null && item.series.elementDomId !== null) || 
-	                		(item ? false : (hoveringOver !== null)) ) {
-	                    var itemdata = [];
-	                    if ( item )
-	                    {
-	                    	itemdata = [ {
-								'series' : item.series,
-								'dataIndices' : [ item.dataIndex ],
-								'seriesIndex' : null
-	                    	} ];
-	                    }
-	                    else
-	                    {
-	                    	itemdata = [ hoveringOver.top, hoveringOver.bottom ];
-	                    }
+					// and will be ignored.
+	                if( (item !== null && item.series.elementDomId !== null) ) {
+	                    var itemdata = [ {
+							'series' : item.series,
+							'dataIndices' : [ item.dataIndex ],
+							'seriesIndex' : null
+                    	} ];
 	                    
-	                    if ( elementInTooltip == itemdata[ 0 ].series.elementDomId )
-	                    {
-	                    	moveTooltip( pos.pageX, pos.pageY );
-	                    }
-	                    else
-	                    {
-	                    	$("#tooltip").remove();
-	                    	
-	                    	plotObj.unhighlight();
-	                    	
-	                    	elementInTooltip = itemdata[ 0 ].series.elementDomId;
-	                    	var details = session.httptraffics[ httpTrafficId ]
-	                    		.domElements.details[ itemdata[ 0 ].series.elementDomId ];
-	                    
-		                    if ( $( '#autoload' ).is( ':checked' ) ) replaceContentsWithImage( details );
-		                    
-		                    showTooltip(pos.pageX, pos.pageY, 
-		                    	new Date(parseInt(pos.x.toFixed(2))).toUTCString() + ", " + pos.y.toFixed(2) + " % <br />" +
-		                    	itemdata[ 0 ].series.elementDomId + ", " + 
-		                    	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
-		                    	(details.nodeName.toUpperCase() !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
-		                    
-		                    // Highlight the four corners of the element area
-		                    for ( var s in itemdata )
-		                    {
-		                    	var seriesitem = itemdata[ s ];
-		                    	for ( var d in seriesitem.dataIndices )
-		                    	{
-		                    		var dataIndex = seriesitem.dataIndices[ d ];
-		                    		plotObj.highlight( 
-		                    				seriesitem.seriesIndex !== null ? seriesitem.seriesIndex : seriesitem.series, 
-		                    						dataIndex );
-		                    	}
-		                    }
-	                    }
-	                } else {
-	                    $("#tooltip").remove();
-	                    elementInTooltip = null;
-	                    plotObj.unhighlight();
+	                    var details = session.httptraffics[ httpTrafficId ]
+                			.domElements.details[ itemdata[ 0 ].series.elementDomId ];
+	                    updateTooltip( itemdata[ 0 ].series.elementDomId, pos.pageX, pos.pageY, details, pos.x, pos.y );
 	                }
 				}
             })( httpTrafficId, plotObj )).bind( 'plotclick', (function( httpTrafficId, plotObj )
             {
             	return function( event, pos, item )
             	{
-            		var hoveringOver = isHoveringOverAnElement( sightings, pos.x, pos.y );
-            		if ( hoveringOver !== null || item !== null )
+            		if ( item !== null && item.series.elementDomId !== null )
             		{
-            			showElementDetails( httpTrafficId, item ? item.series : hoveringOver.top.series, plotObj );
+            			showElementDetails( httpTrafficId, item.series, plotObj );
             		}
             	};
-            })( httpTrafficId, plotObj ) );
+            })( httpTrafficId, plotObj ) ).bind( 'fillareahover', (function( plotObj )
+            {
+            	return function( event, pos, areas )
+            	{
+	            	// Find the element DOM id
+	            	var series = getFirstSeries( areas );
+	            	var domId = series === null ? null : series.elementDomId;
+	            	if ( domId === null )
+	            	{
+	            		// Hovering over a viewport-only area. Skip entirely.
+	            		removeTooltip();
+	            		plotObj.unhighlight();
+	            		return; 
+	            	}
+	            	
+	            	// Update tooltip with element details
+	            	var details = session.httptraffics[ httpTrafficId ].domElements.details[ domId ];
+	            	updateTooltip( domId, pos.pageX, pos.pageY, details, pos.x, pos.y );
+            	};
+            })( plotObj ) ).bind( 'fillareaclick', (function( plotObj ) 
+            {
+            	return function( event, pos, areas )
+	            {
+	            	var series = getFirstSeries( areas );
+	            	if ( series !== null && series.elementDomId !== null )
+	        		{
+	        			showElementDetails( httpTrafficId, series, plotObj );
+	        		}
+	            };
+            })( plotObj ) );
 	    } );
 		
 

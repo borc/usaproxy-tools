@@ -19,7 +19,7 @@
         
         <!-- Flot and flot plugins -->
         <script src="js/flot-0.7/jquery.flot.min.js" type="text/javascript"></script>
-        <script src="js/flot-0.7/jquery.flot.fillbetween.min.js" type="text/javascript"></script>
+        <script src="js/flot-0.7/jquery.flot.fillbetween.custom.js" type="text/javascript"></script>
         <script src="js/flot-0.7/jquery.mousewheel.min.js" type="text/javascript"></script>
         <script src="js/flot-0.7/jquery.flot.navigate.js" type="text/javascript"></script>
         
