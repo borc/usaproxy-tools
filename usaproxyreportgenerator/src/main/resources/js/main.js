@@ -433,7 +433,7 @@
 			var sightings = getFilteredElementSightings( httpTrafficId );
 			
 			var plotObj = $.plot( placeholder, 
-					sightings.concat( session.httptraffics[httpTrafficId].viewportMovement ), 
+					session.httptraffics[httpTrafficId].viewportMovement.concat( sightings ), 
 			{
 				xaxis : {
 					mode : 'time'
@@ -474,12 +474,15 @@
 			
 			/*
 			 * Updates or creates the element tooltip.
+			 * Returns true if tooltip was updated, false if a new one was created.
 			 */
 			var updateTooltip = function( elementDomId, mouseX, mouseY, elementDetails, plotX, plotY )
 			{
+				var updated = false;
 				if ( elementInTooltip == elementDomId )
                 {
                 	moveTooltip( mouseX, mouseY );
+                	updated = true;
                 }
                 else
                 {
@@ -496,6 +499,7 @@
                     	(details.nodeName ? details.nodeName : '&lt;unknown&gt;') + ': <br />' + 
                     	(details.nodeName.toUpperCase() !== 'IMG' ? unescape( details.content ).substr(0,30) : details.content ) );
                 }
+				return updated;
 			}
 			
 			/*
@@ -508,22 +512,22 @@
 			}
 			
 			/*
-			 * Gets the first non-viewport series from the areas-array.
-			 * If no other series is found, the viewport series is returned.
+			 * Gets the first non-viewport area from the areas-array.
+			 * If no other area is found, the viewport area is returned.
 			 * The array must be in the same format as the areas array parameter
 			 * of the fillareahover and fillareaclick event handlers.
 			 */
-			var getFirstSeries = function( areas )
+			var getFirstArea = function( areas )
 			{
-            	var series = null;
-            	for ( i in areas )
+            	var area = null;
+            	for ( var i in areas )
             	{
-            		series = areas[i][0].elementDomId === null ?
-            				areas[i][1] : areas[i][0];
-            		if ( series.elementDomId === null ) continue; // viewport area, skip to next
+            		area = areas[i][0].elementDomId === null ?
+            				null : areas[i];
+            		if ( area === null ) continue; // viewport area, skip to next
             		break;
             	}
-            	return series;
+            	return area;
 			}
 			
 			$( placeholder ).bind("plothover", (function( httpTrafficId, plotObj )
@@ -558,28 +562,47 @@
             	return function( event, pos, areas )
             	{
 	            	// Find the element DOM id
-	            	var series = getFirstSeries( areas );
-	            	var domId = series === null ? null : series.elementDomId;
+	            	var area = getFirstArea( areas );
+	            	var domId = area === null ? null : area[0].elementDomId;
 	            	if ( domId === null )
 	            	{
 	            		// Hovering over a viewport-only area. Skip entirely.
 	            		removeTooltip();
+	            		// Unhighlight previous highlights
 	            		plotObj.unhighlight();
 	            		return; 
 	            	}
 	            	
 	            	// Update tooltip with element details
 	            	var details = session.httptraffics[ httpTrafficId ].domElements.details[ domId ];
-	            	updateTooltip( domId, pos.pageX, pos.pageY, details, pos.x, pos.y );
+	            	if ( !updateTooltip( domId, pos.pageX, pos.pageY, details, pos.x, pos.y ) )
+	            	{
+	            		// A new tooltip was created. Unhighlight everything and
+	            		// highlight the new item.
+	            		plotObj.unhighlight();
+	            		
+		            	for ( var i in area[0].data )
+		            	{
+		            		var point = area[0].data[ i ];
+		            		if ( point[1] !== null )
+		            		{
+		            			plotObj.highlight( area[0], area[0].data[ i ] );
+		            			
+		            			// The second series MUST have an equal amount of data points.
+		            			// Therefore its safe to highlight the points this way.
+		            			plotObj.highlight( area[1], area[1].data[ i ] );
+		            		}
+		            	}
+	            	}
             	};
             })( plotObj ) ).bind( 'fillareaclick', (function( plotObj ) 
             {
             	return function( event, pos, areas )
 	            {
-	            	var series = getFirstSeries( areas );
-	            	if ( series !== null && series.elementDomId !== null )
+	            	var area = getFirstArea( areas );
+	            	if ( area !== null && area[0].elementDomId !== null )
 	        		{
-	        			showElementDetails( httpTrafficId, series, plotObj );
+	        			showElementDetails( httpTrafficId, area[0], plotObj );
 	        		}
 	            };
             })( plotObj ) );
