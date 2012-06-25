@@ -12,23 +12,31 @@
  */
 (function($) {
     
+	var getWindow_ = function(doc) {
+		  return doc.parentWindow || doc.defaultView;
+	};
+	
     $.belowthefold = function(element, settings) {
-        var fold = $(window).height() + $(window).scrollTop();
+    	var elementWindow = getWindow_(element.ownerDocument);
+        var fold = $(elementWindow).height() + $(elementWindow).scrollTop();
         return fold <= $(element).offset().top - settings.threshold;
     };
 
     $.abovethetop = function(element, settings) {
-        var top = $(window).scrollTop();
+    	var elementWindow = getWindow_(element.ownerDocument);
+        var top = $(elementWindow).scrollTop();
         return top >= $(element).offset().top + $(element).height() - settings.threshold;
     };
     
     $.rightofscreen = function(element, settings) {
-        var fold = $(window).width() + $(window).scrollLeft();
+    	var elementWindow = getWindow_(element.ownerDocument);
+        var fold = $(elementWindow).width() + $(elementWindow).scrollLeft();
         return fold <= $(element).offset().left - settings.threshold;
     };
     
     $.leftofscreen = function(element, settings) {
-        var left = $(window).scrollLeft();
+    	var elementWindow = getWindow_(element.ownerDocument);
+        var left = $(elementWindow).scrollLeft();
         return left >= $(element).offset().left + $(element).width() - settings.threshold;
     };
     

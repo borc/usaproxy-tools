@@ -263,7 +263,23 @@ function init_UsaProxy() {
 		waypoints.bottom[ bottomPos ].push( this );
 	};
 	
-	var trackedElements = jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy );
+	var getTrackedElements = function()
+	{
+		var els = jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy );
+		
+		// One level of iframes will be logged (or at least attempted)
+		// Same origin may prevent this, but we try it anyway, in case the content
+		// is actually from the same origin.
+		// Actual iframes are logged in their respective httptraffic sessions,
+		// but local content is not.
+		jQuery_UsaProxy( 'iframe' ).each( function()
+		{
+			els = els.add( jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy, this.contentDocument ) );
+		} );
+		return els;
+	}
+	
+	var trackedElements = getTrackedElements();
 	var resetAllWaypoints = function()
 	{
 		waypoints = { left: [], top: [], bottom: [], right: [] };
@@ -325,7 +341,6 @@ function init_UsaProxy() {
 	{
 		logElement( this, false, 'initial' );
 	} );
-	var previousUpdateTime = jQuery_UsaProxy.now();
 	
 	var previousScrollPos = scrollPos();
 	
@@ -367,48 +382,91 @@ function init_UsaProxy() {
 		return resetWaypoints;
 	};
 	
-	var checkVisibility = function()
+	var checkVisibility = function( noScroll /* Force checking every element instead of just the scroll zone */ )
 	{
-		++screenID_UsaProxy; // every screen has a unique id
-		
-		logScroll();
-		
 		// These elements have disappeared from the screen
 		var disappearingElements = jQuery_UsaProxy( elementsPreviouslyInViewport )
-			.filter( ':not( :in-viewport )' )
-			.each( function()
-			{
-				logElement( this, true, 'unknown' );
-			} );
+			.filter( ':not( :in-viewport )' );
 		
 		var currentScrollPos = scrollPos();
 		
 		var newlyVisibleElements = [];
 		var resetWaypoints = false;
 		
-		// Elements whose tops are in the bottom 'scroll zone' are appearing
-		// on the screen.
-		if ( findVisibleElements( previousScrollPos.bottom, currentScrollPos.bottom, 
-			waypoints.top, getEdgePosition.top, newlyVisibleElements, 'bottom' ) ) resetWaypoints = true;
+		if ( noScroll )
+		{
+			// The page was not scrolled. Force 'in-viewport' check.
+			newlyVisibleElements = trackedElements.filter( ':in-viewport' ).get();
+			
+			// The elements that were previously in viewport, and still are.
+			var elementsStillInViewport =
+				elementsPreviouslyInViewport.filter( newlyVisibleElements );
+			
+			if ( elementsStillInViewport.length === newlyVisibleElements.length )
+			{
+				// If the list of newly visible elements is exactly the same as the list
+				// of previous elements, the view hasn't changed at all. Therefore we
+				// exit here.
+				return;
+			}
+			
+			// The view has changed if we passed this point.
+			
+			++screenID_UsaProxy;
+			
+			logScroll();
+			
+			// Log element disappearances
+			disappearingElements.each( function()
+			{
+				logElement( this, true, 'unknown' );
+			} );
+			
+			// Log element appearances
+			jQuery_UsaProxy( newlyVisibleElements ).not( elementsPreviouslyInViewport ).each( function()
+			{
+				logElement( this, false, 'unknown' );
+			} );
+			
+			elementsPreviouslyInViewport = jQuery_UsaProxy( newlyVisibleElements );
+		}
+		else
+		{
+			// The page was scrolled.
+			
+			++screenID_UsaProxy; // every screen has a unique id
+			
+			logScroll();
+			
+			disappearingElements.each( function()
+			{
+				logElement( this, true, 'unknown' );
+			} );
+			
+			// Elements whose tops are in the bottom 'scroll zone' are appearing
+			// on the screen.
+			if ( findVisibleElements( previousScrollPos.bottom, currentScrollPos.bottom, 
+				waypoints.top, getEdgePosition.top, newlyVisibleElements, 'bottom' ) ) resetWaypoints = true;
+			
+			// Elements whose bottoms are in the top 'scroll zone' are appearing
+			// on the screen.
+			if ( findVisibleElements( currentScrollPos.top, previousScrollPos.top,
+					waypoints.bottom, getEdgePosition.bottom, newlyVisibleElements, 'top' ) ) resetWaypoints = true;
+					
+			// Elements whose right sides are in the left side 'scroll zone' are appearing
+			// on the screen.
+			if ( findVisibleElements( currentScrollPos.left, previousScrollPos.left,
+					waypoints.right, getEdgePosition.right, newlyVisibleElements, 'left' ) ) resetWaypoints = true;
+					
+			// Elements whose left sides are in the right side 'scroll zone' are appearing
+			// on the screen.
+			if ( findVisibleElements( currentScrollPos.right, previousScrollPos.right,
+					waypoints.left, getEdgePosition.left, newlyVisibleElements, 'right' ) ) resetWaypoints = true;
+			
+			elementsPreviouslyInViewport = jQuery_UsaProxy( newlyVisibleElements ).add( elementsPreviouslyInViewport.not( disappearingElements ) ) ;
+			previousScrollPos = currentScrollPos;
+		}
 		
-		// Elements whose bottoms are in the top 'scroll zone' are appearing
-		// on the screen.
-		if ( findVisibleElements( currentScrollPos.top, previousScrollPos.top,
-				waypoints.bottom, getEdgePosition.bottom, newlyVisibleElements, 'top' ) ) resetWaypoints = true;
-				
-		// Elements whose right sides are in the left side 'scroll zone' are appearing
-		// on the screen.
-		if ( findVisibleElements( currentScrollPos.left, previousScrollPos.left,
-				waypoints.right, getEdgePosition.right, newlyVisibleElements, 'left' ) ) resetWaypoints = true;
-				
-		// Elements whose left sides are in the right side 'scroll zone' are appearing
-		// on the screen.
-		if ( findVisibleElements( currentScrollPos.right, previousScrollPos.right,
-				waypoints.left, getEdgePosition.left, newlyVisibleElements, 'right' ) ) resetWaypoints = true;
-		
-		elementsPreviouslyInViewport = jQuery_UsaProxy( newlyVisibleElements ).add( elementsPreviouslyInViewport.not( disappearingElements ) ) ;
-		previousUpdateTime = jQuery_UsaProxy.now();
-		previousScrollPos = currentScrollPos;
 		if ( resetWaypoints ) resetAllWaypoints();
 	};
 	
@@ -416,12 +474,99 @@ function init_UsaProxy() {
 	// also account for the document's change of shape.
 	jQuery_UsaProxy( window )
 		.on( 'scrollstart', logScrollStart )
-		.on( 'scrollstop', checkVisibility )
+		.on( 'scrollstop', function()
+		{
+			checkVisibility( false );
+		} )
 		.on( 'resizestop', function()
 		{
 			resetAllWaypoints();
-			checkVisibility();
+			checkVisibility( false );
 		} );
+		
+	// An object for handling dynamic page change checking.
+	var checkDynamic = 
+	{
+		dispatcher: (function()
+			{
+				if ( window.dynamicDetection_UsaProxy === 'TIMER' ||
+						( window.dynamicDetection_UsaProxy === 'AUTO' &&
+								!jQuery_UsaProxy( document ).mutation( 'supported' ) ) )
+				{
+					// Timer-based dispatcher
+					return {
+						
+						checkDynamicTimer: null, // handle to the timeout object
+						
+						// Check visibility every second in case the page is a non-scrolling
+						// one with dynamic content.
+						setup: function( that )
+						{
+							that.reset();
+							this.checkDynamicTimer = window.setTimeout( function()
+							{
+								that.checkForChanges();
+								that.setup();
+							}, 1000 );
+						},
+					
+						// Timer reset
+						reset: function()
+						{
+							window.clearTimeout( this.checkDynamicTimer ); // cancel any previous timer
+						} 
+					};
+				}
+				
+				if ( window.dynamicDetection_UsaProxy === 'MUTATION_EVENT' || 
+						( window.dynamicDetection_UsaProxy === 'AUTO' &&
+								jQuery_UsaProxy( document ).mutation( 'supported' ) ) )
+				{
+					// Mutation event based dispatcher
+					return {
+						setup: function( that )
+						{
+							jQuery_UsaProxy( document ).mutation( 'stop', function()
+							{
+								that.checkForChanges();
+							} );
+						},
+					
+						reset: function()
+						{
+							jQuery_UsaProxy( document ).mutation( 'off' );
+						} 
+					};
+				}
+				
+				// No-op dispatcher
+				return {
+					setup: function(){},
+					reset: function(){}
+				};
+			})(),
+
+		reset: function()
+		{
+			this.dispatcher.reset();
+		},
+		
+		setup: function()
+		{
+			this.dispatcher.setup( this );
+		},
+		
+		// triggers a full waypoint reset.
+		checkForChanges: function()
+		{
+			// Reset the list and re-calculate waypoints.
+			trackedElements = getTrackedElements();
+			resetAllWaypoints();
+			checkVisibility( true );
+		}
+	};
+	
+	checkDynamic.setup();
 	
 }
 
@@ -518,7 +663,7 @@ function generateEventString_UsaProxy(node /*DOM element*/) {
 		 * instead href contains the file path */
 		if(node.nodeName=="img" || node.nodeName=="IMG") {	
 			// if linked image (parent node is an <a>-element)
-			if(node.parentNode.href)  
+			if(node.parentNode && node.parentNode.href)  
 				eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node)) + "&link=" + escape(node.parentNode.href);
 			else eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node));
 		}
@@ -533,7 +678,7 @@ function generateEventString_UsaProxy(node /*DOM element*/) {
 	} else {
 		// image detection NS
 		if (node.src) {		
-			if (node.parentNode.href)
+			if (node.parentNode && node.parentNode.href)
 				eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node)) + "&link=" + escape(node.parentNode.href);
 			else eventString = eventString + "&img=" + escape(getImageUrl_UsaProxy(node));
 		}
@@ -1370,13 +1515,19 @@ function processSelectionNS_UsaProxy(e) {
 /** end events logging */
 
 /* Returns the DOM path of the specified DOM node beginning with the first
- * corresponding child node of the document node (i.e. HTML) */
+ * corresponding child node of the document node (i.e. HTML). Returns the empty string
+ * for elements with no parents. */
 function getDOMPath(node /*DOM element*/) {
 	/* Mozilla developer documentation: "parentNode returns null for the 
 	 * following node types: Attr, Document, DocumentFragment, Entity, and 
 	 * Notation." Basically we want to stop the recursion always when a 
 	 * parent node cannot be found. */
-	if( node.parentNode.parentNode === null ) return getDOMIndex(node);
+	
+	// Fail if the recursion gets too deep. A DOM path cannot be determined
+	// for elements with no parents.
+	if ( node.parentNode === null ) return '';
+	
+	if ( node.parentNode.parentNode === null ) return getDOMIndex(node);
 	
 	return getDOMPath(node.parentNode) + getDOMIndex(node);
 }

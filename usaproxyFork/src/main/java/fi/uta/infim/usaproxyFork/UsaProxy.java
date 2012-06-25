@@ -80,11 +80,29 @@ public class UsaProxy {
      */
     private boolean 			logExternalUrl;
     
+    /**
+     * How to split logs. See LogSplitType documentation for more information.
+     */
     private LogSplitType		logSplitType;
     
+    /**
+     * When to split logs. For example, if split type is set to DAILY, setting
+     * {@link #logSplitAt} to 16 will make UsaProxy split logs at 4 P.M.
+     */
     private Integer				logSplitAt;
     
+    /**
+     * Increase or decrease the time interval of log splitting. For example,
+     * if split type is set to DAILY, setting {@link #logSplitInterval} to 2
+     * will make UsaProxy split logs every 2 days.
+     */
     private Integer				logSplitInterval;
+    
+    /**
+     * Attempt to detect dynamic changes to the document?
+     * This feature can be very CPU intensive. Use with extreme care.
+     */
+    private DynamicDetectionType dynamicDetection = DynamicDetectionType.NONE;
     
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
@@ -117,7 +135,8 @@ public class UsaProxy {
 			boolean logExternalUrl,
 			LogSplitType splitType,
 			Integer splitAt,
-			Integer splitInterval
+			Integer splitInterval,
+			DynamicDetectionType ddType
 			) {
 		
 		this.port 					= port;
@@ -134,6 +153,7 @@ public class UsaProxy {
 		this.logSplitType			= splitType;
 		this.logSplitAt				= splitAt;
 		this.logSplitInterval		= splitInterval;
+		this.setDynamicDetection(ddType);
 		
 		try {
 			this.ip			= java.net.InetAddress.getLocalHost();
@@ -232,6 +252,12 @@ public class UsaProxy {
 		 *  							 * on weekday number hh (1=monday) (weekly)
 		 *  							 * on the hh'th day of the month (monthly)
 		 *  -logSplitInterval <nnn>		Split logs every nnn h/d/w/m instead of every h/d/w/m. Default: 1.
+		 *  -dynamicDetection a|t|m|n   EXPERIMENTAL Detection of dynamic content. Set to:
+		 *                               * [a]utomatic
+		 *                               * [t]imer-based
+		 *                               * [m]utation event based
+		 *                               * [n]one (DEFAULT)
+		 *                              
 		 */
 		
 		/** UsaProxy modes:
@@ -561,6 +587,27 @@ public class UsaProxy {
 				}
 			}
 		}
+
+		/**
+		 * Check for dynamic detection type command line argument
+		 */
+		DynamicDetectionType ddType = DynamicDetectionType.NONE;
+		if ( (index = indexOf( args, "-dynamicDetection" )) != -1 )
+		{
+			try 
+			{
+				ddType = DynamicDetectionType.getTypeByCLIArg( args[ index + 1 ] );
+			} 
+			catch (NoSuchFieldException e) {
+				System.err.println( "Invalid dynamicDetection argument value! Valid values are: a, t, m, n." );
+				System.err.println( "Defaulting to no dynamic detection." );
+			}
+			catch( IndexOutOfBoundsException e )
+			{
+				System.err.println( "No dynamicDetection argument value supplied!" );
+				System.err.println( "Defaulting to no dynamic detection." );
+			}
+		}
 		
 		System.out.println("Trying to start UsaProxy at port: " + port);
 		
@@ -585,7 +632,7 @@ public class UsaProxy {
 		
 		/** generate an UsaProxy instance */
 		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, 
-				logContents, limitContents, exUrls, lsType, lsAt, lsInterval );
+				logContents, limitContents, exUrls, lsType, lsAt, lsInterval, ddType );
 			
 	}
 
@@ -776,5 +823,13 @@ public class UsaProxy {
 	public LogSplitType getLogSplit()
 	{
 		return logSplitType;
+	}
+
+	public DynamicDetectionType getDynamicDetection() {
+		return dynamicDetection;
+	}
+
+	public void setDynamicDetection(DynamicDetectionType dynamicDetection) {
+		this.dynamicDetection = dynamicDetection;
 	}
 }

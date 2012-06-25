@@ -1272,10 +1272,13 @@ public class ClientRequest extends Thread {
 	                		"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>";
 	                
 	                String viewportScriptString =
-	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.viewport.js");
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.viewport.custom.js");
 	                
 	                String scrollScriptString =
 	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.scroll.events.js");
+	                
+	                String mutationScriptString =
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.mutation.events.js");
 	                
 	                String resizeScriptString =
 	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.resizeStop.js");
@@ -1284,10 +1287,11 @@ public class ClientRequest extends Thread {
 	                 *  to the data StringBuffer object which will be transmitted later */
 	                data
 	                	.append(dataBefore)
-	                	.append(generateNodeTypesJS())
+	                	.append(generateHeaderJS())
 	                	.append(jQueryScriptString)
 	                	.append(viewportScriptString)
 	                	.append(scrollScriptString)
+	                	.append(mutationScriptString)
 	                	.append(resizeScriptString)
 	                	.append(scriptString)
 	                	.append(sbScriptString)
@@ -1571,8 +1575,9 @@ public class ClientRequest extends Thread {
 		return strLargeText;
 	}
 	
-	private String generateNodeTypesJS()
+	private String generateHeaderJS()
 	{
+		// Node types
 		String[] nodeTypes = usaProxy.getNodeTypes();
 		String comma = "";
 		String js = "<script type=\"text/javascript\">" +
@@ -1584,6 +1589,7 @@ public class ClientRequest extends Thread {
 			comma = ", ";
 		}
 		
+		// Original URL object
 		js += "\"; " +
 		"window.originURL_UsaProxy = { " + 
 				" protocol: \"" + requestURL.getProtocol() + "\", " +
@@ -1591,8 +1597,12 @@ public class ClientRequest extends Thread {
 				" port: \"" + (requestURL.getPort() == -1 ? "" : requestURL.getPort()) + "\", " +
 				" path: \"" + requestURL.getPath() + "\", " +
 				" file: \"" + requestURL.getFile() + "\" " +
-		"}; " +
-		"</script>";
+		"}; ";
+		
+		// Dynamic detection type
+		js += "window.dynamicDetection_UsaProxy = '" + usaProxy.getDynamicDetection().name() + "';";
+		
+		js += "</script>";
 		return js;
 	}
 
