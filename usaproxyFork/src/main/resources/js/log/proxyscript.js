@@ -263,18 +263,26 @@ function init_UsaProxy() {
 		waypoints.bottom[ bottomPos ].push( this );
 	};
 	
-	var getTrackedElements = function()
+	var getTrackedElements = function( currentFrameDepth, targetDocument, maxFrameDepth )
 	{
-		var els = jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy );
+		// Defaults
+		if ( typeof targetDocument === 'undefined' ) targetDocument = document;
+		if ( typeof maxFrameDepth === 'undefined' ) maxFrameDepth = window.maxFrameDepth_UsaProxy;
+		if ( typeof currentFrameDepth === 'undefined' ) currentFrameDepth = 1;
 		
-		// One level of iframes will be logged (or at least attempted)
+		var els = jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy, targetDocument );
+
+		// Recursion ends when desired depth is reached.
+		if ( currentFrameDepth > maxFrameDepth ) return els;
+		
+		// Contents of frames will be logged (or at least attempted)
 		// Same origin may prevent this, but we try it anyway, in case the content
 		// is actually from the same origin.
-		// Actual iframes are logged in their respective httptraffic sessions,
-		// but local content is not.
-		jQuery_UsaProxy( 'iframe' ).each( function()
+		// Actual frames are logged in their respective httptraffic sessions,
+		// but local content is not, which is why we need this.
+		jQuery_UsaProxy( 'iframe, frame' ).each( function()
 		{
-			els = els.add( jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy, this.contentDocument ) );
+			els = els.add( getTrackedElements( currentFrameDepth + 1, this.contentDocument, maxFrameDepth ) );
 		} );
 		return els;
 	}

@@ -104,6 +104,14 @@ public class UsaProxy {
      */
     private DynamicDetectionType dynamicDetection = DynamicDetectionType.NONE;
     
+    /**
+     * Attempt to log frame contents? This only makes sense for generated
+     * contents frames and non-UsaProxy frames. If a frame has a URL that
+     * goes through UsaProxy, it will be logged whether this parameter is set
+     * to non-zero or not.
+     */
+    private int 				maxFrameDepth = 0;
+    
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
     
@@ -136,7 +144,8 @@ public class UsaProxy {
 			LogSplitType splitType,
 			Integer splitAt,
 			Integer splitInterval,
-			DynamicDetectionType ddType
+			DynamicDetectionType ddType,
+			int maxFrameDepth
 			) {
 		
 		this.port 					= port;
@@ -154,6 +163,7 @@ public class UsaProxy {
 		this.logSplitAt				= splitAt;
 		this.logSplitInterval		= splitInterval;
 		this.setDynamicDetection(ddType);
+		this.setMaxFrameDepth(maxFrameDepth);
 		
 		try {
 			this.ip			= java.net.InetAddress.getLocalHost();
@@ -257,6 +267,12 @@ public class UsaProxy {
 		 *                               * [t]imer-based
 		 *                               * [m]utation event based
 		 *                               * [n]one (DEFAULT)
+		 *  -framePenetrationDepth <n>  Penetrate into frames and iframes. N is the maximum depth.
+		 *                              Default is 0. Note that frames whose contents are loaded
+		 *                              through UsaProxy will be logged separately in any case.
+		 *                              Only local content and content originating from the same
+		 *                              location as the parent page can be logged because of the Same
+		 *                              Origin constraint.
 		 *                              
 		 */
 		
@@ -609,6 +625,29 @@ public class UsaProxy {
 			}
 		}
 		
+		/**
+		 * Frame penetration depth CLI arg
+		 */
+		int maxFrameDepth = 0;
+		if ( (index = indexOf( args, "-framePenetrationDepth" )) != -1 )
+		{
+			try 
+			{
+				maxFrameDepth = Integer.parseInt( args[ index + 1 ] );
+				if ( maxFrameDepth < 0 ) maxFrameDepth = 0;
+			}
+			catch ( IndexOutOfBoundsException e )
+			{
+				System.err.println( "No framePenetrationDepth argument value supplied!" );
+				System.err.println( "Defaulting to 0." );
+			}
+			catch ( NumberFormatException e )
+			{
+				System.err.println( "Invalid framePenetrationDepth argument value supplied!" );
+				System.err.println( "Defaulting to 0." );
+			}
+		}
+		
 		System.out.println("Trying to start UsaProxy at port: " + port);
 		
 		/** generate a mode instance */
@@ -632,7 +671,8 @@ public class UsaProxy {
 		
 		/** generate an UsaProxy instance */
 		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, 
-				logContents, limitContents, exUrls, lsType, lsAt, lsInterval, ddType );
+				logContents, limitContents, exUrls, lsType, lsAt, 
+				lsInterval, ddType, maxFrameDepth );
 			
 	}
 
@@ -831,5 +871,13 @@ public class UsaProxy {
 
 	public void setDynamicDetection(DynamicDetectionType dynamicDetection) {
 		this.dynamicDetection = dynamicDetection;
+	}
+
+	public int getMaxFrameDepth() {
+		return maxFrameDepth;
+	}
+
+	public void setMaxFrameDepth(int maxFrameDepth) {
+		this.maxFrameDepth = maxFrameDepth;
 	}
 }

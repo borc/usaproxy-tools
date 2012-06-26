@@ -1602,6 +1602,9 @@ public class ClientRequest extends Thread {
 		// Dynamic detection type
 		js += "window.dynamicDetection_UsaProxy = '" + usaProxy.getDynamicDetection().name() + "';";
 		
+		// Max frame penetration depth
+		js += "window.maxFrameDepth_UsaProxy = " + usaProxy.getMaxFrameDepth() + ";";
+		
 		js += "</script>";
 		return js;
 	}

@@ -18,6 +18,7 @@ java -jar usaproxyFork.jar
 
 Command line switches:
 -port <port> 			is the port UsaProxy is listening for incoming connections
+						best between 1024 and 65535.
 
 -remoteIP <IP address>	is the address of the gateway proxy
 						resp. web server UsaProxy always forwards requests to
@@ -64,7 +65,20 @@ Command line switches:
 						 
 -logSplitInterval <nnn>	Split logs every nnn h/d/w/m instead of every h/d/w/m. Default: 1.						
 
-with <port> best between 1024 and 65535.				
+-dynamicDetection a|t|m|n   EXPERIMENTAL Detection of dynamic content. Set to:
+		                     * [a]utomatic
+		                     * [t]imer-based
+		                     * [m]utation event based
+		                     * [n]one (DEFAULT)
+		 
+-framePenetrationDepth <n>  Penetrate into frames and iframes. N is the maximum depth.
+                            Default is 0. Note that frames whose contents are loaded
+                            through UsaProxy will be logged separately in any case.
+                            Only local content and content originating from the same
+                            location as the parent page can be logged because of the Same
+                            Origin constraint.
+                            
+				
 
 		
 UsaProxy modes:
