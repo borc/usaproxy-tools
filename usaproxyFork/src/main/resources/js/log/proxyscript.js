@@ -2,8 +2,9 @@
 	This proxyscript.js is used for pure logging of user activity
 	without any collaboration functionality */
 
-// avoid conflicts by placing jQuery in a different global variable
+;(function( document, window, undefined ) {
 
+// avoid conflicts by placing jQuery in a different global variable
 var jQuery_UsaProxy = jQuery.noConflict( true ); // Instance of jQuery. No-conflict mode.
 	
 var logVal_UsaProxy;			// String: Initialised when page loads. Contains current event log entries
@@ -182,7 +183,7 @@ function init_UsaProxy() {
 	
 	/* instantiate scroll check and save function being invoked periodically */
 	//IVL_scrollCheck_UsaProxy 	= window.setInterval("processScroll_UsaProxy()",1000);
-	IVL_saveLog_UsaProxy 		= window.setInterval("saveLog_UsaProxy()",3000);
+	IVL_saveLog_UsaProxy 		= window.setInterval( function(){ saveLog_UsaProxy(); },3000);
 	
 	// Logging element appearances and disappearances
 	var waypoints;
@@ -638,7 +639,7 @@ function completeDateVals(dateVal) {
  * and the current timestamp to logVal_UsaProxy */
 function writeLog_UsaProxy(text) {
 	// if function is already being executed, defer writeLog_UsaProxy for 50ms
-	if(FLG_writingLogVal_UsaProxy) { window.setTimeout("writeLog_UsaProxy(" + text + ")",50); return false;}
+	if(FLG_writingLogVal_UsaProxy) { window.setTimeout( function() { writeLog_UsaProxy( text ); },50); return false;}
 	
 	// generate and append log entry
 	var logline;
@@ -864,7 +865,7 @@ function processMousemove_UsaProxy(e) {
 			
 			writeLog_UsaProxy("mousemove&offset=" + xOffset + "," + yOffset + generateEventString_UsaProxy(target));
 			//saveLog_UsaProxy();
-			window.setTimeout('setInaktiv_UsaProxy()',150);
+			window.setTimeout( function() { setInaktiv_UsaProxy(); },150);
 	}
 }
 
@@ -1603,3 +1604,5 @@ function absTop(element) {
      	return (element.offsetParent)? 
      	element.offsetTop + absTop(element.offsetParent) : element.offsetTop;
 }
+
+} )( document, window );
