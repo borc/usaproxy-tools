@@ -268,10 +268,10 @@ function init_UsaProxy() {
 	{
 		// Defaults
 		if ( typeof targetDocument === 'undefined' ) targetDocument = document;
-		if ( typeof maxFrameDepth === 'undefined' ) maxFrameDepth = window.maxFrameDepth_UsaProxy;
+		if ( typeof maxFrameDepth === 'undefined' ) maxFrameDepth = window.UsaProxy.maxFrameDepth;
 		if ( typeof currentFrameDepth === 'undefined' ) currentFrameDepth = 1;
 		
-		var els = jQuery_UsaProxy( window.nodeTypeSelector_UsaProxy, targetDocument );
+		var els = jQuery_UsaProxy( window.UsaProxy.nodeTypeSelector, targetDocument );
 
 		// Recursion ends when desired depth is reached.
 		if ( currentFrameDepth > maxFrameDepth ) return els;
@@ -498,8 +498,8 @@ function init_UsaProxy() {
 	{
 		dispatcher: (function()
 			{
-				if ( window.dynamicDetection_UsaProxy === 'TIMER' ||
-						( window.dynamicDetection_UsaProxy === 'AUTO' &&
+				if ( window.UsaProxy.dynamicDetection === 'TIMER' ||
+						( window.UsaProxy.dynamicDetection === 'AUTO' &&
 								!jQuery_UsaProxy( document ).mutation( 'supported' ) ) )
 				{
 					// Timer-based dispatcher
@@ -527,8 +527,8 @@ function init_UsaProxy() {
 					};
 				}
 				
-				if ( window.dynamicDetection_UsaProxy === 'MUTATION_EVENT' || 
-						( window.dynamicDetection_UsaProxy === 'AUTO' &&
+				if ( window.UsaProxy.dynamicDetection === 'MUTATION_EVENT' || 
+						( window.UsaProxy.dynamicDetection === 'AUTO' &&
 								jQuery_UsaProxy( document ).mutation( 'supported' ) ) )
 				{
 					// Mutation event based dispatcher
@@ -705,8 +705,8 @@ function getImageUrl_UsaProxy( pImageNode )
 	if ( actualSrc.charAt( 0 ) === '/' )
 	{
 		// Relative URL, keep host part
-		return originURL_UsaProxy.protocol + '://' + originURL_UsaProxy.host + 
-			( originURL_UsaProxy.port === '' ? '' : ':' + originURL_UsaProxy.port )	+ 
+		return window.UsaProxy.originURL.protocol + '://' + window.UsaProxy.originURL.host + 
+			( window.UsaProxy.originURL.port === '' ? '' : ':' + window.UsaProxy.originURL.port ) + 
 			actualSrc;
 	}
 	else if ( /[A-z]+:\/\/.*/.test( actualSrc ) )
@@ -717,9 +717,9 @@ function getImageUrl_UsaProxy( pImageNode )
 	else
 	{
 		// File name or path, keep host and path
-		return originURL_UsaProxy.protocol + '://' + originURL_UsaProxy.host +
-			( originURL_UsaProxy.port === '' ? '' : ':' + originURL_UsaProxy.port ) + 
-			originURL_UsaProxy.path.substr( 0, originURL_UsaProxy.path.lastIndexOf("/") + 1 ) + 
+		return window.UsaProxy.originURL.protocol + '://' + window.UsaProxy.originURL.host +
+			( window.UsaProxy.originURL.port === '' ? '' : ':' + window.UsaProxy.originURL.port ) + 
+			window.UsaProxy.originURL.path.substr( 0, window.UsaProxy.originURL.path.lastIndexOf("/") + 1 ) + 
 			actualSrc;
 	}
 }

@@ -1577,11 +1577,13 @@ public class ClientRequest extends Thread {
 	
 	private String generateHeaderJS()
 	{
+		String js = "<script type=\"text/javascript\">";
+		js += "if ( typeof window.UsaProxy !== 'object' ) { window.UsaProxy = {}; } ";
+		
 		// Node types
 		String[] nodeTypes = usaProxy.getNodeTypes();
 		String comma = "";
-		String js = "<script type=\"text/javascript\">" +
-				"window.nodeTypeSelector_UsaProxy = \"";
+		js += "window.UsaProxy.nodeTypeSelector = \"";
 		
 		for ( int i = 0; i < nodeTypes.length; ++i )
 		{
@@ -1591,7 +1593,7 @@ public class ClientRequest extends Thread {
 		
 		// Original URL object
 		js += "\"; " +
-		"window.originURL_UsaProxy = { " + 
+		"window.UsaProxy.originURL = { " + 
 				" protocol: \"" + requestURL.getProtocol() + "\", " +
 				" host: \"" + requestURL.getHost() + "\", " +
 				" port: \"" + (requestURL.getPort() == -1 ? "" : requestURL.getPort()) + "\", " +
@@ -1600,10 +1602,10 @@ public class ClientRequest extends Thread {
 		"}; ";
 		
 		// Dynamic detection type
-		js += "window.dynamicDetection_UsaProxy = '" + usaProxy.getDynamicDetection().name() + "';";
+		js += "window.UsaProxy.dynamicDetection = '" + usaProxy.getDynamicDetection().name() + "';";
 		
 		// Max frame penetration depth
-		js += "window.maxFrameDepth_UsaProxy = " + usaProxy.getMaxFrameDepth() + ";";
+		js += "window.UsaProxy.maxFrameDepth = " + usaProxy.getMaxFrameDepth() + ";";
 		
 		js += "</script>";
 		return js;
