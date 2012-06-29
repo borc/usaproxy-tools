@@ -112,6 +112,13 @@ public class UsaProxy {
      */
     private int 				maxFrameDepth = 0;
     
+    /**
+     * Which plugins to load? Will attempt to load scripts from the plugins
+     * directory. File names are of format 'usaproxy.<name>.plugin.js' where
+     * <name> is the plugin name provided in the CLI argument.
+     */
+    private String[]			plugins;
+    
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
     
@@ -145,7 +152,8 @@ public class UsaProxy {
 			Integer splitAt,
 			Integer splitInterval,
 			DynamicDetectionType ddType,
-			int maxFrameDepth
+			int maxFrameDepth,
+			String[] plugins
 			) {
 		
 		this.port 					= port;
@@ -164,6 +172,7 @@ public class UsaProxy {
 		this.logSplitInterval		= splitInterval;
 		this.setDynamicDetection(ddType);
 		this.setMaxFrameDepth(maxFrameDepth);
+		this.setPlugins(plugins);
 		
 		try {
 			this.ip			= java.net.InetAddress.getLocalHost();
@@ -273,6 +282,7 @@ public class UsaProxy {
 		 *                              Only local content and content originating from the same
 		 *                              location as the parent page can be logged because of the Same
 		 *                              Origin constraint.
+		 *  -plugins <names>			list of plugins to load, separated by a semi-colon (;)
 		 *                              
 		 */
 		
@@ -648,6 +658,24 @@ public class UsaProxy {
 			}
 		}
 		
+		/**
+		 * node types
+		 */
+		String plugins[] = {};
+		if ( (index = indexOf( args, "-plugins" )) != -1 )
+		{
+			if ( args.length > (index+1) && !args[index+1].startsWith("-") )
+			{
+				String pluginsArg = args[ index + 1 ];
+				plugins = pluginsArg.split( ";" );
+			}
+			else
+			{
+				System.err.println( "An error occurred while parsing for plugins." );
+				System.err.println( "Plugins NOT loaded." );
+			}
+		}
+		
 		System.out.println("Trying to start UsaProxy at port: " + port);
 		
 		/** generate a mode instance */
@@ -672,7 +700,7 @@ public class UsaProxy {
 		/** generate an UsaProxy instance */
 		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, 
 				logContents, limitContents, exUrls, lsType, lsAt, 
-				lsInterval, ddType, maxFrameDepth );
+				lsInterval, ddType, maxFrameDepth, plugins );
 			
 	}
 
@@ -879,5 +907,13 @@ public class UsaProxy {
 
 	public void setMaxFrameDepth(int maxFrameDepth) {
 		this.maxFrameDepth = maxFrameDepth;
+	}
+
+	public String[] getPlugins() {
+		return plugins;
+	}
+
+	public void setPlugins(String[] plugins) {
+		this.plugins = plugins;
 	}
 }

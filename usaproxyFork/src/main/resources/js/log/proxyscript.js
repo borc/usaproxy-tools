@@ -4,8 +4,7 @@
 
 ;(function( document, window, undefined ) {
 
-// avoid conflicts by placing jQuery in a different global variable
-var jQuery_UsaProxy = jQuery.noConflict( true ); // Instance of jQuery. No-conflict mode.
+var jQuery_UsaProxy = window.UsaProxy.jQuery; // Reference to jQuery.
 	
 var logVal_UsaProxy;			// String: Initialised when page loads. Contains current event log entries
 var FLG_writingLogVal_UsaProxy;	// Boolean: if flag set, writing log entry to logVal_UsaProxy not possible
@@ -579,9 +578,82 @@ function init_UsaProxy() {
 	
 }
 
-/* Invoke init_UsaProxy on load */
-if(document.attachEvent) window.attachEvent('onload', init_UsaProxy);
-if(document.addEventListener) window.addEventListener('load', init_UsaProxy, false);
+/*
+ * Turns a javascript object into a URL query part by handling the object as
+ * a collection of key-value pairs. Values with no string representation will
+ * be ignored.
+ */
+var objectToQuery = function( pObj )
+{
+	var queryString = '';
+	var ampersand = '';
+	for ( var key in pObj )
+	{
+		var value = pObj[ key ];
+		if ( typeof value !== 'number' && typeof value !== 'string' && typeof value !== 'boolean' ) continue;
+		var pair = ampersand + key + '=' + value;
+		queryString += pair;
+		ampersand = '&';
+	}
+	return queryString;
+};
+
+var init_plugins = function() {
+		if ( typeof UsaProxy.plugins !== 'object' ) return;
+		for ( var i in UsaProxy.plugins )
+		{
+			var plugin = UsaProxy.plugins[ i ];
+			
+			// Check the validity of the plugin
+			if ( typeof plugin !== 'object' ) continue;
+			if ( !jQuery_UsaProxy.isArray( plugin.events ) ) continue;
+	
+			// Run the plugin's setup function if there is one
+			if ( typeof plugin.setup === 'function' ) plugin.setup();
+			
+			// Bind event handlers for the plugin's events
+			for ( var j in plugin.events )
+			{
+				var event = plugin.events[ j ];
+
+				// Check the validity of the event descriptor
+				if ( typeof event.bindTo !== 'function' ) continue;
+				if ( typeof event.events !== 'function' ) continue;
+				if ( typeof event.onTrigger !== 'function' ) continue;
+
+				// Closure to bind the event object
+				(function( event ) {
+					var bindFunc = function( bindTo ) {
+						bindTo = jQuery_UsaProxy.isArray( bindTo ) ? bindTo : event.bindTo();
+						var events = event.events();
+						if ( !jQuery_UsaProxy.isArray( bindTo ) ) return;
+						if ( !jQuery_UsaProxy.isArray( events ) ) return;
+						
+						jQuery_UsaProxy( bindTo ).on( events.join( ' ' ), function( e ) {
+							var eventAttributes = event.onTrigger( e );
+							writeLog_UsaProxy( 'plugin&eventType=' + e.type + '&' + objectToQuery( eventAttributes ) );
+						} );
+					};
+					
+					if ( typeof event.deferBind === 'function' )
+					{
+						event.deferBind( bindFunc );
+					}
+					else
+					{
+						bindFunc();
+					}
+					
+				} )( event );
+			}
+		}
+};
+
+/* Invoke init_UsaProxy on load. */
+jQuery_UsaProxy( window ).load( function() {
+	init_UsaProxy();
+	init_plugins();
+} );
 
 // Returns a Date object computed from a given datestamp string
 function date_UsaProxy(datestamp /*string*/) {

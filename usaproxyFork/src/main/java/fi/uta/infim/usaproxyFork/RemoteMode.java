@@ -65,13 +65,13 @@ public class RemoteMode implements Mode {
      *  @param usaProxyPort is the UsaProxy port
      *  @return the reference string
      */
-	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename, boolean defer) {
 		String usaProxyHost = "";
 		if(usaProxyIP!=null) {
 			usaProxyHost = usaProxyIP.getHostAddress();
 		} else usaProxyHost = "lo.lo";
 		return "<script src='http://" + usaProxyHost + "/usaproxylolo/file/" 
-				+  filename + "' type='text/javascript'></script>";
+				+  filename + "' type='text/javascript' " + (defer ? "defer='defer'" : "") + "></script>";
 	}
 	
 	/**
@@ -105,5 +105,11 @@ public class RemoteMode implements Mode {
 	
 	/** Not implemented in RemoteMode */
 	public String getHostName() { return ""; }
+
+	@Override
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort,
+			String filename) {
+		return getScriptString(usaProxyIP, usaProxyPort, filename, false);
+	}
 
 }

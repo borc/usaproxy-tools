@@ -78,7 +78,7 @@ Command line switches:
                             location as the parent page can be logged because of the Same
                             Origin constraint.
                             
-				
+-plugins <names>			list of plugins to load, separated by a semi-colon (;)				
 
 		
 UsaProxy modes:

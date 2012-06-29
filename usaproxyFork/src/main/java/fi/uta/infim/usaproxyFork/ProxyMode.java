@@ -50,18 +50,18 @@ public class ProxyMode implements Mode {
      *  @param usaProxyPort is the UsaProxy port
      *  @return the script string
      */
-	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
-		return getStaticScriptString(usaProxyIP, usaProxyPort, filename);
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename, boolean defer) {
+		return getStaticScriptString(usaProxyIP, usaProxyPort, filename, defer);
 	}
 	
-	public static String getStaticScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
+	public static String getStaticScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename, boolean defer) {
 		String usaProxyHost;
 		if (usaProxyIP != null)
 			usaProxyHost = usaProxyIP.getHostAddress();
         else
             usaProxyHost = "lo.lo";
 		return "<script src='http://" + usaProxyHost
-            + "/usaproxylolo/file/" + filename + "' type='text/javascript'></script>";
+            + "/usaproxylolo/file/" + filename + "' type='text/javascript' " + (defer ? "defer='defer'" : "") + "></script>";
 	}
 
 	/**
@@ -95,5 +95,11 @@ public class ProxyMode implements Mode {
 	
 	/** not implemented in <code>ProxyMode</code> */
 	public String getHostName() { return ""; }
+
+	@Override
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort,
+			String filename) {
+		return getScriptString(usaProxyIP, usaProxyPort, filename, false);
+	}
 
 }

@@ -1249,7 +1249,7 @@ public class ClientRequest extends Thread {
 	                /** first, get the Mode-dependent scriptstring */
 	                String scriptString		= usaProxy.getMode().getScriptString(
 	                		usaProxy.getIP(), 
-	                		usaProxy.getPort(), "proxyscript.js");
+	                		usaProxy.getPort(), "proxyscript.js", true);
 	                
 	                timeStamp				= timeStamp();	/** generate new timestamp */
 	                /** paste sd attribute with the current serverdata ID/httptrafficindex,
@@ -1287,12 +1287,13 @@ public class ClientRequest extends Thread {
 	                 *  to the data StringBuffer object which will be transmitted later */
 	                data
 	                	.append(dataBefore)
-	                	.append(generateHeaderJS())
 	                	.append(jQueryScriptString)
 	                	.append(viewportScriptString)
 	                	.append(scrollScriptString)
 	                	.append(mutationScriptString)
 	                	.append(resizeScriptString)
+	                	.append(generateHeaderJS())
+	                	.append(generatePluginsJS())
 	                	.append(scriptString)
 	                	.append(sbScriptString)
 	                	.append(rmScriptString);
@@ -1331,6 +1332,20 @@ public class ClientRequest extends Thread {
         
 		/** return the rest of the input stream */ 
         return in;
+    }
+    
+    private String generatePluginsJS()
+    {
+    	String pluginsJS = "";
+    	String[] plugins = usaProxy.getPlugins();
+    	for ( int i = 0; i < plugins.length; ++i )
+		{
+			String pluginName = plugins[ i ];
+			pluginsJS += 
+					usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), 
+							"usaproxy." + pluginName + ".plugin.js");
+		}
+    	return pluginsJS;
     }
     
     /** Appends properties and URL parameters to the JavaScript reference string.
@@ -1579,6 +1594,9 @@ public class ClientRequest extends Thread {
 	{
 		String js = "<script type=\"text/javascript\">";
 		js += "if ( typeof window.UsaProxy !== 'object' ) { window.UsaProxy = {}; } ";
+		
+		js += "window.UsaProxy.plugins = {}; "; // plugins object
+		js += "window.UsaProxy.jQuery = jQuery.noConflict( true ); "; // jQuery in no-conflict mode
 		
 		// Node types
 		String[] nodeTypes = usaProxy.getNodeTypes();

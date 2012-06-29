@@ -59,8 +59,11 @@ public class FileSender {
 					filepath = "js/rm/";
 				/** proxyscript.js */
 				else { 
+					/* plugins */
+					if ( filename.matches(".*\\.plugin\\..*") )
+						filepath = "plugins/";
 					/** if pure logging mode */
-					if(!isRM && !isSB && logMode.equals("all"))
+					else if(!isRM && !isSB && logMode.equals("all"))
 						filepath = "js/log/";
 					else /** if any collaboration mode */
 						filepath = "js/";

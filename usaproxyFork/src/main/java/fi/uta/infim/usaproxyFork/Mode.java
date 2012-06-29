@@ -33,6 +33,15 @@ public interface Mode {
      *  @param filename is the name of the JavaScript file to be referred to
      *  @return the customized reference string
      */
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename, boolean defer);
+	
+	/**
+	 * Short version of getScriptString, with defer = false.
+	 * @param usaProxyIP
+	 * @param usaProxyPort
+	 * @param filename
+	 * @return
+	 */
 	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename);
 	
 	/**

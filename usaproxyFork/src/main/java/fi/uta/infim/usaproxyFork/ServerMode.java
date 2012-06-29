@@ -59,9 +59,9 @@ public class ServerMode implements Mode {
      *  @param usaProxyPort is the UsaProxy port - not used in server mode
      *  @return the script string
      */
-	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename) {
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort, String filename, boolean defer) {
 		return "<script src='" 
-				+ "/usaproxylolo/file/" +  filename + "' type='text/javascript'></script>";
+				+ "/usaproxylolo/file/" +  filename + "' type='text/javascript' " + (defer ? "defer='defer'" : "") + "></script>";
 	}
 
 	/**
@@ -95,5 +95,11 @@ public class ServerMode implements Mode {
 	 * @return the host name string
 	 */
 	public String getHostName() { return this.hostAddress.getHostName(); }
+
+	@Override
+	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort,
+			String filename) {
+		return getScriptString(usaProxyIP, usaProxyPort, filename, false);
+	}
 
 }
