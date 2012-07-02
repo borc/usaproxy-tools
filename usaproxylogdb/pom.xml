@@ -32,7 +32,15 @@
 		<artifactId>slf4j-log4j12</artifactId>
 		<version>1.6.4</version>
 	</dependency>
-	            
+
+	<!-- Uncomment to enable automatic fetching of the PostgreSQL JDBC driver
+	<dependency>
+		<groupId>postgresql</groupId>
+		<artifactId>postgresql</artifactId>
+		<version>9.1-901.jdbc4</version>
+	</dependency>
+	 -->
+                
   </dependencies>
   
   <build>

@@ -12,7 +12,9 @@ You need a database driver and a dialect class for your database. Several
 dialect classes are already provided with the distribution. See e.g.
  http://www.javabeat.net/qna/163-list-of-hibernate-sql-dialects/
 for a list. A driver can be obtained from the database vendor.
-Place the driver in the `lib` directory.
+Place the driver in the `lib` directory. A driver can also be obtained by
+configuring a driver dependency in `pom.xml` and re-building the project.
+A commented-out example for a PostgreSQL JDBC driver is provided.  
 
 You also need to set up the hibernate.cfg.xml configuration file to suit
 your database.
