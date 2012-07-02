@@ -263,7 +263,7 @@ public class UsaProxyPageEvent implements Serializable {
 
 	void setDomPath(UsaProxyDOMElement domPath) {
 		this.domPath = domPath;
-		domPath.getEvents().add(this);
+		if ( domPath != null ) domPath.getEvents().add(this);
 	}
 	
 	/**
