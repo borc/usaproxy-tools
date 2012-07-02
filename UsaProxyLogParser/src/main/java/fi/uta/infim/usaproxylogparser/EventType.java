@@ -128,7 +128,13 @@ public enum EventType {
 	 * the viewport change is logged when the scrolling stops.
 	 */
 	@XmlEnumValue( "scrollStart" )
-	SCROLLSTART( "scrollStart" );
+	SCROLLSTART( "scrollStart" ),
+	
+	/**
+	 * Events recorded by plugins.
+	 */
+	@XmlEnumValue( "plugin" )
+	PLUGIN( "plugin" );
 	
 	/**
 	 * Internal value of the enum entry. Used for JAXB marshalling and unmarshalling.
