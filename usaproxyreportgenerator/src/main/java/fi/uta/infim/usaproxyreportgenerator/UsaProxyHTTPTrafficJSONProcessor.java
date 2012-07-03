@@ -18,6 +18,7 @@
 
 package fi.uta.infim.usaproxyreportgenerator;
 
+import java.util.AbstractMap;
 import java.util.Date;
 import java.util.Vector;
 
@@ -64,9 +65,11 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		}
 	}
 
-	private static final String DEFAULTVIEWPORTCOLOR = "rgb(255,50,50)";
+	public static final AbstractMap.SimpleEntry<String, String> DEFAULTVIEWPORTCOLOR = 
+			new AbstractMap.SimpleEntry<String, String>( "DEFAULTVIEWPORTCOLOR", "rgb(255,50,50)" );
 	
-	private static final String DEFAULTELEMENTCOLOR = "rgb(50,50,255)";
+	public static final AbstractMap.SimpleEntry<String, String> DEFAULTELEMENTCOLOR = 
+			new AbstractMap.SimpleEntry<String, String>( "DEFAULTELEMENTCOLOR", "rgb(50,50,255)" );
 	
 	/**
 	 * Iterates through a HTTPTraffic object for DOM elements. Returns a JSON
@@ -86,8 +89,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		{
 			if ( e == null || e.getPath() == null ) continue; // Don't process empty elements
 			JSONObject thisSightings = getSightings(e);
-			sightings.add( getTopDataset(e.getPath(), thisSightings, DEFAULTELEMENTCOLOR, e.getPath()) );
-			sightings.add( getBottomDataset(e.getPath(), thisSightings, DEFAULTELEMENTCOLOR, e.getPath() ) );
+			sightings.add( getTopDataset(e.getPath(), thisSightings, DEFAULTELEMENTCOLOR.getValue(), e.getPath()) );
+			sightings.add( getBottomDataset(e.getPath(), thisSightings, DEFAULTELEMENTCOLOR.getValue(), e.getPath() ) );
 			
 			details.accumulate( e.getPath(), JSONObject.fromObject(e, App.getConfig()) );
 		}
@@ -109,8 +112,8 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 		JSONArray movement = new JSONArray();
 		JSONObject movements = getViewportLines(traffic);
 		String vpMovementDatasetName = "_viewport";
-		movement.add( getTopDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, null) );
-		movement.add( getBottomDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR, null) );
+		movement.add( getTopDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR.getValue(), null) );
+		movement.add( getBottomDataset( vpMovementDatasetName, movements, DEFAULTVIEWPORTCOLOR.getValue(), null) );
 		
 		return movement;
 	}

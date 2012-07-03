@@ -186,7 +186,7 @@ public final class App
     	}
     	catch( IOException ioe )
     	{
-    		System.err.println( "Error opening log file.");
+    		System.err.println( "Error opening log file: " + ioe.getMessage() );
     		printHelp();
     		return;
     	}
@@ -251,6 +251,8 @@ public final class App
 		}
     	
     	JSONObject tf = new JSONObject();
+    	tf.accumulate( "DEFAULTELEMENTCOLOR", UsaProxyHTTPTrafficJSONProcessor.DEFAULTELEMENTCOLOR );
+    	tf.accumulate( "DEFAULTVIEWPORTCOLOR", UsaProxyHTTPTrafficJSONProcessor.DEFAULTVIEWPORTCOLOR );
     	tf.accumulate("httptraffics", httptraffic);
     	
     	Map< String, Object > sessionRoot = new HashMap<String, Object>();
