@@ -24,6 +24,7 @@ import java.net.InetAddress;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLDecoder;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -232,6 +233,9 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 */
 	private Long id;
 	
+	private ArrayList< UsaProxyPageEvent > events = 
+			new ArrayList<UsaProxyPageEvent>();
+	
 	/**
 	 * Returns the user's IP address or null if not set.
 	 * @return user's IP address
@@ -431,6 +435,14 @@ public class UsaProxyHTTPTraffic implements Serializable {
 	 */
 	public void setId(Long id) {
 		this.id = id;
+	}
+
+	ArrayList< UsaProxyPageEvent > getEvents() {
+		return events;
+	}
+
+	void setEvents(ArrayList< UsaProxyPageEvent > events) {
+		this.events = events;
 	}
 
 }

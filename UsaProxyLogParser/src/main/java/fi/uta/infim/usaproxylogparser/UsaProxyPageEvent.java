@@ -224,6 +224,7 @@ public class UsaProxyPageEvent implements Serializable {
 
 	void setHttpTrafficSession(UsaProxyHTTPTraffic httpTrafficSession) {
 		this.httpTrafficSession = httpTrafficSession;
+		httpTrafficSession.getEvents().add(this);
 	}
 
 	/**

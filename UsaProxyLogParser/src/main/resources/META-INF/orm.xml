@@ -87,6 +87,10 @@
             <!-- Business logic in inverse setter will take care of adding
                  elements to this collection -->
             <transient name="screens" />
+            
+            <!-- Business logic in inverse setter will take care of adding
+                 elements to this collection -->
+            <transient name="events" />
         </attributes>
     </entity>
     
