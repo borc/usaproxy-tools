@@ -1,5 +1,7 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
+import java.util.Map;
+
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
@@ -15,24 +17,41 @@ import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 public interface IBrowsingDataProvider {
 
 	/**
-	 * Provides viewport movement data for Flot.
+	 * Provides the top dataset of viewport movement data for Flot.
 	 * @param traffic the traffic object from which to extract the data
 	 * @return Flot-compatible data array
 	 */
-	public JSONArray getViewportMovement( UsaProxyHTTPTraffic traffic );
+	public JSONArray getViewportMovementTopDataset();
 	
 	/**
-	 * Provides DOM element visibility data for Flot.
+	 * Provides the bottom dataset of viewport movement data for Flot.
 	 * @param traffic the traffic object from which to extract the data
 	 * @return Flot-compatible data array
 	 */
-	public JSONArray getDOMElementSightings( UsaProxyHTTPTraffic traffic );
+	public JSONArray getViewportMovementBottomDataset();
+	
+	/**
+	 * Provides the top datasets of DOM element visibility data for Flot.
+	 * Keys are unique identifiers that match the element details keys.
+	 * @param traffic the traffic object from which to extract the data
+	 * @return Flot-compatible data array
+	 */
+	public Map< String, JSONArray > getDOMElementSightingsTopDatasets();
+	
+	/**
+	 * Provides the bottom datasets of DOM element visibility data for Flot.
+	 * Keys are unique identifiers that match the element details keys.
+	 * @param traffic the traffic object from which to extract the data
+	 * @return Flot-compatible data array
+	 */
+	public Map< String, JSONArray > getDOMElementSightingsBottomDatasets();
 	
 	/**
 	 * Provides element details data for the report generator.
+	 * Keys are unique identifiers that match the element sightings keys.
 	 * @param traffic the traffic object from which to extract the data
 	 * @return Details data object for the report generator
 	 */
-	public JSONObject getDOMElementDetails( UsaProxyHTTPTraffic traffic );
+	public Map< String, JSONObject > getDOMElementDetails();
 	
 }

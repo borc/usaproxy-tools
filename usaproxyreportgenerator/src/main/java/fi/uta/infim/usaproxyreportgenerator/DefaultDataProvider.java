@@ -1,7 +1,8 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
-import java.util.AbstractMap;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Vector;
 
 import net.sf.json.JSONArray;
@@ -24,38 +25,13 @@ public class DefaultDataProvider implements IBrowsingDataProvider {
 	 */
 	private static final long ARTIFICIALEND = 20000;
 	
-	private JSONObject domElements = null;
+	private JSONObject viewportLines = null;
 	
-	/**
-	 * Iterates through a HTTP traffic session object to find all viewport states 
-	 * during the session. Creates a JSON array containing data points ready to
-	 * be plotted using flot.
-	 * @param traffic the HTTP traffic session to be iterated over
-	 * @return a JSON array containing ready-to-plot datapoints for flot
-	 */
-	@Override
-	public JSONArray getViewportMovement(UsaProxyHTTPTraffic traffic) {
-		JSONArray movement = new JSONArray();
-		JSONObject movements = getViewportLines(traffic);
-		String vpMovementDatasetName = "_viewport";
-		movement.add( getTopDataset( vpMovementDatasetName, movements, 
-				UsaProxyHTTPTrafficJSONProcessor.DEFAULTVIEWPORTCOLOR.getValue(), null) );
-		movement.add( getBottomDataset( vpMovementDatasetName, movements, 
-				UsaProxyHTTPTrafficJSONProcessor.DEFAULTVIEWPORTCOLOR.getValue(), null) );
-		
-		return movement;
-	}
-
-	@Override
-	public JSONArray getDOMElementSightings(UsaProxyHTTPTraffic traffic) {
-		if ( domElements == null ) domElements = getDOMElements(traffic);
-		return (JSONArray) domElements.get( "sightings" );
-	}
-
-	@Override
-	public JSONObject getDOMElementDetails(UsaProxyHTTPTraffic traffic) {
-		if ( domElements == null ) domElements = getDOMElements(traffic);
-		return (JSONObject) domElements.get( "details" );
+	private UsaProxyHTTPTraffic traffic = null;
+	
+	protected DefaultDataProvider(UsaProxyHTTPTraffic traffic) {
+		super();
+		this.traffic = traffic;
 	}
 
 	/**
@@ -68,7 +44,6 @@ public class DefaultDataProvider implements IBrowsingDataProvider {
 	 */
 	private JSONObject getViewportLines( UsaProxyHTTPTraffic traffic )
 	{
-		traffic.sortScreens(); // make sure screens are sorted by timestamp
 		JSONObject viewport = new JSONObject();
 		Vector< JSONArray > topPoints = new Vector<JSONArray>();
 		Vector< JSONArray > bottomPoints = new Vector<JSONArray>();
@@ -143,98 +118,6 @@ public class DefaultDataProvider implements IBrowsingDataProvider {
 		viewport.accumulate( "top", topPoints );
 		viewport.accumulate( "bottom", bottomPoints );
 		return viewport;
-	}
-	
-	/**
-	 * Creates a Flot dataset JSON object. Only to be used with Flot.
-	 * This dataset represents the top edge of the plotted element.
-	 * @param elementTopName a unique element id
-	 * @param sightings a JSON object containing the actual plot data
-	 * @param elementDomId Element's UsaProxy DOM path
-	 * @return the created Flot dataset (a JSON object)
-	 */
-	private JSONObject getTopDataset( String elementTopName, JSONObject sightings, String color, String elementDomId )
-	{
-		JSONObject dataset = new JSONObject();
-		dataset.accumulate( "data", sightings.getJSONArray( "top" ) );
-		dataset.accumulate( "id", generateDatasetTopId( elementTopName ) );
-		JSONObject lines = new JSONObject();
-		lines.accumulate( "show", true );
-		lines.accumulate( "lineWidth", 0 );
-		dataset.accumulate( "lines", lines );
-		dataset.accumulate( "color", color );
-		dataset.accumulate( "elementDomId", elementDomId );
-		dataset.accumulate( "hoverable", true );
-		return dataset;
-	}
-	
-	/**
-	 * Generates a name for the viewport/element top edge flot dataset.
-	 * This is used for filling the are between the top and bottom edge.
-	 * Deterministic -> each unique input generates the same unique output each time.
-	 * @param elementTopName the base id to generate the id from.
-	 * @return the generated ID
-	 */
-	static private String generateDatasetTopId( String elementTopName )
-	{
-		return elementTopName + "Top";
-	}
-	
-	/**
-	 * Creates a Flot dataset JSON object. Only to be used with Flot.
-	 * This dataset represents the bottom edge of the plotted element.
-	 * @param elementTopName a unique element id - notice that this id should
-	 * be the same as what was passed to {@link #getTopDataset}.
-	 * @param sightings a JSON object containing the actual plot data
-	 * @param color fill color for the area between top and bottom
-	 * @param elementDomId Element's UsaProxy DOM path
-	 * @return the created Flot dataset (a JSON object)
-	 */
-	private JSONObject getBottomDataset( String elementTopName, JSONObject sightings, String color, String elementDomId )
-	{
-		JSONObject dataset = new JSONObject();
-		dataset.accumulate( "data", sightings.getJSONArray( "bottom" ) );
-		JSONObject lines = new JSONObject();
-		lines.accumulate( "show", true );
-		lines.accumulate( "lineWidth", 0 );
-		lines.accumulate( "fill", 0.2 );
-		dataset.accumulate( "lines", lines );
-		dataset.accumulate( "color", color );
-		dataset.accumulate( "fillBetween", generateDatasetTopId( elementTopName ) );
-		dataset.accumulate( "hoverable", true );
-		dataset.accumulate( "elementDomId", elementDomId );
-		return dataset;
-	}
-	
-	/**
-	 * Iterates through a HTTPTraffic object for DOM elements. Returns a JSON
-	 * object with two members: 'details' and 'sightings'. 'Details' contains
-	 * detailed information on each object. 'Sightings' contains an array of
-	 * data points for plotting the element's sightings.
-	 * @param traffic the traffic object whose dom elements are iterated through
-	 * @return a JSON object containing the details and sightings of every element
-	 */
-	private JSONObject getDOMElements( UsaProxyHTTPTraffic traffic )
-	{
-		JSONObject elements = new JSONObject();
-		JSONObject details = new JSONObject();
-		JSONArray sightings = new JSONArray();
-		
-		for ( UsaProxyDOMElement e : traffic.getDomElements() )
-		{
-			if ( e == null || e.getPath() == null ) continue; // Don't process empty elements
-			JSONObject thisSightings = getSightings(e);
-			sightings.add( getTopDataset(e.getPath(), thisSightings, 
-					UsaProxyHTTPTrafficJSONProcessor.DEFAULTELEMENTCOLOR.getValue(), e.getPath()) );
-			sightings.add( getBottomDataset(e.getPath(), thisSightings, 
-					UsaProxyHTTPTrafficJSONProcessor.DEFAULTELEMENTCOLOR.getValue(), e.getPath() ) );
-			
-			details.accumulate( e.getPath(), JSONObject.fromObject(e, App.getConfig()) );
-		}
-		
-		elements.accumulate( "details", details );
-		elements.accumulate( "sightings", sightings );
-		return elements;
 	}
 	
 	/**
@@ -317,5 +200,62 @@ public class DefaultDataProvider implements IBrowsingDataProvider {
 		jsonElement.accumulate( "top", top );
 		jsonElement.accumulate( "bottom", bottom );
 		return jsonElement;
+	}
+
+	@Override
+	public JSONArray getViewportMovementTopDataset() {
+		if ( viewportLines == null ) viewportLines = getViewportLines( traffic );
+		return viewportLines.getJSONArray( "top" );
+	}
+
+	@Override
+	public JSONArray getViewportMovementBottomDataset() {
+		if ( viewportLines == null ) viewportLines = getViewportLines( traffic );
+		return viewportLines.getJSONArray( "bottom" );
+	}
+
+	@Override
+	public Map<String, JSONArray> getDOMElementSightingsTopDatasets() {
+		if ( domData == null ) updateDOMElementData(traffic);
+		return domData.domTops;
+	}
+
+	@Override
+	public Map<String, JSONArray> getDOMElementSightingsBottomDatasets() {
+		if ( domData == null ) updateDOMElementData(traffic);
+		return domData.domBottoms;
+	}
+
+	private class DOMData {
+		public Map<String, JSONArray> domTops = null;
+		
+		public Map<String, JSONArray> domBottoms = null;
+		
+		public Map< String, JSONObject > domDetails = null;
+	}
+	
+	private DOMData domData = null;
+	
+	private void updateDOMElementData( UsaProxyHTTPTraffic traffic )
+	{
+		domData = new DOMData();
+		domData.domTops = new HashMap<String, JSONArray>();
+		domData.domBottoms = new HashMap<String, JSONArray>();
+		domData.domDetails = new HashMap<String, JSONObject>();
+		
+		for ( UsaProxyDOMElement e : traffic.getDomElements() )
+		{
+			if ( e == null || e.getPath() == null ) continue; // Don't process empty elements
+			JSONObject thisSightings = getSightings(e);
+			domData.domTops.put( e.getPath(), thisSightings.getJSONArray( "top" ) );
+			domData.domBottoms.put( e.getPath(), thisSightings.getJSONArray( "bottom" ) );
+			domData.domDetails.put( e.getPath(), JSONObject.fromObject(e, App.getConfig()) );
+		}
+	}
+
+	@Override
+	public Map<String, JSONObject> getDOMElementDetails() {
+		if ( domData == null ) updateDOMElementData(traffic);
+		return domData.domDetails;
 	}
 }

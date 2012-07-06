@@ -437,7 +437,7 @@ public class UsaProxyHTTPTraffic implements Serializable {
 		this.id = id;
 	}
 
-	ArrayList< UsaProxyPageEvent > getEvents() {
+	public ArrayList< UsaProxyPageEvent > getEvents() {
 		return events;
 	}
 
