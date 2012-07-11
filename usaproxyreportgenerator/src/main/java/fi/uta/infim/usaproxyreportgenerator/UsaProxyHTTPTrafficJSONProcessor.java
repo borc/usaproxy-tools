@@ -49,7 +49,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 	@Override
 	public JSONObject processBean(Object arg0, JsonConfig arg1) {
 		UsaProxyHTTPTraffic traffic = (UsaProxyHTTPTraffic) arg0;
-		provider = new DefaultDataProvider(traffic);
+		provider = new MonocleDataProvider(traffic);
 		try {
 			JSONObject jsonHTTPTraffic = new JSONObject();
 			jsonHTTPTraffic.accumulate( "viewportMovement", getViewportMovement(traffic));

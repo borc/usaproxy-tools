@@ -19,7 +19,7 @@
     $.belowthefold = function(element, settings) {
     	var elementWindow = getWindow_(element.ownerDocument);
         var fold = $(elementWindow).height() + $(elementWindow).scrollTop();
-        return fold <= $(element).offset().top - settings.threshold;
+        return fold <= $(element).offset().top + settings.threshold;
     };
 
     $.abovethetop = function(element, settings) {
@@ -31,7 +31,7 @@
     $.rightofscreen = function(element, settings) {
     	var elementWindow = getWindow_(element.ownerDocument);
         var fold = $(elementWindow).width() + $(elementWindow).scrollLeft();
-        return fold <= $(element).offset().left - settings.threshold;
+        return fold <= $(element).offset().left + settings.threshold;
     };
     
     $.leftofscreen = function(element, settings) {
@@ -58,7 +58,7 @@
             return $.rightofscreen(a, {threshold : 0});
         },
         "in-viewport": function(a, i, m) {
-            return $.inviewport(a, {threshold : 0});
+            return $.inviewport(a, {threshold : 5});
         }
     });
 

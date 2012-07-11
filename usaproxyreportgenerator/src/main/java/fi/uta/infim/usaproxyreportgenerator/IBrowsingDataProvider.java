@@ -4,7 +4,6 @@ import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
-import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 
 /**
  * Interface for data providers. The report generator requires two 

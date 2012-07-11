@@ -217,19 +217,19 @@ function init_UsaProxy() {
 	// edge of the document.
 	var getRelativeEdgePosition = {
 		left: function( pElement ) {
-			return (getEdgePosition.left( pElement ) / jQuery_UsaProxy( document ).width()) * 100;
+			return (getEdgePosition.left( pElement ) / jQuery_UsaProxy( pElement.ownerDocument ).width()) * 100;
 		},
 		
 		top: function( pElement ) {
-			return (getEdgePosition.top( pElement ) / jQuery_UsaProxy( document ).height()) * 100;
+			return (getEdgePosition.top( pElement ) / jQuery_UsaProxy( pElement.ownerDocument ).height()) * 100;
 		},
 		
 		right: function( pElement ) {
-			return (getEdgePosition.right( pElement ) / jQuery_UsaProxy( document ).width()) * 100;
+			return (getEdgePosition.right( pElement ) / jQuery_UsaProxy( pElement.ownerDocument ).width()) * 100;
 		},
 		
 		bottom: function( pElement ) {
-			return (getEdgePosition.bottom( pElement ) / jQuery_UsaProxy( document ).height()) * 100;
+			return (getEdgePosition.bottom( pElement ) / jQuery_UsaProxy( pElement.ownerDocument ).height()) * 100;
 		}
 	};
 	
@@ -302,37 +302,69 @@ function init_UsaProxy() {
 	jQuery_UsaProxy( window ).on( 'load', resetAllWaypoints );
 	jQuery_UsaProxy( 'img' ).on( 'load', resetAllWaypoints );
 	
+	var getWindow_ = function(doc) {
+		  return doc.parentWindow || doc.defaultView;
+	};
+	
 	var logElement = function( pElement, pDisappear, pEdgeName )
 	{
+		var doc = pElement.ownerDocument;
+		relPos = relativeScrollPos( getWindow_( doc ), doc );
 		writeLog_UsaProxy( (pDisappear ? "dis" : "") + "appear&nodeName=" + 
 			pElement.nodeName + "&nodeId=" + pElement.id + "&edge=" + 
 			pEdgeName + "&relativeTop=" + 
 			new String( getRelativeEdgePosition.top( pElement ) ).substr(0, 5) + 
 			"&relativeBottom=" + 
 			new String( getRelativeEdgePosition.bottom( pElement ) ).substr(0, 5) +
+			"&relativeLeft=" + 
+			new String( getRelativeEdgePosition.left( pElement ) ).substr(0, 5) +
+			"&relativeRight=" +
+			new String( getRelativeEdgePosition.right( pElement ) ).substr(0, 5) +
+			"&viewportTop=" + new String(relPos.top).substr( 0, 5 ) +
+			"&viewportBottom=" + new String(relPos.bottom).substr( 0, 5 ) +
+			"&viewportLeft=" + new String(relPos.left).substr( 0, 5 ) +
+			"&viewportRight=" + new String(relPos.right).substr( 0, 5 ) +
 			(logContents_UsaProxy && !pDisappear ? "&contents=" + getContents_UsaProxy(pElement) : "") +
 			generateEventString_UsaProxy( pElement ) );
 	};
 	
-	var scrollPos = function() { return { 
-		top: jQuery_UsaProxy( window ).scrollTop(), 
-		left: jQuery_UsaProxy( window ).scrollLeft(),
-		bottom: jQuery_UsaProxy( window ).scrollTop() + jQuery_UsaProxy( window ).height(),
-		right: jQuery_UsaProxy( window ).scrollLeft() + jQuery_UsaProxy( window ).width()
-	} };
+	var scrollPos = function( win ) {
+		var win = win || window;
+		win = jQuery_UsaProxy( win );
+		return { 
+			top: win.scrollTop(), 
+			left: win.scrollLeft(),
+			bottom: win.scrollTop() + win.height(),
+			right: win.scrollLeft() + win.width()
+		} 
+	};
+	
+	var relativeScrollPos = function( win, doc ) {
+		var win = win || window;
+		var doc = doc || document;
+		var pos = scrollPos( win );
+		var docHeight = jQuery_UsaProxy( doc ).height();
+		var docWidth = jQuery_UsaProxy( doc ).width(); 
+		return {
+			top: pos.top / docHeight * 100,
+			bottom: pos.bottom / docHeight * 100,
+			left: pos.left / docWidth * 100,
+			right: pos.right / docWidth * 100
+		} 
+	};
 	
 	var logScroll = function( pEventName, pSkipPositions )
 	{
 		var pEventName = pEventName ? pEventName : 'viewportChange';
 		var pSkipPositions = pSkipPositions ? pSkipPositions : false;
-		var docHeight = jQuery_UsaProxy( document ).height();
-		var docWidth = jQuery_UsaProxy( document ).width();
+		relPos = relativeScrollPos();
 		
-		writeLog_UsaProxy( pEventName + (!pSkipPositions ? ("&top=" + new String(scrollPos().top / docHeight * 100).substr( 0, 5 ) +
-			"&bottom=" + new String(scrollPos().bottom / docHeight * 100).substr( 0, 5 ) +
-			"&left=" + new String(scrollPos().left / docWidth * 100).substr( 0, 5 ) +
-			"&right=" + new String(scrollPos().right / docWidth * 100).substr( 0, 5 ) +
-			"&documentHeight=" + docHeight + "&documentWidth=" + docWidth +
+		writeLog_UsaProxy( pEventName + (!pSkipPositions ? ("&top=" + new String(relPos.top).substr( 0, 5 ) +
+			"&bottom=" + new String(relPos.bottom).substr( 0, 5 ) +
+			"&left=" + new String(relPos.left).substr( 0, 5 ) +
+			"&right=" + new String(relPos.right).substr( 0, 5 ) +
+			"&documentHeight=" + jQuery_UsaProxy( document ).height() + 
+			"&documentWidth=" + jQuery_UsaProxy( document ).width() +
 			"&viewportHeight=" + jQuery_UsaProxy( window ).height() +
 			"&viewportWidth=" + jQuery_UsaProxy( window ).width()) : "") );
 	};

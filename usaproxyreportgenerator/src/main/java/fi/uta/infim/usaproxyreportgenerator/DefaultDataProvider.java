@@ -27,7 +27,7 @@ public class DefaultDataProvider implements IBrowsingDataProvider {
 	
 	private JSONObject viewportLines = null;
 	
-	private UsaProxyHTTPTraffic traffic = null;
+	protected UsaProxyHTTPTraffic traffic = null;
 	
 	protected DefaultDataProvider(UsaProxyHTTPTraffic traffic) {
 		super();
