@@ -1268,32 +1268,36 @@ public class ClientRequest extends Thread {
 	    					|| requestURL.getPath().equals("/remotemonitoring"))
 	                	rmScriptString 	= usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "remotemonitoring.js");
 	                
-	                String jQueryScriptString = 
-	                		"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>";
+	                scriptString = generateHeaderJS() + generatePluginsJS() + scriptString;
 	                
-	                String viewportScriptString =
-	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.viewport.custom.js");
+	                scriptString = 
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.viewport.custom.js") +
+	                		scriptString;
 	                
-	                String scrollScriptString =
-	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.scroll.events.js");
+	                scriptString =
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.scroll.events.js") +
+	                		scriptString;
 	                
-	                String mutationScriptString =
-	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.mutation.events.js");
+	                scriptString =
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.mutation.events.js") +
+	                		scriptString;
 	                
-	                String resizeScriptString =
-	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.resizeStop.js");
+	                scriptString =
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.resizeStop.js") +
+	                		scriptString;
 	                
+	                scriptString =
+	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.overlaps.js") +
+	                		scriptString;
+	                
+	                scriptString = 
+	                		"<script type=\"text/javascript\" src=\"http://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js\"></script>" +
+	                				scriptString;
+
 	                /** add first part of response together with the scriptstrings
 	                 *  to the data StringBuffer object which will be transmitted later */
 	                data
 	                	.append(dataBefore)
-	                	.append(jQueryScriptString)
-	                	.append(viewportScriptString)
-	                	.append(scrollScriptString)
-	                	.append(mutationScriptString)
-	                	.append(resizeScriptString)
-	                	.append(generateHeaderJS())
-	                	.append(generatePluginsJS())
 	                	.append(scriptString)
 	                	.append(sbScriptString)
 	                	.append(rmScriptString);
