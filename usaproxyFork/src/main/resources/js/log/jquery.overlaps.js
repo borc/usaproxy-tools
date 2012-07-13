@@ -8,16 +8,19 @@
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-(function($) {
+;(function($, document, window, undefined) {
 
-$.fn.overlaps = function(selector) {
+$.fn.overlaps = function(selector, obstruct) {
+    
+    var obstruct = obstruct || false;
+    
     // if nothing is passed, act as a filter
     if (arguments.length === 0) {
         return this.pushStack(filterOverlaps(this));
     }
     // otherwise compare selected elements against passed eleemnts
     else {
-        return isOverlapping(this, $(selector));
+        return isOverlapping(this, $(selector), obstruct);
     }
 };
 
@@ -47,7 +50,8 @@ function filterOverlaps(collection) {
     return $.unique(stack);
 }
 
-function isOverlapping(collection1, collection2) {
+function isOverlapping(collection1, collection2, obstruct) {
+    var obstruct = obstruct || false;
     var dims1   = getDims(collection1),
         dims2   = getDims(collection2),
         index1  = 0,
@@ -55,12 +59,15 @@ function isOverlapping(collection1, collection2) {
         length1 = dims1.length,
         length2 = dims2.length;
 
+    // TODO: what to do on obstruct?
+
     for (; index1 < length1; index1++) {
         for (index2 = 0; index2 < length2; index2++) {
             if (collection1[index1] === collection2[index2]) {
                 continue;
             }
-            if (checkOverlap(dims1[index1], dims2[index2])) {
+            if ( obstruct ? checkObstruct( collection1[index1], collection1[index2] ) : 
+                    checkOverlap(dims1[index1], dims2[index2])) {
                 return true;
             }
         }
@@ -105,13 +112,17 @@ function checkObstruct( el1, el2 ) {
 	var dims1 = dims[0];
 	var dims2 = dims[1];
 	if ( !checkOverlap( dims1, dims2 ) ) return 0; // no obstruction if no overlap
-	if ( dims1.left >= dims2.left && 
-			dims1.top >= dims2.top && 
-			dims1.left + dims1.width <= dims2.left + dims2.width &&
-			dims1.top + dims1.height <= dims2.top + dims2.height )
+	var stackOrder = stacksOnTopOf( el1, el2 );
+	var elementBelow = stackOrder ? dims2 : dims1;
+	var elementOnTop = stackOrder ? dims1 : dims2;
+	if ( elementBelow.left >= elementOnTop.left && 
+			elementBelow.top >= elementOnTop.top && 
+			elementBelow.left + elementBelow.width <= elementOnTop.left + elementOnTop.width &&
+			elementBelow.top + elementBelow.height <= elementOnTop.top + elementOnTop.height )
 	{
-		
+		return elementBelow === dims2 ? 1 : -1;
 	}
+    return 0;
 }
 
 /**
@@ -160,5 +171,4 @@ function posIdxToAlpha( pos ) {
 	return (new Array( roundCount + 1 )).join( alpha[ alpha.length - 1 ] ) + lastAlpha;
 }
 
-
-})(jQuery);
+})(jQuery, document, window);
