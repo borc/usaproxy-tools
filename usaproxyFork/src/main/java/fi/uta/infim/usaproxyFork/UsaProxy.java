@@ -1,6 +1,8 @@
 package fi.uta.infim.usaproxyFork;
 import java.io.*;
 import java.net.*; 
+import java.util.HashMap;
+import java.util.Map;
 
 /** 
  *  UsaProxy - HTTP proxy for tracking, logging, and replay of user interactions on websites
@@ -24,6 +26,10 @@ import java.net.*;
  *  Finally, the proxy is started and waits constantly for incoming HTTP requests.
  */
 public class UsaProxy {
+	
+	@SuppressWarnings("deprecation")
+	public static final File APPLICATION_DIR = new File( URLDecoder.decode( 
+			UsaProxy.class.getProtectionDomain().getCodeSource().getLocation().getPath() ) ).getParentFile();
 	
 	/**  UsaProxy port. */
     private int 				port;	
@@ -116,8 +122,9 @@ public class UsaProxy {
      * Which plugins to load? Will attempt to load scripts from the plugins
      * directory. File names are of format 'usaproxy.<name>.plugin.js' where
      * <name> is the plugin name provided in the CLI argument.
+     * Mapping from plugin's name (directory) to it's descriptor.
      */
-    private String[]			plugins;
+    private Map< String, PluginDescriptor >			plugins;
     
     /** If true all <code>System.out.println</code> messages are printed. */
     final static boolean 		DEBUG = false;	
@@ -153,7 +160,7 @@ public class UsaProxy {
 			Integer splitInterval,
 			DynamicDetectionType ddType,
 			int maxFrameDepth,
-			String[] plugins
+			Map<String, PluginDescriptor> plugins
 			) {
 		
 		this.port 					= port;
@@ -659,15 +666,21 @@ public class UsaProxy {
 		}
 		
 		/**
-		 * node types
+		 * Plugins
 		 */
-		String plugins[] = {};
+		Map<String, PluginDescriptor> plugins = new HashMap<String, PluginDescriptor>();
 		if ( (index = indexOf( args, "-plugins" )) != -1 )
 		{
 			if ( args.length > (index+1) && !args[index+1].startsWith("-") )
 			{
 				String pluginsArg = args[ index + 1 ];
-				plugins = pluginsArg.split( ";" );
+				String pluginNames[] = pluginsArg.split( ";" );
+				for ( int i = 0; i < pluginNames.length; ++i )
+				{
+					PluginDescriptor descriptor = 
+							PluginDescriptorFactory.getDescriptorByName(pluginNames[ i ], APPLICATION_DIR);
+					plugins.put( pluginNames[ i ], descriptor );
+				}
 			}
 			else
 			{
@@ -909,11 +922,12 @@ public class UsaProxy {
 		this.maxFrameDepth = maxFrameDepth;
 	}
 
-	public String[] getPlugins() {
+	public Map< String, PluginDescriptor > getPlugins() {
 		return plugins;
 	}
 
-	public void setPlugins(String[] plugins) {
+	public void setPlugins(Map< String, PluginDescriptor > plugins) {
 		this.plugins = plugins;
 	}
+
 }

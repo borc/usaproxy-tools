@@ -1,0 +1,6 @@
+<plugin name="Monocle e-book reader plugin">
+    <pluginFilename>usaproxy.monocle.plugin.js</pluginFilename>
+    <supportJSFiles>
+        <filename>jquery.overlaps.js</filename>
+    </supportJSFiles>
+</plugin>

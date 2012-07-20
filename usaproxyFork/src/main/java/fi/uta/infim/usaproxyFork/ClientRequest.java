@@ -1268,7 +1268,9 @@ public class ClientRequest extends Thread {
 	    					|| requestURL.getPath().equals("/remotemonitoring"))
 	                	rmScriptString 	= usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "remotemonitoring.js");
 	                
-	                scriptString = generateHeaderJS() + generatePluginsJS() + scriptString;
+	                PluginsHeader pluginsHeader = generatePluginsHeader();
+	                scriptString = pluginsHeader.supportScript + generateHeaderJS() + 
+	                		pluginsHeader.pluginsScript + scriptString;
 	                
 	                scriptString = 
 	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.viewport.custom.js") +
@@ -1284,10 +1286,6 @@ public class ClientRequest extends Thread {
 	                
 	                scriptString =
 	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.resizeStop.js") +
-	                		scriptString;
-	                
-	                scriptString =
-	                		usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), "jquery.overlaps.js") +
 	                		scriptString;
 	                
 	                scriptString = 
@@ -1338,18 +1336,33 @@ public class ClientRequest extends Thread {
         return in;
     }
     
-    private String generatePluginsJS()
+    private class PluginsHeader {
+    	public String pluginsScript;
+    	public String supportScript;
+    }
+    
+    private PluginsHeader generatePluginsHeader()
     {
+    	PluginsHeader header = new PluginsHeader();
     	String pluginsJS = "";
-    	String[] plugins = usaProxy.getPlugins();
-    	for ( int i = 0; i < plugins.length; ++i )
+    	String supportJS = "";
+    	Map<String, PluginDescriptor> plugins = usaProxy.getPlugins();
+    	for ( String pluginName : plugins.keySet() )
 		{
-			String pluginName = plugins[ i ];
+			PluginDescriptor descriptor = plugins.get(pluginName);
 			pluginsJS += 
 					usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), 
-							"usaproxy." + pluginName + ".plugin.js");
+							"plugins/" + pluginName + "/" + descriptor.getPluginFilename() );
+			for ( String jsFilename : descriptor.getJsFilenames() )
+			{
+				supportJS += 
+						usaProxy.getMode().getScriptString(usaProxy.getIP(), usaProxy.getPort(), 
+								"plugins/" + pluginName + "/" + jsFilename );
+			}
 		}
-    	return pluginsJS;
+    	header.pluginsScript = pluginsJS;
+    	header.supportScript = supportJS;
+    	return header;
     }
     
     /** Appends properties and URL parameters to the JavaScript reference string.

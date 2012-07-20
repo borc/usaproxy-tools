@@ -59,8 +59,6 @@ function isOverlapping(collection1, collection2, obstruct) {
         length1 = dims1.length,
         length2 = dims2.length;
 
-    // TODO: what to do on obstruct?
-
     for (; index1 < length1; index1++) {
         for (index2 = 0; index2 < length2; index2++) {
             if (collection1[index1] === collection2[index2]) {
