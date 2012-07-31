@@ -4,18 +4,33 @@ import java.io.File;
 
 import javax.xml.bind.JAXB;
 
+/**
+ * A factory class for creating PluginDescriptor objects from descriptor files.
+ * @author Teemu Pääkkönen
+ *
+ */
 public abstract class PluginDescriptorFactory {
 
+	/**
+	 * Creates a PluginDescriptor object from a descriptor file
+	 * @param descriptorFile a descriptor file to read
+	 * @return a descriptor object
+	 */
 	public static PluginDescriptor createFromFile( File descriptorFile )
 	{
 		PluginDescriptor pd = JAXB.unmarshal(descriptorFile, PluginDescriptor.class ); 
 		return pd;
 	}
 	
-	public static PluginDescriptor getDescriptorByName( String name, File applicationRootDir )
+	/**
+	 * Given a plugin name, finds its descriptor file and returns a descriptor
+	 * object.
+	 * @param name the plugin's name
+	 * @return a descriptor object
+	 */
+	public static PluginDescriptor getDescriptorByName( String name )
 	{
-		File pluginsDir = new File( applicationRootDir, "plugins" );
-		File thisPluginDir = new File( pluginsDir, name );
+		File thisPluginDir = new File( UsaProxy.PLUGINS_DIR, name );
 		File descriptorFile = new File( thisPluginDir, "descriptor.xml" );
 		return createFromFile(descriptorFile);
 	}

@@ -107,14 +107,21 @@ public class HTTPData {
 	public static String guessType(String filename) {
 		String type = null;
 		int i = filename.lastIndexOf(".");
-		String extension = filename.substring(i);
-		if (extension.equals(".jpg")) 			type = "image/jpeg";
-		else if (extension.equals(".gif")) 		type = "image/gif";
-		else if (extension.equals(".js")) 		type = "text/javascript";
-		else if (extension.equals(".css")) 		type = "text/css";
-		else if (extension.equals(".htm")
-				|| extension.equals(".html")) 	type = "text/html";
-		else									type = "unknown/unknown";
+		try
+		{
+			String extension = filename.substring(i);
+			if (extension.equals(".jpg")) 			type = "image/jpeg";
+			else if (extension.equals(".gif")) 		type = "image/gif";
+			else if (extension.equals(".js")) 		type = "text/javascript";
+			else if (extension.equals(".css")) 		type = "text/css";
+			else if (extension.equals(".htm")
+					|| extension.equals(".html")) 	type = "text/html";
+			else									type = "unknown/unknown";
+		}
+		catch ( StringIndexOutOfBoundsException e )
+		{
+			type = "unknown/unknown";
+		}
 
 		return type;
 	}

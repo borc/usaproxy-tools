@@ -27,9 +27,18 @@ import java.util.Map;
  */
 public class UsaProxy {
 	
+	/**
+	 * The root directory of the application. Note that this is the actual
+	 * location of the UsaProxy JAR file, not the PWD.
+	 */
 	@SuppressWarnings("deprecation")
 	public static final File APPLICATION_DIR = new File( URLDecoder.decode( 
 			UsaProxy.class.getProtectionDomain().getCodeSource().getLocation().getPath() ) ).getParentFile();
+	
+	/**
+	 * The plugins directory.
+	 */
+	public static final File PLUGINS_DIR = new File( APPLICATION_DIR, "plugins" );
 	
 	/**  UsaProxy port. */
     private int 				port;	
@@ -678,7 +687,7 @@ public class UsaProxy {
 				for ( int i = 0; i < pluginNames.length; ++i )
 				{
 					PluginDescriptor descriptor = 
-							PluginDescriptorFactory.getDescriptorByName(pluginNames[ i ], APPLICATION_DIR);
+							PluginDescriptorFactory.getDescriptorByName(pluginNames[ i ]);
 					plugins.put( pluginNames[ i ], descriptor );
 				}
 			}

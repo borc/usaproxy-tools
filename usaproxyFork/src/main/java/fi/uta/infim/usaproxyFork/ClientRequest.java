@@ -423,6 +423,29 @@ public class ClientRequest extends Thread {
 					status = ((String[]) (usaProxy.getUsers().getUsers().get(sessionID))) [0];
 				}
 				
+				/*
+				 * Check if the requested file is a plugin file and extract the
+				 * plugin's name.
+				 */
+				String pluginName = null;
+				if ( fileName.matches( "plugins\\/.*" ) )
+				{
+					try
+					{
+						final int startPluginName = "plugins/".length();
+						pluginName = fileName.substring(startPluginName);
+						final int startFileName = pluginName.indexOf("/");
+						fileName = pluginName.substring( startFileName );
+						pluginName = pluginName.substring(0, startFileName);
+					}
+					catch ( StringIndexOutOfBoundsException e )
+					{
+						// A non-parseable URL was encountered. Send a 404.
+						SocketData.send404(new DataOutputStream(client.getOut()));
+						return;
+					}
+				}
+				
 				/** initialize file delivery together with the identified parameters */
 				usaProxy.getFileSender().send (new DataOutputStream(client.getOut()),
 												fileName,
@@ -435,7 +458,8 @@ public class ClientRequest extends Thread {
 												usaProxy.isSB(),
 												usaProxy.getLogMode(),
 												isAdmin,
-												isWindowNameSet);
+												isWindowNameSet,
+												pluginName);
 			}
 			
 	/*********************************************************************

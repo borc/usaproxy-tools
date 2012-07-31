@@ -30,6 +30,7 @@ public class FileSender {
      *  @param logMode holds the logging mode e.g. "pagereq", "all", or "" in the case that logging is disabled
      *  @param isAdmin is true if user is registered as remote monitoring assistant/ remote monitorer
      *  @param isWindowNameSet is true if the user's shared session browser window was defined by the JavaScript
+     *  @param pluginName plugin's name if this file is a plugin file; may be null
      */
 	public void send (DataOutputStream out,
 			String filename, 
@@ -42,16 +43,18 @@ public class FileSender {
 			boolean isSB,
 			String logMode,
 			boolean isAdmin,
-			boolean isWindowNameSet) throws IOException {
+			boolean isWindowNameSet,
+			String pluginName ) throws IOException {
 		
 		try {
 			
 			File file;
 			String filepath = "";
+			String guessedType = HTTPData.guessType(filename);
 			
 			/** get file path according to the requested file */
 			/** if JavaScript, specify the respective raw JavaScript file path */
-			if (HTTPData.guessType(filename).equals("text/javascript")) {
+			if (guessedType.equals("text/javascript")) {
 				
 				if (filename.equals("sharedbrowsing.js"))
 					filepath = "js/sb/";
@@ -59,18 +62,15 @@ public class FileSender {
 					filepath = "js/rm/";
 				/** proxyscript.js */
 				else { 
-					/* plugins */
-					if ( filename.matches("plugins\\/.*") )
-						filepath = "";
 					/** if pure logging mode */
-					else if(!isRM && !isSB && logMode.equals("all"))
+					if(!isRM && !isSB && logMode.equals("all"))
 						filepath = "js/log/";
 					else /** if any collaboration mode */
 						filepath = "js/";
 				}
 			}
 			/** css file */
-			else if (HTTPData.guessType(filename).equals("text/css")) {
+			else if (guessedType.equals("text/css")) {
 				filepath = "css/";
 			}
 			/* not neccessary since html files are requested via getHTMLStream()
@@ -78,11 +78,22 @@ public class FileSender {
 				filepath = "html/";
 			}*/
 			/** image file */
-			else if (HTTPData.guessType(filename).equals("image/jpeg")
-					|| HTTPData.guessType(filename).equals("image/gif")) {
+			else if (guessedType.equals("image/jpeg")
+					|| guessedType.equals("image/gif")) {
 				filepath = "img/";
 			}
-				
+			
+			else {
+				// Other file types are not allowed
+				SocketData.send404(new DataOutputStream(out));
+				return;
+			}
+
+			/* handle plugins */
+			if ( pluginName != null ) {
+				filepath = new File( UsaProxy.PLUGINS_DIR, pluginName ).getAbsolutePath();
+			}
+			
 			/** create File object */
 			file = new File(filepath + filename);
 			/** Open a stream to the file */
