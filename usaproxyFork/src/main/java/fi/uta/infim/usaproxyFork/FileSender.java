@@ -96,6 +96,18 @@ public class FileSender {
 			
 			/** create File object */
 			file = new File(filepath + filename);
+			
+			// Check whether the file is in an allowed directory. Anything
+			// outside the application directory gets a 404 response.
+			// NOTE: Volatile implementation. JavaSE 7 offers the Path class
+			// that remedies the situation. Switching to JavaSE 7 should be
+			// considered if this causes problems.
+			if ( !file.getCanonicalPath().startsWith( UsaProxy.APPLICATION_DIR.getCanonicalPath() ) )
+			{
+				SocketData.send404(new DataOutputStream(out));
+				return;
+			}
+			
 			/** Open a stream to the file */
 			BufferedInputStream in = new BufferedInputStream (new FileInputStream(file));
 			
