@@ -49,7 +49,7 @@ public class FileSender {
 		try {
 			
 			File file;
-			String filepath = "";
+			File filepath = null;
 			String guessedType = HTTPData.guessType(filename);
 			
 			/** get file path according to the requested file */
@@ -57,21 +57,21 @@ public class FileSender {
 			if (guessedType.equals("text/javascript")) {
 				
 				if (filename.equals("sharedbrowsing.js"))
-					filepath = "js/sb/";
+					filepath = new File( UsaProxy.JS_DIR, "sb" );
 				else if (filename.equals("remotemonitoring.js"))
-					filepath = "js/rm/";
+					filepath = new File( UsaProxy.JS_DIR, "rm" );
 				/** proxyscript.js */
 				else { 
 					/** if pure logging mode */
 					if(!isRM && !isSB && logMode.equals("all"))
-						filepath = "js/log/";
+						filepath = new File( UsaProxy.JS_DIR, "log" );
 					else /** if any collaboration mode */
-						filepath = "js/";
+						filepath = UsaProxy.JS_DIR;
 				}
 			}
 			/** css file */
 			else if (guessedType.equals("text/css")) {
-				filepath = "css/";
+				filepath = UsaProxy.CSS_DIR;
 			}
 			/* not neccessary since html files are requested via getHTMLStream()
 			 * else if (HTTPData.guessType(filename).equals("text/html")) {
@@ -80,7 +80,7 @@ public class FileSender {
 			/** image file */
 			else if (guessedType.equals("image/jpeg")
 					|| guessedType.equals("image/gif")) {
-				filepath = "img/";
+				filepath = UsaProxy.IMG_DIR;
 			}
 			
 			else {
@@ -91,11 +91,11 @@ public class FileSender {
 
 			/* handle plugins */
 			if ( pluginName != null ) {
-				filepath = new File( UsaProxy.PLUGINS_DIR, pluginName ).getAbsolutePath();
+				filepath = new File( UsaProxy.PLUGINS_DIR, pluginName );
 			}
 			
-			/** create File object */
-			file = new File(filepath + filename);
+			/** create File object, ignoring any path included in the filename */
+			file = new File(filepath, new File( filename ).getName() );
 			
 			// Check whether the file is in an allowed directory. Anything
 			// outside the application directory gets a 404 response.

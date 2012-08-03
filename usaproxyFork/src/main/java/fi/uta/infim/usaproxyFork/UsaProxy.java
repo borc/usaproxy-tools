@@ -40,6 +40,26 @@ public class UsaProxy {
 	 */
 	public static final File PLUGINS_DIR = new File( APPLICATION_DIR, "plugins" );
 	
+	/**
+	 * The directory containing CSS files
+	 */
+	public static final File CSS_DIR = new File( APPLICATION_DIR, "css" );
+	
+	/**
+	 * Serveable HTML files reside here
+	 */
+	public static final File HTML_DIR = new File( APPLICATION_DIR, "html" );
+	
+	/**
+	 * Image files directory
+	 */
+	public static final File IMG_DIR = new File( APPLICATION_DIR, "img" );
+	
+	/**
+	 * Javascript files directory
+	 */
+	public static final File JS_DIR = new File( APPLICATION_DIR, "js" );
+	
 	/**  UsaProxy port. */
     private int 				port;	
     /**  UsaProxy IP address. */
