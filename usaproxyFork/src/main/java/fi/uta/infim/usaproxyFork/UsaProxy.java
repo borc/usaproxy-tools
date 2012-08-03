@@ -1,6 +1,7 @@
 package fi.uta.infim.usaproxyFork;
 import java.io.*;
 import java.net.*; 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -250,6 +251,17 @@ public class UsaProxy {
 		    System.out.println("Logging: " + (isLogging ? 
 		    		(logMode.equals("pagereq") ? "on (only page requests)":"on")
 		    		:"off"));
+			printConfigurationOption( "Node types to be tracked", Arrays.toString( nodeTypes ) );
+			printConfigurationOption( "Log element contents?", isLoggingContents );
+			printConfigurationOption( "Limit contents logging to", contentsLoggingLimit );
+			printConfigurationOption( "Log external urls?", logExternalUrl );
+			printConfigurationOption( "Log splitting type", logSplitType );
+			printConfigurationOption( "Split logs at", logSplitAt );
+			printConfigurationOption( "Split interval", logSplitInterval );
+			printConfigurationOption( "Dynamic detection type", dynamicDetection );
+			printConfigurationOption( "Maximum frame penetration depth", maxFrameDepth );
+			printConfigurationOption( "Plugins to load", plugins.values() );
+			System.out.println();
 			System.out.println("UsaProxy ready for accepting incoming connections !\n");
 	
 		    /** endless loop */
@@ -738,7 +750,6 @@ public class UsaProxy {
 			System.out.println("Deployment: regular/transparent proxy mode");
 		}
 		
-		
 		/** generate an UsaProxy instance */
 		new UsaProxy(port, mode, rm, sb, log, logMode, id, nodeTypes, 
 				logContents, limitContents, exUrls, lsType, lsAt, 
@@ -746,6 +757,11 @@ public class UsaProxy {
 			
 	}
 
+	public static <T extends Object> void printConfigurationOption( String optionName, T optionValue )
+	{
+		System.out.println( optionName + ": " + optionValue.toString() );
+	}
+	
 	/**
 	 * Returns the respective <code>Mode</code> implementation.
 	 * 

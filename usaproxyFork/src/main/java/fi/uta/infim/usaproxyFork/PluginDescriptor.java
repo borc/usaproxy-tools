@@ -25,6 +25,11 @@ public class PluginDescriptor {
 	 */
 	private List< String > jsFilenames;
 	
+	@Override
+	public String toString() {
+		return name;
+	}
+
 	/**
 	 * Filenames of the CSS files to load
 	 */
