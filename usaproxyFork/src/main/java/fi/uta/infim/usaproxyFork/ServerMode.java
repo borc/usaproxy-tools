@@ -34,7 +34,7 @@ public class ServerMode implements Mode {
      *  @return the <code>Socket</code>
      */
 	public Socket getServerConnect() throws Exception {
-		return new Socket(hostAddress.getHostName(),serverPort);
+		return new Socket(hostAddress,serverPort);
 	}
 	
 	/**
