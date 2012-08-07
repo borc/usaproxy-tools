@@ -16,7 +16,7 @@ import fi.uta.infim.usaproxylogparser.UsaProxyScreen;
 import fi.uta.infim.usaproxylogparser.UsaProxySessionStore;
 import fi.uta.infim.usaproxylogparser.UsaProxyVisibilityEvent;
 
-public class DefaultDataProvider implements IBrowsingDataProvider {
+public class DefaultDataProvider extends DataProvider implements IBrowsingDataProvider {
 
 	/**
 	 * Milliseconds to add to the last appearances of objects in order to 
@@ -27,11 +27,8 @@ public class DefaultDataProvider implements IBrowsingDataProvider {
 	
 	private JSONObject viewportLines = null;
 	
-	protected UsaProxyHTTPTraffic traffic = null;
-	
 	protected DefaultDataProvider(UsaProxyHTTPTraffic traffic) {
-		super();
-		this.traffic = traffic;
+		super( traffic );
 	}
 
 	/**

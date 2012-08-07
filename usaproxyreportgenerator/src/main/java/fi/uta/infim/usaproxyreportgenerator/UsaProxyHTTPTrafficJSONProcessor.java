@@ -41,7 +41,7 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 	public static final AbstractMap.SimpleEntry<String, String> DEFAULTELEMENTCOLOR = 
 			new AbstractMap.SimpleEntry<String, String>( "DEFAULTELEMENTCOLOR", "rgb(50,50,255)" );
 	
-	private IBrowsingDataProvider provider = null;
+	private DataProvider provider = null;
 	
 	/**
 	 * Processes a UsaProxyHTTPTraffic object into a JSON object
@@ -49,8 +49,9 @@ public class UsaProxyHTTPTrafficJSONProcessor implements JsonBeanProcessor {
 	@Override
 	public JSONObject processBean(Object arg0, JsonConfig arg1) {
 		UsaProxyHTTPTraffic traffic = (UsaProxyHTTPTraffic) arg0;
-		provider = new MonocleDataProvider(traffic);
 		try {
+			provider = App.getDataProviderClass().getDeclaredConstructor( 
+					UsaProxyHTTPTraffic.class ).newInstance( traffic );
 			JSONObject jsonHTTPTraffic = new JSONObject();
 			jsonHTTPTraffic.accumulate( "viewportMovement", getViewportMovement(traffic));
 			JSONObject domElements = new JSONObject();

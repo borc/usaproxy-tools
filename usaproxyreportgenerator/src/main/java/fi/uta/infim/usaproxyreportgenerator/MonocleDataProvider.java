@@ -1,10 +1,6 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import net.sf.json.JSONArray;
-import net.sf.json.JSONObject;
 import fi.uta.infim.usaproxylogparser.EventType;
 import fi.uta.infim.usaproxylogparser.UsaProxyHTTPTraffic;
 import fi.uta.infim.usaproxylogparser.UsaProxyPageEvent;

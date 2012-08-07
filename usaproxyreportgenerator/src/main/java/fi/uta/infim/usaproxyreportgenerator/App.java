@@ -23,10 +23,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
@@ -57,6 +60,13 @@ import freemarker.template.TemplateException;
  */
 public final class App 
 {
+	/**
+	 * The root directory of the application. Note that this is the actual
+	 * location of the report generator JAR file, not the PWD.
+	 */
+	public static final URL APPLICATION_DIR =  
+			App.class.getProtectionDomain().getCodeSource().getLocation();
+	
 	/**
 	 * Configuration for the JSON processors
 	 */
@@ -102,6 +112,8 @@ public final class App
 	 */
 	private static CommandLine cli = null;
 	
+	private static Class<? extends DataProvider> dataProviderClass = DefaultDataProvider.class;
+	
 	/**
 	 * Creates the options object for the CLI parser. Command line parameters
 	 * are set up here.
@@ -115,6 +127,10 @@ public final class App
 				.hasArg()
 				.withDescription( "output directory for reports" )
 				.create( "outputDir" ) );
+		cliOptions.addOption( OptionBuilder.withArgName( "class" )
+				.hasArg()
+				.withDescription( "full name of the data provider class" )
+				.create( "dataProvider" ) );
 		return cliOptions;
 	}
 
@@ -152,7 +168,7 @@ public final class App
 	 * Entry point.
 	 * @param args command line arguments
 	 */
-    public static void main( String[] args )
+	public static void main( String[] args )
     {
     	printLicense();
     	System.out.println();
@@ -181,7 +197,7 @@ public final class App
     		
     		// Interpret remaining cli args as file names
     		System.out.print( "Parsing log file... " );
-    		log = parser.parseFilesByName( Arrays.asList( filenames ) );
+    			log = parser.parseFilesByName( Arrays.asList( filenames ) );
     		System.out.println( "done." );
     	}
     	catch( IOException ioe )
@@ -202,6 +218,12 @@ public final class App
     		printHelp();
     		return;
     	}
+    	catch ( NoSuchElementException e )
+    	{
+    		System.err.println( "Error opening log file: " + e.getMessage() );
+    		printHelp();
+    		return;
+    	}
     	
     	config = new JsonConfig();
     	config.registerJsonBeanProcessor( UsaProxyHTTPTraffic.class, 
@@ -213,11 +235,37 @@ public final class App
     	config.registerJsonBeanProcessor( UsaProxyDisappearanceEvent.class, 
     			new UsaProxyPageEventJSONProcessor<UsaProxyDisappearanceEvent>() );
     	
+    	File outputDir;
+		// Use CWD if output dir is not supplied
+		outputDir = new File( cli.getOptionValue( "outputDir", "." ) );
+    	
+		// A data provider class can be specified on the CLI.
+		if ( cli.hasOption( "dataProvider") )
+		{
+			String className = cli.getOptionValue( "dataProvider" );
+			ClassLoader loader = URLClassLoader.newInstance( new URL[] { APPLICATION_DIR } );
+			// Try to load the named class using a class loader. Fall back to
+			// default if this fails.
+			try {
+				@SuppressWarnings("unchecked")
+				Class<? extends DataProvider> cliOptionClass = (Class<? extends DataProvider>) Class.forName(className, true, loader);
+				dataProviderClass = cliOptionClass;
+			} catch (ClassNotFoundException e) {
+				System.err.println( "Specified data provider class not found: " + e.getMessage() );
+				System.err.println( "Falling back to default provider." );
+			} catch (ClassCastException e) {
+				System.err.println( "Specified data provider class is invalid: " + e.getMessage() );
+				System.err.println( "Falling back to default provider." );
+			}
+			System.err.flush();
+		}
+		
+		System.out.println( "Output directory: " + outputDir.getAbsolutePath() );
+		System.out.println( "Data provider class: " + dataProviderClass.getCanonicalName() );
+		
+		// Iterate over sessions and generate a report for each one.
     	for ( UsaProxySession s : log.getSessions() )
     	{
-    		File outputDir;
-    		// Use CWD if output dir is not supplied
-   			outputDir = new File( cli.hasOption( "outputDir" ) ? cli.getOptionValue( "outputDir" ) : "." );
     		System.out.print( "Generating report for session " + s.getSessionID() + "... " );
     		try {
 				generateHTMLReport(s, outputDir);
@@ -288,5 +336,9 @@ public final class App
     	}
     	
     }
+
+	public static Class<? extends DataProvider> getDataProviderClass() {
+		return dataProviderClass;
+	}
 
 }
