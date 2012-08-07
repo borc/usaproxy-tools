@@ -141,7 +141,7 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 	}
 
 	@Override
-	public UsaProxyLog parseFiles(final Collection<File> files) throws IOException, ParseException 
+	public UsaProxyLog parseFiles(final Collection<File> files) throws IOException, ParseException, NoSuchElementException 
 	{
 		// Use first file as the root
 		logFile = files.iterator().next();
@@ -168,7 +168,7 @@ public class UsaProxyLogParser implements IUsaProxyLogParser {
 	}
 
 	@Override
-	public UsaProxyLog parseFilesByName(Collection<String> filenames) throws IOException, ParseException {
+	public UsaProxyLog parseFilesByName(Collection<String> filenames) throws IOException, ParseException, NoSuchElementException {
 		Collection< File > files = new ArrayList< File >();
 		for ( String filename : filenames )
 		{
