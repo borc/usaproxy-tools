@@ -112,7 +112,9 @@ public final class App
 	 */
 	private static CommandLine cli = null;
 	
-	private static Class<? extends DataProvider> dataProviderClass = DefaultDataProvider.class;
+	private static final Class<? extends DataProvider> DEFAULT_DATA_PROVIDER_CLASS = DefaultDataProvider.class;
+	
+	private static Class<? extends DataProvider> dataProviderClass = DEFAULT_DATA_PROVIDER_CLASS;
 	
 	/**
 	 * Creates the options object for the CLI parser. Command line parameters
@@ -164,6 +166,49 @@ public final class App
 				"under certain conditions; see gpl.txt for details.");
 	}
 	
+	private static void setupJsonConfig()
+	{
+		config = new JsonConfig();
+    	config.registerJsonBeanProcessor( UsaProxyHTTPTraffic.class, 
+    			new UsaProxyHTTPTrafficJSONProcessor() );
+    	config.registerJsonBeanProcessor( UsaProxyDOMElement.class, 
+    			new UsaProxyDOMElementJSONProcessor() );
+    	config.registerJsonBeanProcessor( UsaProxyAppearanceEvent.class, 
+    			new UsaProxyPageEventJSONProcessor<UsaProxyAppearanceEvent>() );
+    	config.registerJsonBeanProcessor( UsaProxyDisappearanceEvent.class, 
+    			new UsaProxyPageEventJSONProcessor<UsaProxyDisappearanceEvent>() );
+	}
+	
+	private static void setupDataProvider()
+	{
+		// A data provider class can be specified on the CLI.
+		if ( cli.hasOption( "dataProvider") )
+		{
+			String className = cli.getOptionValue( "dataProvider" );
+			ClassLoader loader = URLClassLoader.newInstance( new URL[] { APPLICATION_DIR } );
+			// Try to load the named class using a class loader. Fall back to
+			// default if this fails.
+			try {
+				@SuppressWarnings("unchecked")
+				Class<? extends DataProvider> cliOptionClass = (Class<? extends DataProvider>) Class.forName(className, true, loader);
+				if ( !DataProvider.class.isAssignableFrom(cliOptionClass) )
+				{
+					throw new ClassCastException( cliOptionClass.getCanonicalName() );
+				}
+				dataProviderClass = cliOptionClass;
+			} catch (ClassNotFoundException e) {
+				System.out.flush();
+				System.err.println( "Specified data provider class not found: " + e.getMessage() );
+				System.err.println( "Falling back to default provider." );
+			} catch (ClassCastException e) {
+				System.out.flush();
+				System.err.println( "Specified data provider class is invalid: " + e.getMessage() );
+				System.err.println( "Falling back to default provider." );
+			}
+			System.err.flush();
+		}
+	}
+	
 	/**
 	 * Entry point.
 	 * @param args command line arguments
@@ -184,6 +229,18 @@ public final class App
     		printHelp();
     		return;
     	}
+    	
+    	File outputDir;
+		// Use CWD if output dir is not supplied
+		outputDir = new File( cli.getOptionValue( "outputDir", "." ) );
+    	
+		// Set up the browsing data provider that mines the log entries for 
+		// visualizable data.
+		setupDataProvider();  
+		
+		// Output CLI options, so that the user sees what is happening
+		System.out.println( "Output directory: " + outputDir.getAbsolutePath() );
+		System.out.println( "Data provider class: " + dataProviderClass.getCanonicalName() );
     	
     	UsaProxyLogParser parser = new UsaProxyLogParser();
     	UsaProxyLog log;
@@ -225,44 +282,8 @@ public final class App
     		return;
     	}
     	
-    	config = new JsonConfig();
-    	config.registerJsonBeanProcessor( UsaProxyHTTPTraffic.class, 
-    			new UsaProxyHTTPTrafficJSONProcessor() );
-    	config.registerJsonBeanProcessor( UsaProxyDOMElement.class, 
-    			new UsaProxyDOMElementJSONProcessor() );
-    	config.registerJsonBeanProcessor( UsaProxyAppearanceEvent.class, 
-    			new UsaProxyPageEventJSONProcessor<UsaProxyAppearanceEvent>() );
-    	config.registerJsonBeanProcessor( UsaProxyDisappearanceEvent.class, 
-    			new UsaProxyPageEventJSONProcessor<UsaProxyDisappearanceEvent>() );
+    	setupJsonConfig(); // Set up JSON processors
     	
-    	File outputDir;
-		// Use CWD if output dir is not supplied
-		outputDir = new File( cli.getOptionValue( "outputDir", "." ) );
-    	
-		// A data provider class can be specified on the CLI.
-		if ( cli.hasOption( "dataProvider") )
-		{
-			String className = cli.getOptionValue( "dataProvider" );
-			ClassLoader loader = URLClassLoader.newInstance( new URL[] { APPLICATION_DIR } );
-			// Try to load the named class using a class loader. Fall back to
-			// default if this fails.
-			try {
-				@SuppressWarnings("unchecked")
-				Class<? extends DataProvider> cliOptionClass = (Class<? extends DataProvider>) Class.forName(className, true, loader);
-				dataProviderClass = cliOptionClass;
-			} catch (ClassNotFoundException e) {
-				System.err.println( "Specified data provider class not found: " + e.getMessage() );
-				System.err.println( "Falling back to default provider." );
-			} catch (ClassCastException e) {
-				System.err.println( "Specified data provider class is invalid: " + e.getMessage() );
-				System.err.println( "Falling back to default provider." );
-			}
-			System.err.flush();
-		}
-		
-		System.out.println( "Output directory: " + outputDir.getAbsolutePath() );
-		System.out.println( "Data provider class: " + dataProviderClass.getCanonicalName() );
-		
 		// Iterate over sessions and generate a report for each one.
     	for ( UsaProxySession s : log.getSessions() )
     	{
