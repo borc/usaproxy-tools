@@ -14,7 +14,7 @@ public class MonocleDataProvider extends DefaultDataProvider implements IBrowsin
 	
 	private ViewportData viewportData = null;
 	
-	MonocleDataProvider(UsaProxyHTTPTraffic traffic) {
+	public MonocleDataProvider(UsaProxyHTTPTraffic traffic) {
 		super( traffic );
 	}
 

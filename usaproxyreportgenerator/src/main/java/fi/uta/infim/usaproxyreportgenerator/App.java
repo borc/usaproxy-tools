@@ -19,12 +19,15 @@
 package fi.uta.infim.usaproxyreportgenerator;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
+import java.net.URLDecoder;
 import java.text.ParseException;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -37,6 +40,8 @@ import org.apache.commons.cli.GnuParser;
 import org.apache.commons.cli.HelpFormatter;
 import org.apache.commons.cli.OptionBuilder;
 import org.apache.commons.cli.Options;
+import org.apache.commons.io.IOCase;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JsonConfig;
@@ -61,11 +66,23 @@ import freemarker.template.TemplateException;
 public final class App 
 {
 	/**
+	 * URL of the application main JAR
+	 */
+	public static final URL APPLICATION_URL =
+			App.class.getProtectionDomain().getCodeSource().getLocation();
+	
+	/**
 	 * The root directory of the application. Note that this is the actual
 	 * location of the report generator JAR file, not the PWD.
 	 */
-	public static final URL APPLICATION_DIR =  
-			App.class.getProtectionDomain().getCodeSource().getLocation();
+	@SuppressWarnings("deprecation")
+	public static final File APPLICATION_DIR =  
+			new File( URLDecoder.decode( APPLICATION_URL.getPath() ) ).getParentFile();
+	
+	/**
+	 * The plugins directory. Data providers will be searched for in here.
+	 */
+	public static final File PLUGINS_DIR = new File( APPLICATION_DIR, "plugins" );
 	
 	/**
 	 * Configuration for the JSON processors
@@ -184,8 +201,22 @@ public final class App
 		// A data provider class can be specified on the CLI.
 		if ( cli.hasOption( "dataProvider") )
 		{
+			// Look for JAR files in the plugin dir
+			File[] jars = PLUGINS_DIR.listFiles( (FileFilter) new WildcardFileFilter( "*.jar", IOCase.INSENSITIVE ) );
+			URL[] jarUrls = new URL[ jars.length ];
+			for ( int i = 0; i < jars.length; ++i )
+			{
+				try {
+					jarUrls[ i ] = jars[ i ].toURI().toURL();
+				} catch (MalformedURLException e) {
+					// Skip URL if not valid
+					continue;
+				}
+			}
+
+			ClassLoader loader = URLClassLoader.newInstance( jarUrls, ClassLoader.getSystemClassLoader() );
 			String className = cli.getOptionValue( "dataProvider" );
-			ClassLoader loader = URLClassLoader.newInstance( new URL[] { APPLICATION_DIR } );
+			
 			// Try to load the named class using a class loader. Fall back to
 			// default if this fails.
 			try {
