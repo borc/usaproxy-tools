@@ -16,6 +16,7 @@
         <include>css/**</include>
         <include>readme.txt</include>
         <include>gpl.txt</include>
+        <include>plugins/*.jar</include>
       </includes>
     </fileSet>
   </fileSets>
