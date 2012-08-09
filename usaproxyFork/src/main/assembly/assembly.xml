@@ -18,6 +18,7 @@
         <include>httpTraffic/**</include>
         <include>img/**</include>
         <include>js/**</include>
+        <include>plugins/**</include>
       </includes>
     </fileSet>
   </fileSets>
