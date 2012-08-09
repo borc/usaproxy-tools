@@ -262,7 +262,7 @@ public class ClientRequest extends Thread {
 					
 				/** if user isn't entitled to request this sd */
 				} else {
-					System.err.println("\nClient " + client.getSocket().getInetAddress().getHostName()
+					System.err.println("\nClient " + client.getSocket().getInetAddress().toString()
 							+ " (session ID: " + sid + ")"
 							+ " tried to access sd " + SdId + " without authorization!");
 					/** send "403" Forbidden response */
@@ -908,7 +908,7 @@ public class ClientRequest extends Thread {
 		
 				/** Display message: Client and requested URL */
 				if (UsaProxy.DEBUG) System.out.println("New REQUEST:");
-				if (UsaProxy.DEBUG) System.out.println("From client " + client.getSocket().getInetAddress().getHostName()
+				if (UsaProxy.DEBUG) System.out.println("From client " + client.getSocket().getInetAddress().toString()
 						+ " (" + client.getSocket().getInetAddress().getHostAddress() + ") with request GET " + url + "\n");
 		        
 				/** HTTP headers processing */
@@ -989,7 +989,7 @@ public class ClientRequest extends Thread {
         	// e.printStackTrace();
         	if (client.getSocket() != null) {
         		System.err.println("\nAn ERROR occured while processing request:\n"
-        					+ client.getHeaders().elementAt(0) + " from client " + client.getSocket().getInetAddress().getHostName()/* + ":\n"
+        					+ client.getHeaders().elementAt(0) + " from client " + client.getSocket().getInetAddress().toString()/* + ":\n"
 							+ e*/ );
         		if (client.getSocket().isClosed()) {
         			System.err.println("Reason: Client closed his socket (maybe left for www.weg.de)\n");
@@ -1069,7 +1069,7 @@ public class ClientRequest extends Thread {
         } catch (IOException e) {
         	if (server.getSocket()  != null) {
         		System.err.println("\nAn ERROR occured while reading response headers: "
-        					+ "from server " + server.getSocket().getInetAddress().getHostName() + ":\n"
+        					+ "from server " + server.getSocket().getInetAddress().toString() + ":\n"
 							+ e );
         	} else {
         		System.err.println("\nAn ERROR occured while reading response headers: "
@@ -1102,7 +1102,7 @@ public class ClientRequest extends Thread {
 				String newVia = "";
 		        if (server.getHeaders().containsKey(HTTPData.HEADER_VIA))
 		        	newVia 	= (String) server.getHeaders().get(HTTPData.HEADER_VIA) + ", ";
-		        newVia = newVia + i.getHostName() + " (UsaProxy/2.0)";
+		        newVia = newVia + i.getHostAddress() + " (UsaProxy/2.0)";
 		        server.getHeaders().put(HTTPData.HEADER_VIA, newVia);
 		    } catch (UnknownHostException e1) {
 		    	System.err.println("\nAn ERROR occured while reading generating VIA header: " + e1 );
@@ -1255,7 +1255,7 @@ public class ClientRequest extends Thread {
 	                /** complete head-tag detected */
 	            	
 	                System.out.println("\nUsaProxy script tag was added to request " + client.getHeaders().elementAt(0) + "\n"
-	                				+ "Monitoring was started at client " + client.getSocket().getInetAddress().getHostName()
+	                				+ "Monitoring was started at client " + client.getSocket().getInetAddress().toString()
 	                				+ " (" + client.getSocket().getInetAddress().getHostAddress() + ")");
 	                
 	                headStarted = false;
@@ -1347,7 +1347,7 @@ public class ClientRequest extends Thread {
         } catch (IOException e) {
         	if (server.getSocket() != null) {
         		System.err.println("\nAn ERROR occured while enhancing response: "
-        					+ "from server " + server.getSocket().getInetAddress().getHostName() + ":\n"
+        					+ "from server " + server.getSocket().getInetAddress().toString() + ":\n"
 							+ e );
         	} else {
         		System.err.println("\nAn ERROR occured while enhancing response: "
@@ -1488,7 +1488,7 @@ public class ClientRequest extends Thread {
 		} catch (IOException e) {
 			if (client.getSocket()  != null) {
         		System.err.println("\nAn ERROR occured while sending response headers: "
-        					+ "to client " + client.getSocket().getInetAddress().getHostName() + ":\n"
+        					+ "to client " + client.getSocket().getInetAddress().toString() + ":\n"
 							+ e );
         	} else {
         		System.err.println("\nAn ERROR occured while sending response headers: "
@@ -1545,7 +1545,7 @@ public class ClientRequest extends Thread {
 		} catch (IOException e) {
 			if (client.getSocket() != null) {
         		System.err.println("\nAn ERROR occured while sending response: "
-        					+ "to client " + client.getSocket().getInetAddress().getHostName() + ":\n"
+        					+ "to client " + client.getSocket().getInetAddress().toString() + ":\n"
 							+ e );
         	} else {
         		System.err.println("\nAn ERROR occured while sending response: "

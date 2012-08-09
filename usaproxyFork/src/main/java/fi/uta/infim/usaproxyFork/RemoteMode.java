@@ -39,7 +39,7 @@ public class RemoteMode implements Mode {
      *  @return the <code>Socket</code>
      */
 	public Socket getServerConnect() throws Exception {
-		return new Socket(remoteProxy.getHostName(),remotePort);
+		return new Socket(remoteProxy,remotePort);
 	}
 	
 	/**
