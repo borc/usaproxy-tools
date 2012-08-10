@@ -182,17 +182,20 @@ public class Users {
 		/** if user request send all registered users 
 		 *  together with their session ID and status */
 		if (topic.equals("users")) {
-			for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
-			
-		        Entry<String, String[]> me 			= e.next();
-		        String identifier 	= (String) me.getKey();
-		        if (null == identifier) continue;
-		        String status 		= ((String[]) me.getValue()) [0];
-		        XMLResponse.append("<user>").append(HTTPData.CRLF);
-		        XMLResponse.append("<sid>" + identifier + "</sid>").append(HTTPData.CRLF);
-		        XMLResponse.append("<status>" + status + "</status>").append(HTTPData.CRLF);
-		        XMLResponse.append("</user>").append(HTTPData.CRLF);
-		    }
+			synchronized ( users )
+			{
+				for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
+				
+			        Entry<String, String[]> me 			= e.next();
+			        String identifier 	= (String) me.getKey();
+			        if (null == identifier) continue;
+			        String status 		= ((String[]) me.getValue()) [0];
+			        XMLResponse.append("<user>").append(HTTPData.CRLF);
+			        XMLResponse.append("<sid>" + identifier + "</sid>").append(HTTPData.CRLF);
+			        XMLResponse.append("<status>" + status + "</status>").append(HTTPData.CRLF);
+			        XMLResponse.append("</user>").append(HTTPData.CRLF);
+			    }
+			}
 		}
 		/** if proposal request send all proposals made to the client
 		 *  referenced by the proposer's session ID */
@@ -215,13 +218,15 @@ public class Users {
 		/** if status request send the client's status and, in the case
 		 *  the user is participating in a shared session, his partner's session ID */
 		else if (topic.equals("status")) {
-			XMLResponse.append("<status>" + ((String[])users.get(sid))[0] + "</status>").append(HTTPData.CRLF);
-			if (((String[])users.get(sid))[0].equals("online")) {
-				String psid = ((String[]) partners.get(sid)) [0];
-				XMLResponse.append("<psid>" + psid + "</psid>").append(HTTPData.CRLF);
-			} else
-				XMLResponse.append("<psid/>").append(HTTPData.CRLF);
-				
+			synchronized ( users )
+			{
+				XMLResponse.append("<status>" + ((String[])users.get(sid))[0] + "</status>").append(HTTPData.CRLF);
+				if (((String[])users.get(sid))[0].equals("online")) {
+					String psid = ((String[]) partners.get(sid)) [0];
+					XMLResponse.append("<psid>" + psid + "</psid>").append(HTTPData.CRLF);
+				} else
+					XMLResponse.append("<psid/>").append(HTTPData.CRLF);
+			}
 		}
 		
 		XMLResponse.append("</root>");
@@ -265,15 +270,18 @@ public class Users {
 	 * @throws <code>IOException</code>
 	 */
 	public void setWindowNameSet(OutputStream out, String user) throws IOException {
-		/** get the user's array from users Hashtable */
-		String[] userArray = users.get(user);
-		/** set flag */
-		userArray[2] = "true";
-		/** put array back into users Hashtable */
-		users.put(user, userArray);
-		
-		/** send 404 message in order to complete the request */
-		SocketData.send404 (out);
+		synchronized ( users )
+		{
+			/** get the user's array from users Hashtable */
+			String[] userArray = users.get(user);
+			/** set flag */
+			userArray[2] = "true";
+			/** put array back into users Hashtable */
+			users.put(user, userArray);
+			
+			/** send 404 message in order to complete the request */
+			SocketData.send404 (out);
+		}
 	}
 	
 	/** Sets a user's status.

@@ -703,10 +703,7 @@ public class ClientRequest extends Thread {
 				
 				/** set flag */
 				Users users = usaProxy.getUsers();
-				synchronized ( users )
-				{
-					users.setWindowNameSet(client.getOut(), sid);
-				}
+				users.setWindowNameSet(client.getOut(), sid);
 			}
 			
 	/*********************************************************************
@@ -726,10 +723,7 @@ public class ClientRequest extends Thread {
 				
 				/** send users */
 				Users users = usaProxy.getUsers();
-				synchronized( users )
-				{
-					users.send(client.getOut(), "users", sid);
-				}
+				users.send(client.getOut(), "users", sid);
 			}
 			
 	/*********************************************************************
@@ -860,10 +854,7 @@ public class ClientRequest extends Thread {
 				
 	    		/** send status */
 	    		Users users = usaProxy.getUsers();
-				synchronized( users )
-				{
-					users.send(client.getOut(), "status", sid);
-				}
+				users.send(client.getOut(), "status", sid);
 			}
 			
 	/*********************************************************************
