@@ -59,10 +59,4 @@ public interface Mode {
 	 */
 	public URL getRequestURL();
 	
-	/**
-	 * Returns the host name of the machine which contains the requested resource.
-	 * 
-	 * @return a host name String
-	 */
-	public String getHostName();
 }
