@@ -16,6 +16,13 @@ public class ServerMode implements Mode {
 	/** The customized request URL. */
 	public URL 				requestURL;						  
 	
+	/**
+	 * Remote IP in String format for creating URLs.
+	 * If the user provided a name (eg. www.google.com) then the name will
+	 * be used. Otherwise, the IP address.
+	 */
+	private String			remoteIP;
+	
 	/** Constructor: deploys UsaProxy in the server-side mode
 	 *  with the specified web server information.
 	 * 
@@ -26,6 +33,20 @@ public class ServerMode implements Mode {
 		super();
 		this.serverPort 	= serverPort;
 		this.hostAddress	= hostAddress;
+		
+		// ToString() returns both the host name (if known) and the IP address
+		// Find out which one we know.
+		final int HOSTNAME = 0;
+		final int IPADDR = 1;
+		String[] hostAndIP = hostAddress.toString().split("\\/");
+		if ( "".equals( hostAndIP[HOSTNAME].trim() ) )
+		{
+			remoteIP = hostAndIP[IPADDR].trim();
+		}
+		else
+		{
+			remoteIP = hostAndIP[HOSTNAME].trim();
+		}
 	}
 	
 	/**
@@ -73,7 +94,7 @@ public class ServerMode implements Mode {
 	 */
 	public void setRequestURL(String url, String host) {
 		try {
-			this.requestURL = new URL("http://" + hostAddress.getHostName() + ":" + serverPort + url);
+			this.requestURL = new URL("http://" + remoteIP + ":" + serverPort + url);
 		} catch (MalformedURLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -89,13 +110,6 @@ public class ServerMode implements Mode {
 		return requestURL;
 	}
 	
-	/**
-	 * Returns the web server name
-	 * 
-	 * @return the host name string
-	 */
-	public String getHostName() { return this.hostAddress.getHostName(); }
-
 	@Override
 	public String getScriptString(InetAddress usaProxyIP, int usaProxyPort,
 			String filename) {
