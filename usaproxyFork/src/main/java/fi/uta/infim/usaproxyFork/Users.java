@@ -64,25 +64,28 @@ public class Users {
 	 */
 	class UserCheck extends TimerTask {
 		public void run() {
-			/** current timestamp */
-			Calendar now = Calendar.getInstance();
-			int msNow = (int) now.getTime().getTime();
-			
 			/** check for each user */
-			for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
+			synchronized ( users ) // Lock the users table to this thread
+			{
+				/** current timestamp */
+				Calendar now = Calendar.getInstance();
+				int msNow = (int) now.getTime().getTime();
 				
-		        Entry<String, String[]> me 			= e.next();
-		        String user 	= (String) me.getKey();
-		        if (null == user) continue;
-		        int ms 		= Integer.parseInt(((String[]) me.getValue()) [1]);
-		        
-		        /** if user didn't update his timestamp for at least 120 seconds
-		         *  remove him from users and admins Hashtable */
-		        if ((msNow-ms)>120000) {
-		        	users.remove(user);
-		        	if (admins.contains(user)) admins.remove(user);
-		        }
-		    }
+				for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
+					
+			        Entry<String, String[]> me 			= e.next();
+			        String user 	= (String) me.getKey();
+			        if (null == user) continue;
+			        int ms 		= Integer.parseInt(((String[]) me.getValue()) [1]);
+			        
+			        /** if user didn't update his timestamp for at least 120 seconds
+			         *  remove him from users and admins Hashtable */
+			        if ((msNow-ms)>120000) {
+			        	users.remove(user);
+			        	if (admins.contains(user)) admins.remove(user);
+			        }
+			    }
+			}
 		}
 	}
 	
@@ -180,7 +183,7 @@ public class Users {
 		 *  together with their session ID and status */
 		if (topic.equals("users")) {
 			for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
-		
+			
 		        Entry<String, String[]> me 			= e.next();
 		        String identifier 	= (String) me.getKey();
 		        if (null == identifier) continue;
@@ -263,7 +266,7 @@ public class Users {
 	 */
 	public void setWindowNameSet(OutputStream out, String user) throws IOException {
 		/** get the user's array from users Hashtable */
-		String[] userArray = (String[])users.get(user);
+		String[] userArray = users.get(user);
 		/** set flag */
 		userArray[2] = "true";
 		/** put array back into users Hashtable */
@@ -279,9 +282,12 @@ public class Users {
 	 * @param status is the new status
 	 */
 	private void setUserStatus(String sid, String status) {
-		String[] userArray = (String[])users.get(sid);
-		userArray[0] = status;
-		users.put(sid, userArray);
+		synchronized ( users )
+		{
+			String[] userArray = users.get(sid);
+			userArray[0] = status;
+			users.put(sid, userArray);
+		}
 	}
 	
 	/** Updates a user's "last accessed"-timestamp.
@@ -290,9 +296,12 @@ public class Users {
 	 * @param ms is the new timestamp
 	 */
 	public void updateUserTS(String sid, String ms) {
-		String[] userArray = (String[])users.get(sid);
-		userArray[1] = ms;
-		users.put(sid, userArray);
+		synchronized ( users )
+		{
+			String[] userArray = (String[])users.get(sid);
+			userArray[1] = ms;
+			users.put(sid, userArray);
+		}
 	}
 	
 	/** Accepter function: sets the proposer's and the accepter's status in <code>Hashtable</code>
@@ -693,16 +702,20 @@ public class Users {
 	 *  Prints the users <code>Hashtable</code> entries.
 	 */
 	public void printUsers() {
-	    StringBuffer usersToPrint = new StringBuffer();
 		
-		for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
-	
-	        Entry<String, String[]> me 		= e.next();
-	        String user 	= (String) me.getKey();
-	        if (null == user) continue;
-	        String status 	= ((String[]) me.getValue()) [0];
-	        usersToPrint.append(user).append(": ").append(status).append(HTTPData.CRLF);
-	    }
+		StringBuffer usersToPrint = new StringBuffer();
+		synchronized ( users )
+		{
+			for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
+		
+		        Entry<String, String[]> me 		= e.next();
+		        String user 	= (String) me.getKey();
+		        if (null == user) continue;
+		        String status 	= ((String[]) me.getValue()) [0];
+		        usersToPrint.append(user).append(": ").append(status).append(HTTPData.CRLF);
+		    }
+		}
+
 		System.out.println("\nUsers in 'users' Hashtable with current status: ");
 		System.out.println(usersToPrint);
 	}

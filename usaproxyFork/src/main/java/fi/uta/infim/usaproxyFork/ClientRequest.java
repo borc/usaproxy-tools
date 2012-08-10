@@ -380,9 +380,13 @@ public class ClientRequest extends Thread {
 				
 			    	/** Check if session window was already defined by client
 			    	 *  and assign the value */
-			    	String windowFlag_field = ((String[]) (usaProxy.getUsers().getUsers().get(sessionID))) [2];
-			    	if(windowFlag_field.equals("true"))
-			    		isWindowNameSet = true;
+			    	Hashtable< String, String[] > users = usaProxy.getUsers().getUsers();
+			    	synchronized ( users )
+			    	{
+				    	String windowFlag_field = ((String[]) (users.get(sessionID))) [2];
+				    	if(windowFlag_field.equals("true"))
+				    		isWindowNameSet = true;
+			    	}
 			    	
 			    	/** retrieve last log entry:
 					 *  assign last index in corresponding events list if list exists 
@@ -420,7 +424,10 @@ public class ClientRequest extends Thread {
 					}
 					
 					/** retrieve the client's status (online/offline) */
-					status = ((String[]) (usaProxy.getUsers().getUsers().get(sessionID))) [0];
+			    	synchronized ( users )
+			    	{
+			    		status = ((String[]) (users.get(sessionID))) [0];
+			    	}
 				}
 				
 				/*
@@ -695,7 +702,11 @@ public class ClientRequest extends Thread {
 				}
 				
 				/** set flag */
-				usaProxy.getUsers().setWindowNameSet(client.getOut(), sid);
+				Users users = usaProxy.getUsers();
+				synchronized ( users )
+				{
+					users.setWindowNameSet(client.getOut(), sid);
+				}
 			}
 			
 	/*********************************************************************
@@ -714,7 +725,11 @@ public class ClientRequest extends Thread {
 				}
 				
 				/** send users */
-				usaProxy.getUsers().send(client.getOut(), "users", sid);
+				Users users = usaProxy.getUsers();
+				synchronized( users )
+				{
+					users.send(client.getOut(), "users", sid);
+				}
 			}
 			
 	/*********************************************************************
@@ -844,7 +859,11 @@ public class ClientRequest extends Thread {
 	    		usaProxy.getUsers().updateUserTS(sid, ms);
 				
 	    		/** send status */
-				usaProxy.getUsers().send(client.getOut(), "status", sid);
+	    		Users users = usaProxy.getUsers();
+				synchronized( users )
+				{
+					users.send(client.getOut(), "status", sid);
+				}
 			}
 			
 	/*********************************************************************
@@ -1042,11 +1061,15 @@ public class ClientRequest extends Thread {
 		 * add user with an offline status, a current timestamp,
 		 * and a "false" flag which specifies that no session browser
 		 * window was yet assigned */
-		if (!(usaProxy.getUsers().getUsers().containsKey(sessionID))) {
-    		String ms = "" +(int) Calendar.getInstance().getTime().getTime();
-    		String[] userArray	= {"offline", ms, "false"};
-    		usaProxy.getUsers().getUsers().put(sessionID, userArray);
-		}
+    	Hashtable< String, String[] > users = usaProxy.getUsers().getUsers();
+    	synchronized ( users )
+    	{
+			if (!(users.containsKey(sessionID))) {
+	    		String ms = "" +(int) Calendar.getInstance().getTime().getTime();
+	    		String[] userArray	= {"offline", ms, "false"};
+	    		users.put(sessionID, userArray);
+			}
+    	}
     	
     	return sessionID;
     }
