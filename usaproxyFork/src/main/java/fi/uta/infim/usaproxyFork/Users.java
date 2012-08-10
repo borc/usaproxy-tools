@@ -278,10 +278,9 @@ public class Users {
 			userArray[2] = "true";
 			/** put array back into users Hashtable */
 			users.put(user, userArray);
-			
+		}	
 			/** send 404 message in order to complete the request */
 			SocketData.send404 (out);
-		}
 	}
 	
 	/** Sets a user's status.
