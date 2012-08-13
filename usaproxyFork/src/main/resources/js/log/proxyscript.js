@@ -49,6 +49,10 @@ var lastSelection_UsaProxy;		// String: last selected text
 
 var screenID_UsaProxy = 1;
 
+var lastSavelogExecute = null;
+
+var TIMERINTERVAL = 3000;
+
 /* Initializes all variables, event handlers, and interval functions and
  * invokes the logging of the load event 
  */
@@ -182,7 +186,7 @@ function init_UsaProxy() {
 	
 	/* instantiate scroll check and save function being invoked periodically */
 	//IVL_scrollCheck_UsaProxy 	= window.setInterval("processScroll_UsaProxy()",1000);
-	IVL_saveLog_UsaProxy 		= window.setTimeout( function(){ saveLog_UsaProxy(); },3000);
+	IVL_saveLog_UsaProxy 		= window.setTimeout( function(){ saveLog_UsaProxy(); },TIMERINTERVAL);
 	
 	// Logging element appearances and disappearances
 	var waypoints;
@@ -755,6 +759,14 @@ function writeLog_UsaProxy(text) {
 	logVal_UsaProxy = logVal_UsaProxy + logLine + "&xX"; // Add logLine to interaction log
 	// reset synchronization flag (release function)
 	FLG_writingLogVal_UsaProxy = false;
+	
+	// Check whether the timer has been working as it should. Reset if not.
+	if ( lastSavelogExecute !== null && (
+			(new Date()).getTime() - lastSavelogExecute.getTime() > 5 * TIMERINTERVAL ) )
+	{
+		window.clearTimeout( IVL_saveLog_UsaProxy );
+		IVL_saveLog_UsaProxy = window.setTimeout( function(){ saveLog_UsaProxy(); },TIMERINTERVAL );
+	}
 }
 
 function getContents_UsaProxy( node )
@@ -914,11 +926,13 @@ function xmlhttpChange_UsaProxy(pos /*number*/, callback_function /*string*/) {
 /** Sends tracked usage data (if available) to UsaProxy */
 function saveLog_UsaProxy() {
 
+	lastSavelogExecute = new Date();
+	
 	if(logVal_UsaProxy!="") {
 		xmlreqGET_UsaProxy("/usaproxylolo/log?" + logVal_UsaProxy, "");
 		logVal_UsaProxy = ""; // reset log data
 	}
-	IVL_saveLog_UsaProxy = window.setTimeout( function(){ saveLog_UsaProxy(); },3000);
+	IVL_saveLog_UsaProxy = window.setTimeout( function(){ saveLog_UsaProxy(); },TIMERINTERVAL);
 }
 
 /** Event logging functionality */
