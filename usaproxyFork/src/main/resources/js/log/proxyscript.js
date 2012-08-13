@@ -182,7 +182,7 @@ function init_UsaProxy() {
 	
 	/* instantiate scroll check and save function being invoked periodically */
 	//IVL_scrollCheck_UsaProxy 	= window.setInterval("processScroll_UsaProxy()",1000);
-	IVL_saveLog_UsaProxy 		= window.setInterval( function(){ saveLog_UsaProxy(); },3000);
+	IVL_saveLog_UsaProxy 		= window.setTimeout( function(){ saveLog_UsaProxy(); },3000);
 	
 	// Logging element appearances and disappearances
 	var waypoints;
@@ -918,6 +918,7 @@ function saveLog_UsaProxy() {
 		xmlreqGET_UsaProxy("/usaproxylolo/log?" + logVal_UsaProxy, "");
 		logVal_UsaProxy = ""; // reset log data
 	}
+	IVL_saveLog_UsaProxy = window.setTimeout( function(){ saveLog_UsaProxy(); },3000);
 }
 
 /** Event logging functionality */
@@ -930,7 +931,6 @@ function processLoad_UsaProxy(e) {
 	loadWidth 	= (window.innerWidth) ? window.innerWidth : document.body.offsetWidth;  // innerWidth=NS
 	loadHeight 	= (window.innerHeight) ? window.innerHeight : document.body.offsetHeight;  // innerHeight=NS
 	writeLog_UsaProxy("load&size=" + loadWidth + "x" + loadHeight);
-	//saveLog_UsaProxy();
 }
 
 /* Processes window resize event (logs resize event together with the page size) */
@@ -941,7 +941,6 @@ function processResize_UsaProxy(e) {
 	newWidth 	= (window.innerWidth) ? window.innerWidth : document.body.offsetWidth;  // innerWidth=NS
 	newHeight 	= (window.innerHeight) ? window.innerHeight : document.body.offsetHeight;  // innerHeight=NS
 	writeLog_UsaProxy("resize&size=" + newWidth + "x" + newHeight);
-	//saveLog_UsaProxy();
 }
 
 /* Processes mousemove event if FLG_LogMousemove_UsaProxy isn't set 
@@ -968,7 +967,6 @@ function processMousemove_UsaProxy(e) {
 			lastMousePosY_UsaProxy = y;
 			
 			writeLog_UsaProxy("mousemove&offset=" + xOffset + "," + yOffset + generateEventString_UsaProxy(target));
-			//saveLog_UsaProxy();
 			window.setTimeout( function() { setInaktiv_UsaProxy(); },150);
 	}
 }
@@ -1104,7 +1102,6 @@ function processMousedown_UsaProxy(e) {
 	// log middle and right button events, continue if left button was clicked
 	if (mbutton!="left") {
 		writeLog_UsaProxy("mousedown&but=" + mbutton + generateEventString_UsaProxy(target));
-		//saveLog_UsaProxy();
 		return;
 	}
 	/* end mouse button detection */
@@ -1129,7 +1126,6 @@ function processMousedown_UsaProxy(e) {
 			writeLog_UsaProxy("mousedown&offset=" + xOffset + "," + yOffset + generateEventString_UsaProxy(target));
 		}
 	}
-	//saveLog_UsaProxy();
 }
 
 /* no mouseup event since with regular user tracking not necessary */
@@ -1158,7 +1154,6 @@ function processChange_UsaProxy(e) {
 					writeLog_UsaProxy("change&type=select-multiple&name=" + target.name
 						+ generateEventString_UsaProxy(target) + "&value=" + escape(value)) ;
 		}
-		//saveLog_UsaProxy();
 	}
 	
 	// if dropdown menu, log the selected entry's value
@@ -1172,7 +1167,6 @@ function processChange_UsaProxy(e) {
 							+ escape(target.options[target.selectedIndex].value)
 							+ "&selected=" + target.selectedIndex);
 		}
-		//saveLog_UsaProxy();
 	}
 	
 	// if text field/area, file field, log changed value
@@ -1184,7 +1178,6 @@ function processChange_UsaProxy(e) {
 					writeLog_UsaProxy("change&type=" + target.type + "&name="
 							+ target.name + generateEventString_UsaProxy(target) + "&value=" + escape(target.value));
 		}
-		//saveLog_UsaProxy();
 	}
 	
 	// log that checkbox was checked/unchecked
@@ -1207,7 +1200,6 @@ function processChange_UsaProxy(e) {
 					writeLog_UsaProxy("change&type=" + target.type + "&name="
 							+ target.name + "&checked=" + target.checked + generateEventString_UsaProxy(target));
 		}
-		//saveLog_UsaProxy();
 	}
 	
 	// in the case of a password field, log only THAT content was modified
@@ -1219,7 +1211,6 @@ function processChange_UsaProxy(e) {
 					writeLog_UsaProxy("change&type=" + target.type + "&name="
 									  + target.name + generateEventString_UsaProxy(target));
 		}
-		//saveLog_UsaProxy();
 	}
 	
 	// log that radio button was clicked
@@ -1232,7 +1223,6 @@ function processChange_UsaProxy(e) {
 					writeLog_UsaProxy("change&type=" + target.type + "&name="
 							+ target.name + generateEventString_UsaProxy(target));
 		}
-		//saveLog_UsaProxy();
 	}
 	
 }
@@ -1294,7 +1284,6 @@ function processScroll_UsaProxy() {
 		writeLog_UsaProxy("scroll&y=" + percentOfHeight);
 		// set last scrollbar position
 		lastScrollPosY_UsaProxy = currentScrollPosY;
-		//saveLog_UsaProxy();
 	}
 	// if horizontal scrollbar was moved new scrollbar position is logged
 	if(lastScrollPosX_UsaProxy != currentScrollPosX) {
@@ -1309,7 +1298,6 @@ function processScroll_UsaProxy() {
 		writeLog_UsaProxy("scroll&x=" + percentOfWidth);
 		// set last scrollbar position
 		lastScrollPosX_UsaProxy = currentScrollPosX;
-		//saveLog_UsaProxy();
 	}
 }
 
@@ -1394,7 +1382,6 @@ function processKeydown_UsaProxy(e) {
 		
 		// log ctrl+key combination
 		writeLog_UsaProxy("keypress&key=" + keyName_UsaProxy);
-		saveLog_UsaProxy();
 		
 		keyName_UsaProxy 			= "";				// reset keyName_UsaProxy
 		
@@ -1520,7 +1507,6 @@ function processKeyup_UsaProxy(e) {
 	 * flags occurs on keydown) */
 	if(FLG_comb_UsaProxy==false && !FLG_ctrl_comb_UsaProxy && keyName_UsaProxy.length!=0) {
 		writeLog_UsaProxy("keypress&key=" + keyName_UsaProxy);
-		saveLog_UsaProxy();
 		keyName_UsaProxy = "";
 	}
 }
@@ -1538,7 +1524,6 @@ function processKeypress_UsaProxy(e) {
 		
 		if(FLG_comb_UsaProxy==false && !FLG_ctrl_comb_UsaProxy) {
 			writeLog_UsaProxy("keypress&key=" + keyName_UsaProxy);
-			//saveLog_UsaProxy();
 			keyName_UsaProxy = "";
 		}
 	}
@@ -1562,7 +1547,6 @@ function processBlur_UsaProxy(e) {
 			else
 				writeLog_UsaProxy("blur" + generateEventString_UsaProxy(target));
 	}
-	//saveLog_UsaProxy();
 }
 
 /* Processes focus event */
@@ -1583,7 +1567,6 @@ function processFocus_UsaProxy(e) {
 			else
 				writeLog_UsaProxy("focus" + generateEventString_UsaProxy(target));
 	}
-	//saveLog_UsaProxy();
 }
 
 /* Processes the selection of text within the web page's content.
@@ -1602,7 +1585,6 @@ function processSelection_UsaProxy() {
 			writeLog_UsaProxy("select&text=" + escape(currentSelection));
 			// set last selected text
 			lastSelection_UsaProxy = currentSelection;
-			saveLog_UsaProxy();
 			return true;
 		}
 		return false;
@@ -1621,7 +1603,6 @@ function processSelectionNS_UsaProxy(e) {
 	// if selection is not empty, log select event with the selected text
 	if (target.selectionStart!=target.selectionEnd) {
 		writeLog_UsaProxy("select" + generateEventString_UsaProxy(target) + "&text=" + escape(target.value.substring(target.selectionStart,target.selectionEnd)));
-		saveLog_UsaProxy();
 	}
 }
 
