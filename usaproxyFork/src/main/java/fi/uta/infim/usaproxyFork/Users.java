@@ -24,7 +24,7 @@ public class Users {
 	  * (neccessary for user availability
 	  * check) and a flag which indicates if a shared session window
 	  * was defined. */
-	private Hashtable<String, String[]> 		users;		
+	private volatile Hashtable<String, String[]> 		users;		
 	/** Necessary for remote monitoring mode: holds all admins (i.e. those 
 	 *  users which are registered as support assistant resp. as the monitoring party) */
 	private ArrayList<String> 		admins;		
@@ -71,17 +71,17 @@ public class Users {
 				Calendar now = Calendar.getInstance();
 				int msNow = (int) now.getTime().getTime();
 				
-				for (Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
+				for ( Iterator<Entry<String, String[]>> e = users.entrySet().iterator(); e.hasNext();) {
 					
 			        Entry<String, String[]> me 			= e.next();
-			        String user 	= (String) me.getKey();
+			        String user 	= me.getKey();
 			        if (null == user) continue;
 			        int ms 		= Integer.parseInt(((String[]) me.getValue()) [1]);
 			        
 			        /** if user didn't update his timestamp for at least 120 seconds
 			         *  remove him from users and admins Hashtable */
 			        if ((msNow-ms)>120000) {
-			        	users.remove(user);
+			        	e.remove();
 			        	if (admins.contains(user)) admins.remove(user);
 			        }
 			    }
@@ -732,7 +732,10 @@ public class Users {
 	 * @return the users <code>Hashtable</code>
 	 */
 	public Hashtable<String, String[]> getUsers() {
-		return users;
+		synchronized ( users )
+		{
+			return users;
+		}
 	}
 	
 	/** Returns the partners <code>Hashtable</code>.
