@@ -184,10 +184,6 @@ function init_UsaProxy() {
 		}
 	}
 	
-	/* instantiate scroll check and save function being invoked periodically */
-	//IVL_scrollCheck_UsaProxy 	= window.setInterval("processScroll_UsaProxy()",1000);
-	IVL_saveLog_UsaProxy 		= window.setTimeout( function(){ saveLog_UsaProxy(); },TIMERINTERVAL);
-	
 	// Logging element appearances and disappearances
 	var waypoints;
 	
@@ -761,7 +757,7 @@ function writeLog_UsaProxy(text) {
 	FLG_writingLogVal_UsaProxy = false;
 	
 	// Check whether the timer has been working as it should. Reset if not.
-	if ( lastSavelogExecute !== null && (
+	if ( lastSavelogExecute === null || (
 			(new Date()).getTime() - lastSavelogExecute.getTime() > 5 * TIMERINTERVAL ) )
 	{
 		window.clearTimeout( IVL_saveLog_UsaProxy );
